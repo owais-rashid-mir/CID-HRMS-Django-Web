@@ -1,6 +1,6 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
-Add User Login
+Edit User Login | Username : {{ user.admin.username }} |  #ID : {{ user.admin.id }}    <!--  Passing user id and username in the page title-->
 {% endblock page_title %}
 {% block main_content %}
 
@@ -13,33 +13,35 @@ Add User Login
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add User Login</h3>
+                <h3 class="card-title">Edit User Login</h3>
               </div>
               <!-- /.card-header -->
 
               <!-- form start -->
-              <form role="form" action="/add_user_save" method="post">
+              <form role="form" action="/edit_user_save" method="post">
                   {% csrf_token %}
                 <div class="card-body">
+
                   <div class="form-group">
-                    <label>Email address <span class="text-danger"> *(required)</span> </label>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+                    <label>Email address</label>
+                      <!-- Fetching the value of User email in the input field for editing by value="{{ user.admin.email }}-->
+                    <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ user.admin.email }}" >
                   </div>
-                  <div class="form-group">
-                    <label>Password <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Password" name="password" autocomplete="off" required>
-                  </div>
+
                    <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name">
+                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ user.admin.first_name }}" >
                   </div>
+
                    <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name">
+                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ user.admin.last_name }}" >
+                     <input type="hidden"  name="id" value="{{ user.admin.id }}">
                   </div>
+
                    <div class="form-group">
-                    <label>Username <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Username" name="username" required>
+                    <label>Username</label>
+                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{ user.admin.username }}" >
                   </div>
 
                       <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
@@ -60,7 +62,7 @@ Add User Login
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add User Login</button>
+                  <button type="submit" class="btn btn-primary btn-block">Edit User Login</button>
                 </div>
               </form>
             </div>

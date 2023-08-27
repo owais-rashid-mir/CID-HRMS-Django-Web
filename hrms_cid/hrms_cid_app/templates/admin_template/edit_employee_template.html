@@ -1,6 +1,6 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
-Add Employees
+Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID : {{employees.emp_id}}
 {% endblock page_title %}
 {% block main_content %}
 
@@ -12,11 +12,12 @@ Add Employees
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Employee</h3>
+                <h3 class="card-title">Edit Employee</h3>
               </div>
               <!-- /.card-header -->
+
               <!-- form start. Enctype for file uploading -->
-              <form role="form" action="/add_employee_save" method="post" enctype="multipart/form-data">
+              <form role="form" action="/edit_employee_save" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                 <div class="card-body">
 
@@ -39,92 +40,106 @@ Add Employees
 
                    <div class="form-group">
                     <label>First Name <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name" required>
+                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ employees.first_name }}" required>
+
+                     <!-- Creating hidden input field for Employee ID -->
+                       <input type="hidden" name="emp_id" value="{{ employees.emp_id }}" >
                   </div>
 
                     <div class="form-group">
                     <label>Last Name <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" required>
+                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ employees.last_name }}" required>
                   </div>
 
+
                   <!-- accept="image/*" ensures that user can only select image format files. -->
-                  <div class="form-group">
+                   <div class="form-group">
                     <label>Profile Picture </label>
+
+                     <!-- value="{{ employee.profile_pic }}" in <input> will NOT work with an image, so use this: -->
+                     <div class="text-success font-italic">
+                        Current Image Name: {{ employees.profile_pic }}
+                     </div>
+
                     <input type="file" class="form-control" placeholder="Profile Picture" name="profile_pic" accept="image/*" >
                   </div>
+
 
                   <div class="form-group">
                     <label>Gender</label>
                     <select class="form-control" name="gender">
                       <option value="">--Choose an option--</option>
-                      <option>Male</option>
-                      <option>Female</option>
+                      <!-- Keep spaces on left and right of '==' in: 'if employees.gender == "Male" ' -->
+                      <option {% if employees.gender == "Male" %} selected {% endif %}> Male</option>
+                      <option {% if employees.gender == "Female" %} selected {% endif %}> Female</option>
                     </select>
                   </div>
 
                     <div class="form-group">
                     <label>Email <span class="text-danger"> *(required)</span> </label>
-                    <input type="email" class="form-control" placeholder="Email" name="email" required>
+                    <input type="email" class="form-control" placeholder="Email" name="email" value="{{ employees.email }}" required>
                     </div>
 
                     <div class="form-group">
                     <label>Phone Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="number" class="form-control" placeholder="Phone Number" name="phone" required>
+                    <input type="number" class="form-control" placeholder="Phone Number" name="phone" value="{{ employees.phone }}" required>
                     </div>
 
                     <div class="form-group">
                     <label>Address</label>
-                    <input type="text" class="form-control" placeholder="Address" name="address">
+                    <input type="text" class="form-control" placeholder="Address" name="address" value="{{ employees.address }}" >
                   </div>
 
                   <div class="form-group">
                     <label>Joining Date </label>
-                    <input type="date" class="form-control" placeholder="Joining Date" name="date_joined" >
+                    <!-- Converting to d-m-Y format. -->
+                    <input type="date" class="form-control" placeholder="Joining Date" name="date_joined" value="{{ employees.date_joined | date:"Y-m-d" }}" >
                   </div>
 
                   <div class="form-group">
                     <label>DOB </label>
-                    <input type="date" class="form-control" placeholder="DOB" name="dob" >
+                    <input type="date" class="form-control" placeholder="DOB" name="dob" value="{{ employees.dob | date:"Y-m-d" }}" >
                   </div>
 
                     <div class="form-group">
                     <label>Rank</label>
-                    <input type="text" class="form-control" placeholder="Rank" name="position">
+                    <input type="text" class="form-control" placeholder="Rank" name="position" value="{{ employees.position }}">
                   </div>
 
                     <div class="form-group">
                     <label>Aadhar Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Aadhar Number" name="aadhar_number" required>
+                    <input type="text" class="form-control" placeholder="Aadhar Number" name="aadhar_number" value="{{ employees.aadhar_number }}" required>
                   </div>
 
                     <div class="form-group">
                     <label>PAN Card Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="PAN Card Number" name="pan_number" required>
+                    <input type="text" class="form-control" placeholder="PAN Card Number" name="pan_number" value="{{ employees.pan_number }}" required>
                   </div>
 
                   <div class="form-group">
                     <label>Previous Positions Held</label>
-                    <input type="text" class="form-control" placeholder="Previous Positions Held" name="previous_positions_held">
+                    <input type="text" class="form-control" placeholder="Previous Positions Held" name="previous_positions_held" value="{{ employees.previous_positions_held }}">
                   </div>
 
                   <div class="form-group">
                     <label>Qualification</label>
-                    <input type="text" class="form-control" placeholder="Qualification" name="qualifications">
+                    <input type="text" class="form-control" placeholder="Qualification" name="qualifications" value="{{ employees.qualifications }}">
                   </div>
 
                   <div class="form-group">
                     <label>Computer Knowledge</label>
-                    <input type="text" class="form-control" placeholder="Do you have computer knowledge?" name="computer_knowledge">
+                    <input type="text" class="form-control" placeholder="Do you have computer knowledge?" name="computer_knowledge" value="{{ employees.computer_knowledge }}">
                   </div>
 
                   <div class="form-group">
                     <label>Dialogue and public speaking</label>
-                    <input type="text" class="form-control" placeholder="Do you have public speaking skills?" name="dialogue">
+                    <input type="text" class="form-control" placeholder="Do you have public speaking skills?" name="dialogue" value="{{ employees.dialogue }}">
                   </div>
 
                     <div class="form-group">
                         <label for="adverse_report">Adverse Reports</label>
-                        <textarea class="form-control" id="adverse_report" name="adverse_report" placeholder="Any Adverse Reports?"></textarea>
+                      <!-- <textarea> element doesn't use the value attribute like other input elements -->
+                        <textarea class="form-control" id="adverse_report" name="adverse_report" placeholder="Any Adverse Reports?"> {{ employees.adverse_report }} </textarea>
                     </div>
 
                   <div class="form-group">
@@ -134,7 +149,8 @@ Add Employees
                       <option value="">--Choose an option--</option>
                       <!-- Because sections and supervisor is a foreign key in Employees table, write this FOR loop to fetch data from these 2 table in the employee form. -->
                       {% for section in sections %}
-                        <option value="{{ section.section_id }}">{{ section.section_name }}</option>
+                        <!-- Keep spaces on left and right of '==' in: 'if section.section_id == employees.section_id_id ' -->
+                        <option value="{{ section.section_id }}" {% if section.section_id == employees.section_id_id %} selected {% endif %}> {{ section.section_name }}</option>
                       {% endfor%}
                     </select>
                   </div>
@@ -145,7 +161,7 @@ Add Employees
                     <select class="form-control" name="supervisor" required>
                       <option value="">--Choose an option--</option>
                       {% for supervisor in supervisors %}
-                        <option value="{{ supervisor.supervisor_id }}">{{ supervisor.first_name }} {{ supervisor.last_name }}</option>
+                        <option value="{{ supervisor.supervisor_id }}" {% if supervisor.supervisor_id == employees.supervisor_id_id %} selected {% endif %}> {{ supervisor.first_name }} {{ supervisor.last_name }} </option>
                       {% endfor%}
                     </select>
                   </div>
@@ -157,7 +173,7 @@ Add Employees
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add Employee</button>
+                  <button type="submit" class="btn btn-primary btn-block">Edit Employee</button>
                 </div>
               </form>
             </div>

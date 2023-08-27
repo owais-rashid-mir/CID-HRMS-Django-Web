@@ -56,13 +56,13 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="/admin_home" class="nav-link text-primary">Admin Home</a>
+        <a href="/user_home" class="nav-link text-primary">User Home</a>
       </li>
     </ul>
 
     <!-- Centered title -->
   <div class="navbar-title-container">
-    <h5 class="navbar-title text-success">Admin Panel - HR Management System - Crime Investigation Department</h5>
+    <h5 class="navbar-title text-success">User Panel - HR Management System - Crime Investigation Department</h5>
   </div>
 
     <ul class="navbar-nav ml-auto">
@@ -81,7 +81,7 @@
 
   <!-- Main Sidebar Container -->
   <!--  with user=user   : For fetching the name of the admin who's currently loged in- used at the top of sidebar. -->
-  {% include 'admin_template/sidebar_template.html' with user=user %}
+  {% include 'user_template/sidebar_template.html' with user=user %}
 
   <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -98,7 +98,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="/admin_home">Admin Home</a></li>
+              <li class="breadcrumb-item"><a href="/user_home">User Home</a></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -110,7 +110,7 @@
 
   </div>
   <!-- /.content-wrapper -->
-  {% include 'admin_template/footer.html' %}
+  {% include 'user_template/footer.html' %}
 
 </div>
 <!-- ./wrapper -->

@@ -1,0 +1,70 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Manage Sections
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Section Details</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+
+                      <th>Section ID</th>
+                      <th>Section Name</th>
+                      <th>Description</th>
+                      <th>Section Incharge</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  <!-- FOR loop to print all data. -->
+                  {% for section in sections %}
+                    <tr>
+                      <td> <a href="/edit_section/{{ section.section_id }}" class="btn btn-primary">Edit</a> </td>
+
+                      <!-- section_id, section_name etc : column names in Sections table-->
+                      <td>{{ section.section_id }}</td>
+                      <td>{{ section.section_name }}</td>
+                      <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
+                      <td style="white-space: pre-line;"> {{ section.description }}</td>
+                      <td>{{ section.section_incharge }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

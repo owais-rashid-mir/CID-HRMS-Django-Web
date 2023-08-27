@@ -1,7 +1,7 @@
 {% load static %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/admin_home" class="brand-link">
+    <a href="/user_home" class="brand-link">
       <img src="{% static "dist/img/img2.png" %}" alt="HRMS" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">HRMS - CID</span>
@@ -15,8 +15,8 @@
           <img src="{% static "dist/img/avatar5.png" %}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <!-- Displaying the admin name at the top of sidebar. -->
-          <a href="/admin_home" class="d-block">Logged in as: {{ user.username }}</a>
+          <!-- Displaying the User's name at the top of sidebar. -->
+          <a href="/user_home" class="d-block">Logged in as: {{ user.username }}</a>
         </div>
       </div>
 
@@ -26,7 +26,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item has-treeview menu-open">
-            <a href="/admin_home" class="nav-link active">
+            {% url 'user_home' as user_home %}
+            <a href="{{ user_home }} " class="nav-link {% if request.path == user_home %} active {% endif %} ">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard- HRMS-CID
@@ -35,7 +36,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/admin_home" class="nav-link active">
+                <a href="/user_home" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Dashboard</p>
                 </a>
@@ -55,17 +56,11 @@
             </a>
 
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="/add_employee" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add Employees</p>
-                </a>
-              </li>
 
               <li class="nav-item">
-                <a href="/manage_employee" class="nav-link">
+                <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Employees</p>
+                  <p>View Employees</p>
                 </a>
               </li>
 
@@ -81,18 +76,11 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <!-- add_section is defined in urls.py -->
-                <a href="/add_section" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add Sections</p>
-                </a>
-              </li>
 
               <li class="nav-item">
-                <a href="/manage_section" class="nav-link">
+                <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Sections</p>
+                  <p>View Sections</p>
                 </a>
               </li>
 
@@ -108,24 +96,11 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/UI/general.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Leaves</p>
-                </a>
-              </li>
 
               <li class="nav-item">
-                <a href="pages/UI/icons.html" class="nav-link">
+                <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Approve Leaves</p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>View Leaves</p>
+                  <p>Apply for Leave</p>
                 </a>
               </li>
 
@@ -142,17 +117,11 @@
             </a>
 
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="/add_supervisor" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add Supervisors</p>
-                </a>
-              </li>
 
               <li class="nav-item">
-                <a href="/manage_supervisor" class="nav-link">
+                <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Supervisors</p>
+                  <p>View Supervisors</p>
                 </a>
               </li>
             </ul>
@@ -166,47 +135,21 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/tables/simple.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>View Feedbacks</p>
-                </a>
-              </li>
 
               <li class="nav-item">
-                <a href="pages/tables/data.html" class="nav-link">
+                <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Feedbacks</p>
+                  <p>Give Feedback</p>
                 </a>
               </li>
             </ul>
 
             </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-sign-in-alt"></i>
-              <p>
-                User Login
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <!-- add_user is defined in urls.py. It is a function in AdminViews.py which calls add_user_template.html. -->
-                <a href="/add_user" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add User Login</p>
-                </a>
-              </li>
 
-              <li class="nav-item">
-                <a href="/manage_user" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Manage User Login</p>
-                </a>
-              </li>
-            </ul>
+
+
 
             <li class="nav-item">
             <a href="/logout_user" class="nav-link">
@@ -221,7 +164,7 @@
           </li>
           <li class="nav-header">OTHER QUICK LINKS</li>
           <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
+            <a href="" class="nav-link">
               <i class="nav-icon fas fa-info"></i>
               <p>
                 About
@@ -231,7 +174,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
+            <a href="" class="nav-link">
               <i class="nav-icon fas fa-info-circle"></i>
               <p>
                 About the Developers

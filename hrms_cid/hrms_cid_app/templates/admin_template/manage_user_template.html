@@ -1,0 +1,77 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Manage User Login
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">User Login Details</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <!-- Since we are using built-in Django's AbstractUser, we can fetch details from both User table and as well as CustomUser table. -->
+                      <th>Action</th>
+
+                      <th>ID</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Created At</th>
+                      <th>User Type</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  <!-- FOR loop to print all data. -->
+                  {% for user in user %}
+                    <tr>
+                      <td> <a href="/edit_user/{{ user.admin.id }}" class="btn btn-success">Edit</a> </td>
+                      <!-- Since we are using built-in Django's AbstractUser, we can fetch details from both User table and as well as CustomUser table. -->
+                      <!-- username, email etc from CustomUser table. created_at from User table-->
+                      <td>{{ user.admin.id }}</td>
+                      <td>{{ user.admin.username }}</td>
+                      <td>{{ user.admin.email }}</td>
+                      <td>{{ user.admin.first_name }}</td>
+                      <td>{{ user.admin.last_name }}</td>
+                      <td>{{ user.created_at }}</td>
+                      <td>{{ user.admin.user_type }}</td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

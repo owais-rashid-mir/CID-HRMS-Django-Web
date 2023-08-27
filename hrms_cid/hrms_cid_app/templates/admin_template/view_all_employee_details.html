@@ -1,0 +1,175 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}} | #ID : {{employee.emp_id}}
+{% endblock page_title %}
+{% block main_content %}
+
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Employee Details</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered" style="width:100%">
+                  <tbody>
+                    <tr>
+                      <th style="width:30%"> Employee ID</th>
+                      <td style="width:70%"> {{ employee.emp_id }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">First Name</th>
+                      <td style="width:70%">{{ employee.first_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Last Name</th>
+                      <td style="width:70%">{{ employee.last_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Profile Picture</th>
+                      <td style="width:70%">
+
+                        <a href="{{ employee.profile_pic }}">
+                          <img src="{{ employee.profile_pic }}" style="width:300px; height:300px;" />
+                        </a>
+
+                        <div>
+                          <a href="{{ employee.profile_pic }}" style="text-decoration: none; color:green">Click on the picture to view it in full size</a>
+                        </div>
+
+                      </td>
+                    </tr>
+
+
+
+
+                    <tr>
+                      <th style="width:30%">Gender</th>
+                      <td style="width:70%">{{ employee.gender }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Email</th>
+                      <td style="width:70%">{{ employee.email }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Phone</th>
+                      <td style="width:70%">{{ employee.phone }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Address</th>
+                      <td style="width:70%">{{ employee.address }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Joining Date</th>
+                      <td style="width:70%">{{ employee.date_joined }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">DOB</th>
+                      <td style="width:70%">{{ employee.dob }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Rank</th>
+                      <td style="width:70%">{{ employee.position }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Aadhar Number</th>
+                      <td style="width:70%">{{ employee.aadhar_number }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">PAN Card Number</th>
+                      <td style="width:70%">{{ employee.pan_number }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Previous Positions Held</th>
+                      <td style="width:70%">{{ employee.previous_positions_held }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Qualifications</th>
+                      <td style="width:70%">{{ employee.qualifications }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Computer Knowledge</th>
+                      <td style="width:70%">{{ employee.computer_knowledge }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Dialogue and Communication Skills</th>
+                      <td style="width:70%">{{ employee.dialogue }}</td>
+                    </tr>
+
+                    <tr>
+                      <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
+                      <th style="width:30%">Adverse Reports</th>
+                      <td style="width:70%; white-space: pre-line;">{{ employee.adverse_report }}</td>
+                    </tr>
+
+
+                    <tr>
+                      <!-- section_id is defined in models.py of Employees class, section_name is its column that we want to display. -->
+                      <th style="width:30%">Section</th>
+                      <td style="width:70%">{{ employee.section_id.section_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Supervisor</th>
+                      <td style="width:70%">{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Created at</th>
+                      <td style="width:70%">{{ employee.created_at }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Updated at</th>
+                      <td style="width:70%">{{ employee.updated_at }}</td>
+                    </tr>
+
+
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

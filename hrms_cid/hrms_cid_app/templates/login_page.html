@@ -1,86 +1,330 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Human Resource Management System - CID | Log in</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HRMS-CID</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static "plugins/fontawesome-free/css/all.min.css" %}">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{% static "plugins/icheck-bootstrap/icheck-bootstrap.min.css" %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static "dist/css/adminlte.min.css" %}">
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-</head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <a href="../../index2.html"><b>Human Resource Management System- CID</b> </a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to HRMS - CID</p>
+  <style>
+    .content-header {
+      background-image: url('{% static "dist/img/img_bg.jpg" %}');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center center;
+      min-height: 100vh;
+      /* Use min-height to ensure the background covers the content */
+      width: 100%;
+      display: flex;
+      /* Use flex to make sure child elements fill the container */
+      flex-direction: column;
+      /* Stack child elements vertically */
+  }
 
-      <form action="/doLogin" method="post">
-          {% csrf_token %}
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email" name="email">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
+  /* When hovering over various links in Navbar. */
+  .navbar a:hover {
+      padding-left: 5px;
+      transition: all 0.5s ease;
+      background-color: lightgray;
+  }
+
+  /* webpage buttons */
+  .btn {
+      border-radius: 35px !important; /* Use !important to override Bootstrap styles */
+  }
+
+  /* Center the login box. */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /* Making the login box transparent */
+  .login-box {
+    background-color: rgba(255, 255, 255, 0.2); /* Adjust the last value (0.5) for opacity */
+    border-radius: 15px;
+    padding: 20px;
+  }
+
+  </style>
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static "plugins/fontawesome-free/css/all.min.css" %}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{% static "plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" %}">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{% static "plugins/icheck-bootstrap/icheck-bootstrap.min.css" %}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{% static "plugins/jqvmap/jqvmap.min.css" %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static "dist/css/adminlte.min.css" %}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{% static "plugins/overlayScrollbars/css/OverlayScrollbars.min.css" %}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{% static "plugins/daterangepicker/daterangepicker.css" %}">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{% static "plugins/summernote/summernote-bs4.css" %}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    {% block custom_css %}{% endblock custom_css %}
+  </head>
+
+  <body class="hold-transition sidebar-mini layout-fixed">
+   <div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+        </li>
+
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="/index_homepage" class="nav-link">Home</a>
+        </li>
+
+        <li class="nav-item d-none d-sm-inline-block font-weight-bold">
+          <!-- Using the { percent url 'view_name' percent } template tag will ensure that even if you change the URL in your urls.py, the link in your template will stay up to date. I have used 'percent' in the comments because otherwise Python executes it. Replace it with %
+          You can also write:  <a href="show_login" class="nav-link">Login</a>  -->
+          <a href="{% url 'show_login' %}" class="nav-link text-secondary">Login</a>
+        </li>
+      </ul>
+
+      <li class="nav-item d-none d-sm-inline-block">
+          <a href="/" class="nav-link text-secondary">About</a>
+        </li>
+
+      <li class="nav-item d-none d-sm-inline-block">
+          <a href="/" class="nav-link text-secondary">About the Developer</a>
+        </li>
+
+    </nav>
+    <!-- /.navbar ends -->
+
+
+    <!-- Left Sidebar Container -->
+    {% load static %}
+      <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="/index_homepage" class="brand-link">
+        <img src="{% static "dist/img/img2.png" %}" alt="HRMS" class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">HRMS - CID</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{% static "dist/img/avatar5.png" %}" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="/index_homepage" class="d-block">HR Management System</a>
           </div>
         </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" name="password">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                 with font-awesome or any other icon font library -->
+            <li class="nav-item has-treeview menu-open">
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/index_homepage" class="nav-link">
+                <i class="nav-icon fas fa-sign-in-alt"></i>
+                <p>
+                  Home
+                </p>
+              </a>
+                </li>
+              </ul>
+            </li>
+
+
+            <li class="nav-item">
+              <a href="show_login" class="nav-link active">
+                <i class="fas fa-home nav-icon"></i>
+                <p>Login</p>
+              </a>
+
+
+            </li>
+            <li class="nav-header">OTHER QUICK LINKS</li>
+            <li class="nav-item">
+              <a href="" class="nav-link">
+                <i class="nav-icon fas fa-info"></i>
+                <p>
+                  About
+                  <span class="badge badge-info right"></span>
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="" class="nav-link">
+                <i class="nav-icon fas fa-info-circle"></i>
+                <p>
+                  About the Developers
+                </p>
+              </a>
+            </li>
+
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
+
+
+
+    <!-- Content Wrapper. Contains main page content -->
+      <div class="">
+      <!-- Content Header (Page header) -->
+      <div class="content-header pr-4">
+        <div class="container-fluid pr-4">
+          <div class="row mb-2 pr-4">
+
+
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark">
+                {% block page_title %}
+                {% endblock page_title %}
+              </h1>
+            </div><!-- /.col -->
+
+
+            <!-- Login form starts -->
+            <div class="login-container">
+              <div class="login-box">
+                <div class="login-logo">
+                  <a href="../../index2.html"><b class="text-white">Human Resource Management System- CID</b> </a>
+                </div>
+
+            <!-- /.login-logo -->
+              <div class="card">
+              <div class="card-body login-card-body">
+              <p class="login-box-msg">Sign in to HRMS - CID (Admin/User)</p>
+
+            <form action="/doLogin" method="post" class="form">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email" name="email">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <!-- /.col -->
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div><!-- /.col -->
-        </div>
-        <div class="row">
-          <!-- For success and error messages. -->
-          {% if messages %}
-         <div class="col-12">
-            {% for message in messages %}
-            {% if message.tags == 'error' %}
-            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Password" name="password">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </div><!-- /.col -->
+          </div>
+
+          <div class="row">
+            <!-- For success and error messages. -->
+            {% if messages %}
+           <div class="col-12">
+              {% for message in messages %}
+              {% if message.tags == 'error' %}
+              <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+              {% endif %}
+              {% endfor %}
+            </div>
             {% endif %}
-            {% endfor %}
           </div>
-          {% endif %}
-        </div>
-      </form>
+        </form>
 
-      <!-- /.social-auth-links -->
+        <!-- /.social-auth-links -->
+
+      </div>
+      <!-- /.login-card-body -->
+      </div>
+      </div>
+      <!-- /.login-box -->
+       <!-- Login form ends -->
+
+
+
+
+
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+       {% block main_content %}{% endblock main_content %}
+
 
     </div>
-    <!-- /.login-card-body -->
+    <!-- /.content-wrapper -->
+    {% include 'admin_template/footer.html' %}
+
   </div>
-</div>
-<!-- /.login-box -->
+  <!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="{% static "plugins/jquery/jquery.min.js" %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{% static "plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static "dist/js/adminlte.min.js" %}"></script>
 
-</body>
-</html>
+  <!-- jQuery -->
+  <script src="{% static "plugins/jquery/jquery.min.js" %}"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="{% static "plugins/jquery-ui/jquery-ui.min.js" %}"></script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+  <script>
+    $.widget.bridge('uibutton', $.ui.button)
+  </script>
+  <!-- Bootstrap 4 -->
+  <script src="{% static "plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+  <!-- ChartJS -->
+  <script src="{% static "plugins/chart.js/Chart.min.js" %}"></script>
+  <!-- Sparkline -->
+  <script src="{% static "plugins/sparklines/sparkline.js" %}"></script>
+  <!-- JQVMap -->
+  <script src="{% static "plugins/jqvmap/jquery.vmap.min.js" %}"></script>
+  <script src="{% static "plugins/jqvmap/maps/jquery.vmap.usa.js" %}"></script>
+  <!-- jQuery Knob Chart -->
+  <script src="{% static "plugins/jquery-knob/jquery.knob.min.js" %}"></script>
+  <!-- daterangepicker -->
+  <script src="{% static "plugins/moment/moment.min.js" %}"></script>
+  <script src="{% static "plugins/daterangepicker/daterangepicker.js" %}"></script>
+  <!-- Tempusdominus Bootstrap 4 -->
+  <script src="{% static "plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js" %}"></script>
+  <!-- Summernote -->
+  <script src="{% static "plugins/summernote/summernote-bs4.min.js" %}"></script>
+  <!-- overlayScrollbars -->
+  <script src="{% static "plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js" %}"></script>
+  <!-- AdminLTE App -->
+  <script src="{% static "dist/js/adminlte.js" %}"></script>
+  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <script src="{% static "dist/js/pages/dashboard.js" %}"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="{% static "dist/js/demo.js" %}"></script>
+
+  {% block custom_js %}
+  {% endblock custom_js %}
+
+  </body>
+  </html>

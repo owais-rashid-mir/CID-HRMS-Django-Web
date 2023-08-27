@@ -1,0 +1,89 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Manage Employees
+{% endblock page_title %}
+{% block main_content %}
+
+<style>
+
+</style>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Employee Details</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Profile Picture</th>
+                      <th>Phone</th>
+                      <th>Section</th>
+                      <th>Supervisor</th>
+
+                      <th>View All Details</th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  <!-- FOR loop to print all data. -->
+                  {% for employee in employees %}
+                    <tr>
+                      <td> <a href="/edit_employee/{{ employee.emp_id }}" class="btn btn-primary">Edit</a> </td>
+
+                      <!-- first_name etc : column names in Employees table-->
+                      <td>{{ employee.first_name }}</td>
+                      <td>{{ employee.last_name }}</td>
+                      <td> <img src="{{ employee.profile_pic }}" style="width:100px; height:100px;"/></td>
+                      <td>{{ employee.phone }}</td>
+
+                      <!-- section_id is defined in models.py of Employees class, section_name is its column that we want to display. -->
+                      <td>{{ employee.section_id.section_name }}</td>
+                      <td>{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
+
+                      <!-- <td> <a href="/view_all_employee/{{ employee.emp_id }}" class="btn btn-success">View All Details</a> </td> -->
+                      <td>
+                        <a href="{% url 'view_all_employee' employee.emp_id %}" class="btn btn-primary">View All Details</a>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

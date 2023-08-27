@@ -1,6 +1,6 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
-Add Supervisors
+Add Employee Supervisors
 {% endblock page_title %}
 {% block main_content %}
 
@@ -28,6 +28,18 @@ Add Supervisors
                    <div class="form-group">
                     <label>Last Name</label>
                     <input type="text" class="form-control" placeholder="Last Name" name="last_name" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Section <span class="text-danger"> *(required)</span> </label>
+                    <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
+                    <select class="form-control" name="section" required>
+                      <option value="">--Choose an option--</option>
+                      <!-- Because sections is a foreign key in Employees table, write this FOR loop to fetch data from this table in the supervisor form. -->
+                      {% for section in sections %}
+                        <option value="{{ section.section_id }}">{{ section.section_name }}</option>
+                      {% endfor%}
+                    </select>
                   </div>
 
 

@@ -10,8 +10,12 @@ from hrms_cid_app.EmailBackEnd import EmailBackEnd
 
 
 # Create your views here.
-def showDemoPage(request):
-    return render(request, "demo.html")
+def showIndexHomepage(request):
+    return render(request, "index.html")
+
+
+# def showDemoPage(request):
+     # return render(request, "demo.html")
 
 
 def ShowLoginPage(request):
@@ -28,13 +32,17 @@ def doLogin(request):
         # EmailBackEnd is in EmailBackEnd.py file
         user = EmailBackEnd.authenticate(request, username=request.POST.get("email"),
                                          password=request.POST.get("password"))
+        # Two types of login - Admin and User
         if user != None:
             login(request, user)
-            # On login success, redirecting user to admin homepage
-            return HttpResponseRedirect('/admin_home')
+            if user.user_type == "1":
+                # On login success, redirecting user to admin homepage
+                return HttpResponseRedirect('/admin_home')
+            else:
+                return HttpResponseRedirect(reverse("user_home"))
         else:
             messages.error(request, "Invalid Login Details")
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/show_login")
 
 
 def GetUserDetails(request):
