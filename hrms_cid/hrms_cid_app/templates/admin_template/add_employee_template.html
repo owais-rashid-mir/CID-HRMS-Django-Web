@@ -64,22 +64,80 @@ Add Employees
 
                     <div class="form-group">
                     <label>Email <span class="text-danger"> *(required)</span> </label>
-                    <input type="email" class="form-control" placeholder="Email" name="email" required>
+                    <input type="email" class="form-control" placeholder="Example: owais.rasheed.mir@gmail.com" name="email" required>
                     </div>
 
+                    <!-- For multiple phone numbers: -->
                     <div class="form-group">
-                    <label>Phone Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="number" class="form-control" placeholder="Phone Number" name="phone" required>
+                        <label>Phone Number(s) <span class="text-danger"> *(required) </span> </label> <br>
+                        <label> <span class="text-danger"> (Click the 'Add Another Number' button to add multiple phone numbers.) </span> </label>
+
+                        <div id="phone_numbers_container">
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" placeholder="Phone Number" name="phone" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group-append">
+                                <button class="btn  btn-primary text-white mb-2" type="button" onclick="addPhoneNumber()">Add Another Number</button>
+                        </div>
                     </div>
+
+
 
                     <div class="form-group">
                     <label>Address</label>
                     <input type="text" class="form-control" placeholder="Address" name="address">
                   </div>
 
+
                   <div class="form-group">
-                    <label>Joining Date </label>
+                    <label>Tehsil</label>
+                    <input type="text" class="form-control" placeholder="Tehsil" name="tehsil">
+                  </div>
+
+                  <div class="form-group">
+                    <label>District</label>
+                    <input type="text" class="form-control" placeholder="District" name="district">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Parentage</label>
+                    <input type="text" class="form-control" placeholder="Parentage" name="parentage">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Mother's Name</label>
+                    <input type="text" class="form-control" placeholder="Mother's Name" name="mother_name">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Belt Number</label>
+                    <input type="text" class="form-control" placeholder="Belt Number" name="belt_no">
+                  </div>
+
+                  <div class="form-group">
+                    <label>PID Number</label>
+                    <input type="text" class="form-control" placeholder="PID Number" name="pid_no">
+                  </div>
+
+
+                  <div class="form-group">
+                    <label>Date Of Joining In CID </label>
                     <input type="date" class="form-control" placeholder="Joining Date" name="date_joined" >
+                  </div>
+
+                    <div class="form-group">
+                        <label>Date Of Joining In CID - Document File Upload</label>
+                        <label> <span class="text-danger"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
+
+                            <input type="file" class="form-control" placeholder="Date Of Joining In CID - Document File Upload" name="document_file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, application/rtf, text/markdown">
+                    </div>
+
+
+                  <div class="form-group">
+                    <label>Date Of Appointment In Police </label>
+                    <input type="date" class="form-control" placeholder="Date Of Appointment In Police" name="date_appointment_police" >
                   </div>
 
                   <div class="form-group">
@@ -87,9 +145,14 @@ Add Employees
                     <input type="date" class="form-control" placeholder="DOB" name="dob" >
                   </div>
 
-                    <div class="form-group">
-                    <label>Rank</label>
-                    <input type="text" class="form-control" placeholder="Rank" name="position">
+                  <div class="form-group">
+                    <label>Rank <span class="text-danger"> *(required)</span> </label>
+                    <select class="form-control" name="rank" required>
+                      <option value="">--Choose an option--</option>
+                      {% for rank in ranks %}
+                        <option value="{{ rank.rank_id }}">{{ rank.rank_name }}</option>
+                      {% endfor%}
+                    </select>
                   </div>
 
                     <div class="form-group">
@@ -107,15 +170,25 @@ Add Employees
                     <input type="text" class="form-control" placeholder="Previous Positions Held" name="previous_positions_held">
                   </div>
 
-                  <div class="form-group">
-                    <label>Qualification</label>
-                    <input type="text" class="form-control" placeholder="Qualification" name="qualifications">
-                  </div>
 
-                  <div class="form-group">
-                    <label>Computer Knowledge</label>
-                    <input type="text" class="form-control" placeholder="Do you have computer knowledge?" name="computer_knowledge">
-                  </div>
+
+                    <!-- For multiple qualifications: -->
+                    <div class="form-group">
+                        <label>Educational Qualification(s) </label> <br>
+                        <label> <span class="text-danger"> (Click the 'Add Another Qualification' button to add multiple educational qualifications.) </span> </label>
+
+                        <div id="qualifications_container">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Educational Qualification. Example: MCA" name="qualifications">
+                            </div>
+                        </div>
+
+                        <div class="input-group-append">
+                                <button class="btn  btn-primary text-white mb-2" type="button" onclick="addQualifications()">Add Another Qualification</button>
+                        </div>
+                    </div>
+
+
 
                   <div class="form-group">
                     <label>Dialogue and public speaking</label>
@@ -132,9 +205,19 @@ Add Employees
                     <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
                     <select class="form-control" name="section" required>
                       <option value="">--Choose an option--</option>
-                      <!-- Because sections and supervisor is a foreign key in Employees table, write this FOR loop to fetch data from these 2 table in the employee form. -->
+                      <!-- Because sections, division and supervisor is a foreign key in Employees table, write this FOR loop to fetch data from these 2 table in the employee form. -->
                       {% for section in sections %}
                         <option value="{{ section.section_id }}">{{ section.section_name }}</option>
+                      {% endfor%}
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Division <span class="text-danger"> *(required)</span> </label>
+                    <select class="form-control" name="division" required>
+                      <option value="">--Choose an option--</option>
+                      {% for division in divisions %}
+                        <option value="{{ division.division_id }}">{{ division.division_name }}</option>
                       {% endfor%}
                     </select>
                   </div>
@@ -151,7 +234,41 @@ Add Employees
                   </div>
 
 
-                  <!-- You can also put the success and error messages here to show them at the bottom. -->
+                  <!-- Computer Knowledge. Check its JS below -->
+                  <div class="form-group">
+                      <label>Computer Knowledge? <span class="text-danger"> (Selecting "Yes" will expand more options for computer knowledge.)</span> </label><br>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="computer_knowledge" id="computer_knowledge_yes" value="Yes" onclick="showComputerOptions()">
+                          <label class="form-check-label" for="computer_knowledge_yes">Yes</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="computer_knowledge" id="computer_knowledge_no" value="No" onclick="hideComputerOptions()">
+                          <label class="form-check-label" for="computer_knowledge_no">No</label>
+                      </div>
+                  </div>
+
+                  <div id="computer_options" style="display: none;">
+                      <div class="form-group">
+                          <label for="computer_degree">Select your computer degree:</label>
+                          <select id="computer_degree" name="computer_degree" class="form-control">
+                              <option value="None">None</option>
+                              <option value="Diploma">Diploma</option>
+                              <option value="Degree">Degree</option>
+                          </select>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="computer_skill">Rate your computer knowledge:</label>
+                          <select id="computer_skill" name="computer_skill" class="form-control">
+                              <option value="None">None</option>
+                              <option value="Excellent">Excellent</option>
+                              <option value="Good">Good</option>
+                              <option value="Poor">Poor</option>
+                          </select>
+                      </div>
+                  </div>
+
+
 
                 </div>
                 <!-- /.card-body -->
@@ -170,5 +287,85 @@ Add Employees
       </div>
     </section>
     <!-- /.content -->
+
+<!-- For Computer Knowledge -->
+<script>
+    function showComputerOptions() {
+        var computerOptions = document.getElementById("computer_options");
+        computerOptions.style.display = "block";
+    }
+
+    function hideComputerOptions() {
+        var computerOptions = document.getElementById("computer_options");
+        computerOptions.style.display = "none";
+    }
+</script>
+
+
+<!-- JS code to add multiple phone numbers - with add and remove buttons. -->
+<script>
+    function addPhoneNumber() {
+        const container = document.getElementById("phone_numbers_container");
+        const inputGroup = document.createElement("div");
+        inputGroup.className = "input-group mb-3";
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "form-control";
+        input.placeholder = "Phone Number";
+        input.name = "phone";
+        input.required = true;
+
+        const appendDiv = document.createElement("div");
+        appendDiv.className = "input-group-append";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "btn btn-danger"; // Add the "btn-danger" class
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.onclick = function () {
+            container.removeChild(inputGroup);
+        };
+
+        appendDiv.appendChild(removeButton);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(appendDiv);
+        container.appendChild(inputGroup);
+    }
+</script>
+
+
+<!-- JS code to add multiple Educational Qualifications - with add and remove buttons. -->
+<script>
+    function addQualifications() {
+        const container = document.getElementById("qualifications_container");
+        const inputGroup = document.createElement("div");
+        inputGroup.className = "input-group mb-3";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control";
+        input.placeholder = "Educational Qualification. Ex: MCA";
+        input.name = "qualifications";
+        input.required = false;
+
+        const appendDiv = document.createElement("div");
+        appendDiv.className = "input-group-append";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "btn btn-danger"; // Add the "btn-danger" class
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.onclick = function () {
+            container.removeChild(inputGroup);
+        };
+
+        appendDiv.appendChild(removeButton);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(appendDiv);
+        container.appendChild(inputGroup);
+    }
+</script>
+
 
 {% endblock main_content %}

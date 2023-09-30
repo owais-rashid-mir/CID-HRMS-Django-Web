@@ -1,7 +1,7 @@
 {% load static %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/admin_home" class="brand-link">
+    <a href="{% url 'admin_home' %}" class="brand-link">
       <img src="{% static "dist/img/img2.png" %}" alt="HRMS" class="brand-image img-circle elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">HRMS - CID</span>
@@ -16,7 +16,7 @@
         </div>
         <div class="info">
           <!-- Displaying the admin name at the top of sidebar. -->
-          <a href="/admin_home" class="d-block">Logged in as: {{ user.username }}</a>
+          <a href="{% url 'admin_home' %}" class="d-block">Logged in as: {{ user.username }}</a>
         </div>
       </div>
 
@@ -26,7 +26,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item has-treeview menu-open">
-            <a href="/admin_home" class="nav-link active">
+            <a href="{% url 'admin_home' %}" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard- HRMS-CID
@@ -35,7 +35,8 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/admin_home" class="nav-link active">
+                {% url 'admin_home' as admin_home %}
+                <a href="{% url 'admin_home' %}" class="nav-link {% if request.path == admin_home %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
                   <i class="far fa-circle nav-icon"></i>
                   <p>Dashboard</p>
                 </a>
@@ -45,7 +46,7 @@
 
 
           <li class="nav-item has-treeview">
-            <a href="/add_employee" class="nav-link">
+            <a href="" class="nav-link">
               <i class="nav-icon fas fa-user"></i>
               <p>
                 Employees
@@ -56,14 +57,16 @@
 
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/add_employee" class="nav-link">
+                {% url 'add_employee' as add_employee %}
+                <a href="{% url 'add_employee' %}" class="nav-link {% if request.path == add_employee %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Employees</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="/manage_employee" class="nav-link">
+                {% url 'manage_employee' as manage_employee %}
+                <a href="{% url 'manage_employee' %}" class="nav-link {% if request.path == manage_employee %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manage Employees</p>
                 </a>
@@ -83,20 +86,80 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <!-- add_section is defined in urls.py -->
-                <a href="/add_section" class="nav-link">
+                {% url 'add_section' as add_section %}
+                <a href="{% url 'add_section' %}" class="nav-link {% if request.path == add_section %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Sections</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="/manage_section" class="nav-link">
+                {% url 'manage_section' as manage_section %}
+                <a href="{% url 'manage_section' %}" class="nav-link {% if request.path == manage_section %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manage Sections</p>
                 </a>
               </li>
+            </ul>
+
+
+            </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-building"></i>
+              <p>
+                Divisions
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'add_division' as add_division %}
+                <a href="{% url 'add_division' %}" class="nav-link {% if request.path == add_division %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Divisions</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_division' as manage_division %}
+                <a href="{% url 'manage_division' %}" class="nav-link {% if request.path == manage_division %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Divisions</p>
+                </a>
+              </li>
+            </ul>
+
+
+            </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-star"></i>
+              <p>
+                Ranks
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <!-- add_rank is defined in urls.py -->
+                {% url 'add_rank' as add_rank %}
+                <a href="{% url 'add_rank' %}" class="nav-link {% if request.path == add_rank %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Ranks</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_rank' as manage_rank %}
+                <a href="{% url 'manage_rank' %}" class="nav-link {% if request.path == manage_rank %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Ranks</p>
+                </a>
+              </li>
 
             </ul>
+
 
           </li>
           <li class="nav-item has-treeview">
@@ -108,26 +171,16 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+
               <li class="nav-item">
-                <a href="pages/UI/general.html" class="nav-link">
+                {% url 'user_leave_view' as user_leave_view %}
+                <a href="{% url 'user_leave_view' %}" class="nav-link {% if request.path == user_leave_view %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manage Leaves</p>
                 </a>
               </li>
 
-              <li class="nav-item">
-                <a href="pages/UI/icons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Approve Leaves</p>
-                </a>
-              </li>
 
-              <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>View Leaves</p>
-                </a>
-              </li>
 
             </ul>
 
@@ -143,14 +196,16 @@
 
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/add_supervisor" class="nav-link">
+                {% url 'add_supervisor' as add_supervisor %}
+                <a href="{% url 'add_supervisor' %}" class="nav-link {% if request.path == add_supervisor %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Supervisors</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="/manage_supervisor" class="nav-link">
+                {% url 'manage_supervisor' as manage_supervisor %}
+                <a href="{% url 'manage_supervisor' %}" class="nav-link {% if request.path == manage_supervisor %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manage Supervisors</p>
                 </a>
@@ -168,18 +223,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="pages/tables/simple.html" class="nav-link">
+                {% url 'user_feedback_message' as user_feedback_message %}
+                <a href="{% url 'user_feedback_message' %}" class="nav-link {% if request.path == user_feedback_message %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>View Feedbacks</p>
+                  <p>View/Manage Feedbacks</p>
                 </a>
               </li>
 
-              <li class="nav-item">
-                <a href="pages/tables/data.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Feedbacks</p>
-                </a>
-              </li>
             </ul>
 
             </li>
@@ -194,14 +244,16 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <!-- add_user is defined in urls.py. It is a function in AdminViews.py which calls add_user_template.html. -->
-                <a href="/add_user" class="nav-link">
+                {% url 'add_user' as add_user %}
+                <a href="{% url 'add_user' %}" class="nav-link {% if request.path == add_user %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add User Login</p>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a href="/manage_user" class="nav-link">
+                {% url 'manage_user' as manage_user %}
+                <a href="{% url 'manage_user' %}" class="nav-link {% if request.path == manage_user %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manage User Login</p>
                 </a>
@@ -209,7 +261,8 @@
             </ul>
 
             <li class="nav-item">
-            <a href="/logout_user" class="nav-link">
+            {% url 'logout' as logout %}
+            <a href="{% url 'logout' %}" class="nav-link {% if request.path == logout %} active {% endif %}">
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p>
                 Logout
@@ -221,7 +274,7 @@
           </li>
           <li class="nav-header">OTHER QUICK LINKS</li>
           <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
+            <a href="" class="nav-link">
               <i class="nav-icon fas fa-info"></i>
               <p>
                 About
@@ -231,7 +284,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
+            <a href="" class="nav-link">
               <i class="nav-icon fas fa-info-circle"></i>
               <p>
                 About the Developers

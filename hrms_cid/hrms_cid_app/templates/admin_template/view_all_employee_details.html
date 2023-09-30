@@ -84,9 +84,46 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                       <td style="width:70%">{{ employee.address }}</td>
                     </tr>
 
+
                     <tr>
-                      <th style="width:30%">Joining Date</th>
+                      <th style="width:30%">Tehsil</th>
+                      <td style="width:70%">{{ employee.tehsil }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">District</th>
+                      <td style="width:70%">{{ employee.district }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Parentage</th>
+                      <td style="width:70%">{{ employee.parentage }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Mother's Name</th>
+                      <td style="width:70%">{{ employee.mother_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Belt Number</th>
+                      <td style="width:70%">{{ employee.belt_no }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">PID Number</th>
+                      <td style="width:70%">{{ employee.pid_no }}</td>
+                    </tr>
+
+
+                    <tr>
+                      <th style="width:30%">Date Of Joining In CID</th>
                       <td style="width:70%">{{ employee.date_joined }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Date Of Appointment In Police</th>
+                      <td style="width:70%">{{ employee.date_appointment_police }}</td>
                     </tr>
 
                     <tr>
@@ -96,7 +133,7 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
 
                     <tr>
                       <th style="width:30%">Rank</th>
-                      <td style="width:70%">{{ employee.position }}</td>
+                      <td style="width:70%">{{ employee.rank_id.rank_name }}</td>
                     </tr>
 
                     <tr>
@@ -120,11 +157,6 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     </tr>
 
                     <tr>
-                      <th style="width:30%">Computer Knowledge</th>
-                      <td style="width:70%">{{ employee.computer_knowledge }}</td>
-                    </tr>
-
-                    <tr>
                       <th style="width:30%">Dialogue and Communication Skills</th>
                       <td style="width:70%">{{ employee.dialogue }}</td>
                     </tr>
@@ -143,6 +175,11 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     </tr>
 
                     <tr>
+                      <th style="width:30%">Division</th>
+                      <td style="width:70%">{{ employee.division_id.division_name }}</td>
+                    </tr>
+
+                    <tr>
                       <th style="width:30%">Supervisor</th>
                       <td style="width:70%">{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
                     </tr>
@@ -155,6 +192,21 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     <tr>
                       <th style="width:30%">Updated at</th>
                       <td style="width:70%">{{ employee.updated_at }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Computer Knowledge?</th>
+                      <td style="width:70%">{{ employee.computer_knowledge }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Computer Degree or Diploma?</th>
+                      <td style="width:70%">{{ employee.computer_degree }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Computer Skill(Poor, Good or Excellent)?</th>
+                      <td style="width:70%">{{ employee.computer_skill }}</td>
                     </tr>
 
 

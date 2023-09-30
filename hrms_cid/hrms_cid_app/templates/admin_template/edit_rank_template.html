@@ -1,0 +1,70 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Edit Ranks | Rank ID : {{ranks.rank_id}} | Rank Name : {{ranks.rank_name}}
+{% endblock page_title %}
+{% block main_content %}
+
+<!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Edit Rank</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="/edit_rank_save" method="post">
+                  {% csrf_token %}
+                <div class="card-body">
+
+                   <div class="form-group">
+                    <label>Rank Name <span class="text-danger"> *(required)</span> </label>
+                    <input type="text" class="form-control" placeholder="Rank Name" name="rank_name" value="{{ ranks.rank_name }}" required>
+
+                       <!-- Creating hidden input field for Division ID-->
+                       <input type="hidden" name="rank_id" value="{{ ranks.rank_id }}" >
+                  </div>
+
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <!-- <textarea> element doesn't use the value attribute like other input elements -->
+                        <textarea class="form-control" id="description" name="description" placeholder="Rank Description">{{ ranks.description }} </textarea>
+                  </div>
+
+
+                      <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                      <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary btn-block">Edit Rank</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock main_content %}

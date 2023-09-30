@@ -80,20 +80,76 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="email" class="form-control" placeholder="Email" name="email" value="{{ employees.email }}" required>
                     </div>
 
+
+                    <!-- For multiple phone numbers: -->
                     <div class="form-group">
-                    <label>Phone Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="number" class="form-control" placeholder="Phone Number" name="phone" value="{{ employees.phone }}" required>
+                        <label>Phone Number(s) <span class="text-danger"> *(required) </span></label><br>
+                        <label><span class="text-danger">(Click the 'Add Another Number' button to add multiple phone numbers.)</span></label>
+                            <div id="phone_numbers_container">
+                            {% for phone in phone_numbers %}
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" placeholder="Phone Number" name="phone[]" value="{{ phone }}" required>
+                                    {% if not forloop.first %}
+                                        <div class="input-group-append">
+                                            <button class="btn btn-danger" type="button" onclick="removePhoneNumber(this)">Remove</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
                     </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary text-white mb-2" type="button" onclick="addPhoneNumber()">Add Another Number</button>
+                    </div>
+                    </div>
+
 
                     <div class="form-group">
                     <label>Address</label>
                     <input type="text" class="form-control" placeholder="Address" name="address" value="{{ employees.address }}" >
                   </div>
 
+
                   <div class="form-group">
-                    <label>Joining Date </label>
+                    <label>Tehsil</label>
+                    <input type="text" class="form-control" placeholder="Tehsil" name="tehsil" value="{{ employees.tehsil }}">
+                  </div>
+
+                  <div class="form-group">
+                    <label>District</label>
+                    <input type="text" class="form-control" placeholder="District" name="district" value="{{ employees.district }}">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Parentage</label>
+                    <input type="text" class="form-control" placeholder="Parentage" name="parentage" value="{{ employees.parentage }}">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Mother's Name</label>
+                    <input type="text" class="form-control" placeholder="Mother's Name" name="mother_name" value="{{ employees.mother_name }}">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Belt Number</label>
+                    <input type="text" class="form-control" placeholder="Belt Number" name="belt_no" value="{{ employees.belt_no }}">
+                  </div>
+
+                  <div class="form-group">
+                    <label>PID Number</label>
+                    <input type="text" class="form-control" placeholder="PID Number" name="pid_no" value="{{ employees.pid_no }}">
+                  </div>
+
+
+                  <div class="form-group">
+                    <label>Date Of Joining In CID </label>
                     <!-- Converting to d-m-Y format. -->
-                    <input type="date" class="form-control" placeholder="Joining Date" name="date_joined" value="{{ employees.date_joined | date:"Y-m-d" }}" >
+                    <input type="date" class="form-control" placeholder="Date Of Joining In CID" name="date_joined" value="{{ employees.date_joined | date:"Y-m-d" }}" >
+                  </div>
+
+                  <div class="form-group">
+                    <label>Date Of Appointment In Police </label>
+                    <!-- Converting to d-m-Y format. -->
+                    <input type="date" class="form-control" placeholder="Date Of Appointment In Police" name="date_appointment_police" value="{{ employees.date_appointment_police | date:"Y-m-d" }}" >
                   </div>
 
                   <div class="form-group">
@@ -101,9 +157,14 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="date" class="form-control" placeholder="DOB" name="dob" value="{{ employees.dob | date:"Y-m-d" }}" >
                   </div>
 
-                    <div class="form-group">
-                    <label>Rank</label>
-                    <input type="text" class="form-control" placeholder="Rank" name="position" value="{{ employees.position }}">
+                  <div class="form-group">
+                    <label>Rank <span class="text-danger"> *(required)</span> </label>
+                    <select class="form-control" name="rank" required>
+                      <option value="">--Choose an option--</option>
+                      {% for rank in ranks %}
+                        <option value="{{ rank.rank_id }}" {% if rank.rank_id == employees.rank_id_id %} selected {% endif %}> {{ rank.rank_name }}</option>
+                      {% endfor%}
+                    </select>
                   </div>
 
                     <div class="form-group">
@@ -121,15 +182,30 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="text" class="form-control" placeholder="Previous Positions Held" name="previous_positions_held" value="{{ employees.previous_positions_held }}">
                   </div>
 
-                  <div class="form-group">
-                    <label>Qualification</label>
-                    <input type="text" class="form-control" placeholder="Qualification" name="qualifications" value="{{ employees.qualifications }}">
-                  </div>
 
-                  <div class="form-group">
-                    <label>Computer Knowledge</label>
-                    <input type="text" class="form-control" placeholder="Do you have computer knowledge?" name="computer_knowledge" value="{{ employees.computer_knowledge }}">
-                  </div>
+
+                    <!-- For multiple qualifications: -->
+                    <div class="form-group">
+                        <label>Educational Qualification(s) </label><br>
+                        <label><span class="text-danger">(Click the 'Add Another Qualification' button to add multiple educational qualifications.)</span></label>
+                            <div id="qualifications_container">
+                            {% for qualifications in qualifications %}
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Educational Qualifications. Example: MCA" name="qualifications[]" value="{{ qualifications }}" >
+                                    {% if not forloop.first %}
+                                        <div class="input-group-append">
+                                            <button class="btn btn-danger" type="button" onclick="removeQualifications(this)">Remove</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary text-white mb-2" type="button" onclick="addQualifications()">Add Another Qualification</button>
+                    </div>
+                    </div>
+
+
 
                   <div class="form-group">
                     <label>Dialogue and public speaking</label>
@@ -156,6 +232,16 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                   </div>
 
                   <div class="form-group">
+                    <label>Division <span class="text-danger"> *(required)</span> </label>
+                    <select class="form-control" name="division" required>
+                      <option value="">--Choose an option--</option>
+                      {% for division in divisions %}
+                        <option value="{{ division.division_id }}" {% if division.division_id == employees.division_id_id %} selected {% endif %}> {{ division.division_name }}</option>
+                      {% endfor%}
+                    </select>
+                  </div>
+
+                  <div class="form-group">
                     <label>Supervisor <span class="text-danger"> *(required)</span> </label>
                     <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
                     <select class="form-control" name="supervisor" required>
@@ -165,6 +251,48 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                       {% endfor%}
                     </select>
                   </div>
+
+
+                  <!-- Computer Knowledge. Check its JS below -->
+                  <div class="form-group">
+                    <label>Computer Knowledge</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="computer_knowledge" id="computer_knowledge_yes" value="Yes" {% if employees.computer_knowledge == "Yes" %} checked {% endif %}>
+                        <label class="form-check-label" for="computer_knowledge_yes">
+                            Yes
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="computer_knowledge" id="computer_knowledge_no" value="No" {% if employees.computer_knowledge == "No" %} checked {% endif %}>
+                        <label class="form-check-label" for="computer_knowledge_no">
+                            No
+                        </label>
+                    </div>
+                </div>
+
+                <div id="computer_options" {% if employees.computer_knowledge == "Yes" %} style="display: block;" {% else %} style="display: none;" {% endif %}>
+                    <div class="form-group">
+                        <label for="computer_degree">Select your computer degree:</label>
+                        <select id="computer_degree" name="computer_degree" class="form-control">
+                            <option value="None" {% if employees.computer_degree == "None" %} selected {% endif %}>None</option>
+                            <option value="Diploma" {% if employees.computer_degree == "Diploma" %} selected {% endif %}>Diploma</option>
+                            <option value="Degree" {% if employees.computer_degree == "Degree" %} selected {% endif %}>Degree</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="computer_skill">Rate your computer knowledge:</label>
+                        <select id="computer_skill" name="computer_skill" class="form-control">
+                            <option value="None" {% if employees.computer_skill == "None" %} selected {% endif %}>None</option>
+                            <option value="Excellent" {% if employees.computer_skill == "Excellent" %} selected {% endif %}>Excellent</option>
+                            <option value="Good" {% if employees.computer_skill == "Good" %} selected {% endif %}>Good</option>
+                            <option value="Poor" {% if employees.computer_skill == "Poor" %} selected {% endif %}>Poor</option>
+                        </select>
+                    </div>
+                </div>
+
+
 
 
                   <!-- You can also put the success and error messages here to show them at the bottom. -->
@@ -186,5 +314,111 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
       </div>
     </section>
     <!-- /.content -->
+
+<!-- For Computer Knowledge -->
+<script>
+    function showComputerOptions() {
+        var computerKnowledge = document.querySelector('input[name="computer_knowledge"]:checked').value;
+        var computerOptions = document.getElementById("computer_options");
+
+        if (computerKnowledge === "Yes") {
+            computerOptions.style.display = "block";
+        } else {
+            computerOptions.style.display = "none";
+        }
+    }
+
+    // Add an event listener to the radio buttons
+    var computerKnowledgeRadios = document.querySelectorAll('input[name="computer_knowledge"]');
+    computerKnowledgeRadios.forEach(function(radio) {
+        radio.addEventListener("change", showComputerOptions);
+    });
+
+    // Initially, call the function to set the initial visibility
+    showComputerOptions();
+</script>
+
+
+<!-- JS code to add multiple phone numbers - with add and remove buttons. -->
+<script>
+function addPhoneNumber() {
+    const container = document.getElementById("phone_numbers_container");
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group mb-3";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control";
+    input.placeholder = "Phone Number";
+    input.name = "phone[]"; // Use an array for phone numbers
+    input.value = ""; // Empty value for a new phone number
+    input.required = true;
+
+    const appendDiv = document.createElement("div");
+    appendDiv.className = "input-group-append";
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "btn btn-danger";
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function () {
+        container.removeChild(inputGroup);
+    };
+
+    appendDiv.appendChild(removeButton);
+    inputGroup.appendChild(input);
+    inputGroup.appendChild(appendDiv);
+    container.appendChild(inputGroup);
+}
+
+function removePhoneNumber(button) {
+    const container = document.getElementById("phone_numbers_container");
+    const inputGroup = button.closest(".input-group");
+    container.removeChild(inputGroup);
+}
+
+</script>
+
+
+<!-- JS code to add multiple qualifications- with add and remove buttons. -->
+<script>
+function addQualifications() {
+    const container = document.getElementById("qualifications_container");
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group mb-3";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control";
+    input.placeholder = "Educational Qualification. Example: MCA";
+    input.name = "qualifications[]"; // Use an array for qualifications
+    input.value = ""; // Empty value for a new phone number
+    input.required = false;
+
+    const appendDiv = document.createElement("div");
+    appendDiv.className = "input-group-append";
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "btn btn-danger";
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function () {
+        container.removeChild(inputGroup);
+    };
+
+    appendDiv.appendChild(removeButton);
+    inputGroup.appendChild(input);
+    inputGroup.appendChild(appendDiv);
+    container.appendChild(inputGroup);
+}
+
+function removeQualifications(button) {
+    const container = document.getElementById("qualifications_container");
+    const inputGroup = button.closest(".input-group");
+    container.removeChild(inputGroup);
+}
+
+</script>
+
 
 {% endblock main_content %}

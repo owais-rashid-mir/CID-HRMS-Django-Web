@@ -98,7 +98,8 @@
             <ul class="nav nav-treeview">
 
               <li class="nav-item">
-                <a href="" class="nav-link">
+                {% url 'user_apply_leave' as user_apply_leave %}
+                <a href="{{ user_apply_leave }}" class="nav-link {% if request.path == user_apply_leave %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Apply for Leave</p>
                 </a>
@@ -139,7 +140,8 @@
             <ul class="nav nav-treeview">
 
               <li class="nav-item">
-                <a href="" class="nav-link">
+                {% url 'user_feedback' as user_feedback %}
+                <a href="{{ user_feedback }}" class="nav-link {% if request.path == user_feedback %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Give Feedback</p>
                 </a>

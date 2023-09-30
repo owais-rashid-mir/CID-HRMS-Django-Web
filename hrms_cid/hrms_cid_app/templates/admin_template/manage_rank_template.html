@@ -1,0 +1,90 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Manage Ranks
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+        <!--  code for success and error messages - will be displayed at the top -->
+                      <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Ranks</h3>
+
+                <div class="card-tools">
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+
+                      <th>Rank ID</th>
+                      <th>Rank Name</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  <!-- FOR loop to print all data. -->
+                  {% for rank in rank %}
+                    <tr>
+                      <td>
+                        <a href="/edit_rank/{{ rank.rank_id }}" class="btn btn-primary">Edit</a>
+
+                        <form method="post" action="{% url 'delete_rank' rank_id=rank.rank_id %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this rank?')">Delete</button>
+                        </form>
+                      </td>
+
+                      <!-- rank_id, rank_name etc : column names in Rank table-->
+                      <td>{{ rank.rank_id }}</td>
+                      <td>{{ rank.rank_name }}</td>
+                      <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
+                      <td style="white-space: pre-line;"> {{ rank.description }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

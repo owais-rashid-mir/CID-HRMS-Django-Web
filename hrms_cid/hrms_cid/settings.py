@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hrms_cid_app'
+    'hrms_cid_app',
+    # 'django_cleanup.apps.CleanupConfig',    # For automatically deleting the images or files in the "media" local folder when the associated record with these images/files are deleted.
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'hrms_cid_app.LoginCheckMiddleWare.LoginCheckMiddleWare'
 ]
 
 ROOT_URLCONF = 'hrms_cid.urls'
@@ -62,6 +64,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
+        # 'DIRS': [os.path.join(BASE_DIR, 'hrms_cid_app/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

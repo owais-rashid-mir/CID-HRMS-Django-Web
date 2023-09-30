@@ -5,12 +5,32 @@ Manage Employees
 {% block main_content %}
 
 <style>
+  /* Custom CSS to control table cell wrapping */
+.table td {
+  white-space: normal; /* Allow text to wrap within cells */
+  word-break: break-word; /* Break words when they overflow the cell */
+}
 
 </style>
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+
+
+        <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                      <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
 
 
            <div class="row">
@@ -30,8 +50,8 @@ Manage Employees
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
 
+              <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap table-bordered">
                   <thead>
                     <tr>
@@ -41,7 +61,9 @@ Manage Employees
                       <th>Last Name</th>
                       <th>Profile Picture</th>
                       <th>Phone</th>
+                      <th>Rank</th>
                       <th>Section</th>
+                      <th>Division</th>
                       <th>Supervisor</th>
 
                       <th>View All Details</th>
@@ -53,16 +75,26 @@ Manage Employees
                   <!-- FOR loop to print all data. -->
                   {% for employee in employees %}
                     <tr>
-                      <td> <a href="/edit_employee/{{ employee.emp_id }}" class="btn btn-primary">Edit</a> </td>
+
+                      <td style="min-width: 110px;">
+                        <a href="/edit_employee/{{ employee.emp_id }}" class="btn btn-primary mb-1">Edit</a> <br>
+
+                        <form method="post" action="{% url 'delete_employee' emp_id=employee.emp_id %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this employee?')">Delete</button>
+                        </form>
+                      </td>
 
                       <!-- first_name etc : column names in Employees table-->
                       <td>{{ employee.first_name }}</td>
                       <td>{{ employee.last_name }}</td>
                       <td> <img src="{{ employee.profile_pic }}" style="width:100px; height:100px;"/></td>
                       <td>{{ employee.phone }}</td>
+                      <td>{{ employee.rank_id.rank_name }}</td>
 
                       <!-- section_id is defined in models.py of Employees class, section_name is its column that we want to display. -->
                       <td>{{ employee.section_id.section_name }}</td>
+                      <td>{{ employee.division_id.division_name }}</td>
                       <td>{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
 
                       <!-- <td> <a href="/view_all_employee/{{ employee.emp_id }}" class="btn btn-success">View All Details</a> </td> -->

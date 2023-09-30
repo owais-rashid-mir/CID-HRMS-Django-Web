@@ -3,11 +3,16 @@
 import datetime
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+import os
+from django.conf import settings
+import logging
 
-from hrms_cid_app.models import CustomUser, User, Sections, Supervisor, Employees
+from hrms_cid_app.models import CustomUser, User, Sections, Supervisor, Employees, FeedBackUser, LeaveReportEmployee, \
+    Rank, Divisions
 
 
 def admin_home(request):
@@ -43,11 +48,12 @@ def add_user_save(request):
             messages.success(request, "Successfully Added User Login")
             return HttpResponseRedirect(reverse("add_user"))  # Once data is added, return to add_user page.
 
-        except:
-            messages.error(request, "Failed to Add User Login. Try using another Email and Username.")
+        except Exception as e:
+            messages.error(request, f"Failed To Add User Login. Try using another Email and Username. {str(e)}")
             return HttpResponseRedirect(reverse("add_user"))
 
 
+# ------------------------------- Section---------------------------------------
 # Add Section
 def add_section(request):
     return render(request, "admin_template/add_section_template.html")
@@ -71,12 +77,68 @@ def add_section_save(request):
             section_model.save()
             messages.success(request, "Successfully Added Section")
             return HttpResponseRedirect(reverse("add_section"))
-        except:
-            messages.error(request, "Failed To Add Section")
+
+        except Exception as e:
+            messages.error(request, f"Failed To Add Section {str(e)}")
             return HttpResponseRedirect(reverse("add_section"))
 
 
-# Add Supervisor
+# Manage Sections
+def manage_section(request):
+    # Reading all Section data by calling Sections.objects.all()
+    # Sections is defined in models.py
+    sections = Sections.objects.all()
+    return render(request, "admin_template/manage_section_template.html", {"sections": sections})
+
+
+# Edit Section
+def edit_section(request, section_id):
+    sections = Sections.objects.get(section_id=section_id)
+    return render(request, "admin_template/edit_section_template.html", {"sections": sections})
+
+
+def edit_section_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        # created a hidden input field in edit_section_template.html in the Section Name input field for Section ID
+        section_id = request.POST.get("section_id")
+        section_name = request.POST.get("section_name")
+        description = request.POST.get("description")
+        section_incharge = request.POST.get("section_incharge")
+
+        try:
+            sections = Sections.objects.get(section_id=section_id)
+            sections.section_name = section_name
+            sections.description = description
+            sections.section_incharge = section_incharge
+
+            sections.save()
+            messages.success(request, "Successfully Edited Section")
+            return HttpResponseRedirect(reverse("edit_section", kwargs={"section_id": section_id}))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Edit Section {str(e)}")
+            return HttpResponseRedirect(reverse("edit_section", kwargs={"section_id": section_id}))
+
+
+# Delete Section
+def delete_section(request, section_id):
+    if request.method == "POST":
+        section = get_object_or_404(Sections, section_id=section_id)
+
+        try:
+            # Delete the section instance
+            section.delete()
+            messages.success(request, "Section and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete Section: {str(e)}")
+
+        return redirect("manage_section")  # Redirect to the list of sections page
+
+
+# ------------------------------- Employee Supervisor ---------------------------------------
+# Add Employee Supervisor
 def add_supervisor(request):
     # Adding sections here because it is a foreign key
     # Sections - in RHS - defined in models.py
@@ -101,27 +163,96 @@ def add_supervisor_save(request):
 
         try:
             # Supervisor - defined in models.py
-            # section_id=section- section is defined above: section = Sections.objects.get(section_id=section_id)
             supervisor_model = Supervisor(first_name=first_name, last_name=last_name, section_id=section)
 
             supervisor_model.save()
 
-            messages.success(request, "Successfully Added Section")
+            messages.success(request, "Successfully Added Employee Supervisor")
             return HttpResponseRedirect(reverse("add_supervisor"))
-        except:
-            messages.error(request, "Failed To Add Section")
+
+        except Exception as e:
+            messages.error(request, f"Failed To Add Employee Supervisor {str(e)}")
             return HttpResponseRedirect(reverse("add_supervisor"))
 
 
+# Manage Supervisors
+def manage_supervisor(request):
+    # Reading all Employees data by calling Supervisor.objects.all()
+    supervisor = Supervisor.objects.all()
+    return render(request, "admin_template/manage_supervisor_template.html", {"supervisor": supervisor})
+
+
+# Edit Supervisor
+def edit_supervisor(request, supervisor_id):
+    # Reading all Sections data using objects.all() - It is a foreign key and we need to fetch all of the data in this table.
+    sections = Sections.objects.all()
+
+    supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+
+    return render(request, "admin_template/edit_supervisor_template.html",
+                  {"supervisor": supervisor, "sections": sections})
+
+
+def edit_supervisor_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        # created a hidden input field in edit_supervisor_template.html in the First Name input field for Supervisor ID
+        supervisor_id = request.POST.get("supervisor_id")
+
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        section_id = request.POST.get("section")
+
+        # Retrieve the Sections instance using section_id
+        section = Sections.objects.get(section_id=section_id)
+
+        try:
+            supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+
+            supervisor.first_name = first_name
+            supervisor.last_name = last_name
+            supervisor.section_id = section  # section is defined above: section = Sections.objects.get(section_id=section_id)
+
+            supervisor.save()
+
+            messages.success(request, "Successfully Edited Employee Supervisor")
+            return HttpResponseRedirect(reverse("edit_supervisor", kwargs={"supervisor_id": supervisor_id}))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Edit Employee Supervisor {str(e)}")
+            return HttpResponseRedirect(reverse("edit_supervisor", kwargs={"supervisor_id": supervisor_id}))
+
+
+# Delete Employee Supervisor
+def delete_supervisor(request, supervisor_id):
+    if request.method == "POST":
+        supervisor = get_object_or_404(Supervisor, supervisor_id=supervisor_id)
+
+        try:
+            # Delete the supervisor instance
+            supervisor.delete()
+            messages.success(request, "Employee Supervisor and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete Supervisor: {str(e)}")
+
+        return redirect("manage_supervisor")  # Redirect to the list of Employee Supervisor page
+
+
+# ------------------------------- Employee---------------------------------------
 # Add Employee
 def add_employee(request):
-    # Adding sections and supervisor here because they are foreign keys
+    # Adding sections, divisions and supervisor here because they are foreign keys
     # Sections and Supervisor - in RHS - defined in models.py
     sections = Sections.objects.all()
     supervisors = Supervisor.objects.all()
+    divisions = Divisions.objects.all()
+    ranks = Rank.objects.all()
     context = {
         'sections': sections,
         'supervisors': supervisors,
+        'divisions': divisions,
+        'ranks': ranks,
     }
     return render(request, "admin_template/add_employee_template.html", context)
 
@@ -149,20 +280,47 @@ def add_employee_save(request):
 
         gender = request.POST.get("gender")
         email = request.POST.get("email")
-        phone = request.POST.get("phone")
+
+        # Get the list of phone numbers from the form
+        phone_numbers = request.POST.getlist("phone")
+
         address = request.POST.get("address")
-        date_joined = request.POST.get("date_joined")
+        tehsil = request.POST.get("tehsil")
+        district = request.POST.get("district")
+        parentage = request.POST.get("parentage")
+        mother_name = request.POST.get("mother_name")
+        belt_no = request.POST.get("belt_no")
+        pid_no = request.POST.get("pid_no")
+        date_joined = request.POST.get("date_joined")  # Date Of Joining In CID
+
+        # Date Of Joining In CID - Document File Upload
+        # Check if the document file is provided
+        if 'document_file' in request.FILES:
+            document_file = request.FILES['document_file']
+            fs = FileSystemStorage()
+            filename = fs.save(document_file.name, document_file)
+            document_file_url = fs.url(filename)  # Reading file path by url()
+        else:
+            document_file_url = None  # Set a default value if no document file is provided
+
+        date_appointment_police = request.POST.get("date_appointment_police")  # Date Of Appointment In Police
         dob = request.POST.get("dob")
-        position = request.POST.get("position")
+        rank_id = request.POST.get("rank")
         aadhar_number = request.POST.get("aadhar_number")
         pan_number = request.POST.get("pan_number")
         previous_positions_held = request.POST.get("previous_positions_held")
-        qualifications = request.POST.get("qualifications")
-        computer_knowledge = request.POST.get("computer_knowledge")
+
+        # Get the list of qualifications from the form
+        qualifications = request.POST.getlist("qualifications")
+
         dialogue = request.POST.get("dialogue")
         adverse_report = request.POST.get("adverse_report")
         section_id = request.POST.get("section")
+        division_id = request.POST.get("division")
         supervisor_id = request.POST.get("supervisor")
+        computer_knowledge = request.POST.get("computer_knowledge")
+        computer_degree = request.POST.get("computer_degree")
+        computer_skill = request.POST.get("computer_skill")
 
         # Converting date format(for date_joined). Otherwise, we'll get Invalid Date Format error.
         # change_date_format = datetime.datetime.strptime(date_joined, '%d-%m-%y').strftime('%Y-%m-%d')
@@ -173,13 +331,20 @@ def add_employee_save(request):
         else:
             change_date_format = datetime.datetime.strptime(date_joined, '%Y-%m-%d').date()
 
+        if not date_appointment_police:  # Check if the date_appointment_police field is empty
+            change_dap_format = None  # Set to None if the field is empty. dap : date_appointment_format
+        else:
+            change_dap_format = datetime.datetime.strptime(date_appointment_police, '%Y-%m-%d').date()
+
         if not dob:  # Check if the DOB field is empty
             change_dob_format = None  # Set to None if the field is empty
         else:
             change_dob_format = datetime.datetime.strptime(dob, '%Y-%m-%d').date()
 
         # Retrieve the Sections instance using section_id
+        rank = Rank.objects.get(rank_id=rank_id)
         section = Sections.objects.get(section_id=section_id)
+        division = Divisions.objects.get(division_id=division_id)
         supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
 
         # Check if the email, aadhar and PAN numbers are unique- email, aadhar, pan in Employees in models.py is set as unique. So, we need these validation:
@@ -208,22 +373,39 @@ def add_employee_save(request):
                 profile_pic=profile_pic_url,
                 gender=gender,
                 email=email,
-                phone=phone,
+
+                # Save the phone numbers as a comma-separated string in the database
+                phone=",".join(phone_numbers),  # Convert the list to a string
+
                 address=address,
+                tehsil=tehsil,
+                district=district,
+                parentage=parentage,
+                mother_name=mother_name,
+                belt_no=belt_no,
+                pid_no=pid_no,
                 date_joined=change_date_format,  # Use the changed date format here
                 # date_joined=date_joined,
+                document_file=document_file_url,
+                date_appointment_police=change_dap_format,
                 dob=change_dob_format,
-                position=position,
+                rank_id=rank,  # rank is defined above: rank = Rank.objects.get(rank_id=rank_id)
                 aadhar_number=aadhar_number,
                 pan_number=pan_number,
                 previous_positions_held=previous_positions_held,
-                qualifications=qualifications,
-                computer_knowledge=computer_knowledge,
+
+                # Save the phone numbers as a comma-separated string in the database
+                qualifications=",".join(qualifications),  # Convert the list to a string
+
                 dialogue=dialogue,
                 adverse_report=adverse_report,
                 section_id=section,  # section is defined above: section = Sections.objects.get(section_id=section_id)
+                division_id=division,
                 supervisor_id=supervisor,
                 # supervisor is defined above: supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+                computer_knowledge=computer_knowledge,
+                computer_degree=computer_degree,
+                computer_skill=computer_skill,
             )
 
             employee_model.save()
@@ -231,31 +413,231 @@ def add_employee_save(request):
             messages.success(request, "Successfully Added Employee")
             return HttpResponseRedirect(reverse("add_employee"))
 
-        except:
-            messages.error(request, "Failed To Add Employee")
+        except Exception as e:
+            messages.error(request, f"Failed To Add Employee: {str(e)}")
             return HttpResponseRedirect(reverse("add_employee"))
 
 
-# Manage Sections
-def manage_section(request):
-    # Reading all Section data by calling Sections.objects.all()
-    # Sections is defined in models.py
-    sections = Sections.objects.all()
-    return render(request, "admin_template/manage_section_template.html", {"sections": sections})
-
-
-# Manage Sections
+# Manage Employees
 def manage_employee(request):
     # Reading all Employees data by calling Employees.objects.all()
     employees = Employees.objects.all()
     return render(request, "admin_template/manage_employee_template.html", {"employees": employees})
 
 
-# Manage Supervisors
-def manage_supervisor(request):
-    # Reading all Employees data by calling Supervisor.objects.all()
-    supervisor = Supervisor.objects.all()
-    return render(request, "admin_template/manage_supervisor_template.html", {"supervisor": supervisor})
+# Edit Employees
+def edit_employee(request, emp_id):
+    # Reading all Supervisor, Divisions, Ranks and Sections data using objects.all() - they are foreign keys and we need to fetch all of the data in these two tables.
+    sections = Sections.objects.all()
+    divisions = Divisions.objects.all()
+    # use 'supervisors'(not 'supervisor' or anything) because we are iterating over a variable named "supervisors" (note the plural form) to populate the dropdown list in edit_employee_template.html : ' {% for supervisor in supervisors %} '
+    supervisors = Supervisor.objects.all()
+    ranks = Rank.objects.all()
+
+    employees = Employees.objects.get(emp_id=emp_id)
+
+    # for multiple phone numbers
+    phone_numbers = employees.phone.split(",") if employees.phone else []
+
+    # for multiple qualifications
+    qualifications = employees.qualifications.split(",") if employees.qualifications else []
+
+    return render(request, "admin_template/edit_employee_template.html",
+                  {"employees": employees, "sections": sections, "supervisors": supervisors, "divisions": divisions,
+                   "ranks": ranks, "phone_numbers": phone_numbers, "qualifications": qualifications })
+
+
+def edit_employee_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        # created a hidden input field in edit_employee_template.html in the First Name input field for Employee ID
+        emp_id = request.POST.get("emp_id")
+
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+
+        # Picture automatically gets stored in the "media" folder
+        # This If Else condition is used to avoid MultiValueDictKeyError which occurs if no picture is selected.
+        if 'profile_pic' in request.FILES:
+            profile_pic = request.FILES['profile_pic']
+            fs = FileSystemStorage()
+            filename = fs.save(profile_pic.name, profile_pic)
+            profile_pic_url = fs.url(filename)  # Reading file path by url()
+        else:
+            profile_pic_url = None  # Set a default value if no profile pic is provided
+
+        gender = request.POST.get("gender")
+        email = request.POST.get("email")
+
+        # Get the list of phone numbers from the form
+        phone_numbers = request.POST.getlist("phone[]")
+
+        address = request.POST.get("address")
+        tehsil = request.POST.get("tehsil")
+        district = request.POST.get("district")
+        parentage = request.POST.get("parentage")
+        mother_name = request.POST.get("mother_name")
+        belt_no = request.POST.get("belt_no")
+        pid_no = request.POST.get("pid_no")
+        date_joined = request.POST.get("date_joined")  # Date Of Joining In CID
+        date_appointment_police = request.POST.get("date_appointment_police")  # Date Of Appointment In Police
+        dob = request.POST.get("dob")
+        rank_id = request.POST.get("rank")
+        aadhar_number = request.POST.get("aadhar_number")
+        pan_number = request.POST.get("pan_number")
+        previous_positions_held = request.POST.get("previous_positions_held")
+
+        # Get the list of qualifications from the form
+        qualifications = request.POST.getlist("qualifications[]")
+
+        dialogue = request.POST.get("dialogue")
+        adverse_report = request.POST.get("adverse_report")
+        section_id = request.POST.get("section")
+        division_id = request.POST.get("division")
+        supervisor_id = request.POST.get("supervisor")
+        computer_knowledge = request.POST.get("computer_knowledge")
+        computer_degree = request.POST.get("computer_degree")
+        computer_skill = request.POST.get("computer_skill")
+
+        # Check if Computer Knowledge is set to "No"
+        if computer_knowledge == "No":
+            # Set Computer Degree and Computer Skill to "None"
+            computer_degree = "None"
+            computer_skill = "None"
+
+        # Converting date format(for date_joined). Otherwise, we'll get Invalid Date Format error.
+        # change_date_format = datetime.datetime.strptime(date_joined, '%d-%m-%y').strftime('%Y-%m-%d')
+
+        # Leaving the Date Joined input date field as empty shows an error. To fix that:
+        if not date_joined:  # Check if the date_joined field is empty
+            change_date_format = None  # Set to None if the field is empty
+        else:
+            change_date_format = datetime.datetime.strptime(date_joined, '%Y-%m-%d').date()
+
+        if not date_appointment_police:  # Check if the date_appointment_police field is empty
+            change_dap_format = None  # Set to None if the field is empty. dap : date_appointment_format
+        else:
+            change_dap_format = datetime.datetime.strptime(date_appointment_police, '%Y-%m-%d').date()
+
+        if not dob:  # Check if the DOB field is empty
+            change_dob_format = None  # Set to None if the field is empty
+        else:
+            change_dob_format = datetime.datetime.strptime(dob, '%Y-%m-%d').date()
+
+        # Retrieve the Sections instance using section_id
+        section = Sections.objects.get(section_id=section_id)
+        division = Divisions.objects.get(division_id=division_id)
+        supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+        rank = Rank.objects.get(rank_id=rank_id)
+
+        # Retrieve the employee instance being edited - check- it is also written below
+        # employees = Employees.objects.get(emp_id=emp_id)
+
+        # Check if the email, aadhar and PAN numbers are unique- email, aadhar, pan in Employees in models.py is set as unique. So, we need these validation:
+        # Check if the email is unique and not the same as the current employee's email.
+        # If we want to edit any field and keep the email, aadhar and phone as they were, trying to edit will give error messages like "There alrady is an existing employee with this email etc." To fix it, we use 'exclude.'
+        if Employees.objects.filter(email=email).exclude(emp_id=emp_id).exists():
+            messages.error(request, "There already is an existing employee with this Email.")
+            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
+        # Check if the aadhar number is unique and not the same as the current employee's aadhar number
+        if Employees.objects.filter(aadhar_number=aadhar_number).exclude(emp_id=emp_id).exists():
+            messages.error(request, "There already is an existing employee with this Aadhar Number.")
+            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
+        # Check if the PAN number is unique and not the same as the current employee's PAN number
+        if Employees.objects.filter(pan_number=pan_number).exclude(emp_id=emp_id).exists():
+            messages.error(request, "There already is an existing employee with this PAN Number.")
+            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
+        try:
+            employees = Employees.objects.get(emp_id=emp_id)
+
+            employees.first_name = first_name
+            employees.last_name = last_name
+
+            if profile_pic_url != None:
+                employees.profile_pic = profile_pic_url
+
+            employees.gender = gender
+            employees.email = email
+
+            # Update the phone field with a comma-separated string
+            employees.phone = ",".join(phone_numbers)
+
+            employees.address = address
+            employees.tehsil = tehsil
+            employees.district = district
+            employees.parentage = parentage
+            employees.mother_name = mother_name
+            employees.belt_no = belt_no
+            employees.pid_no = pid_no
+            employees.date_joined = change_date_format  # Use the changed date format here
+            # date_joined=date_joined,
+            employees.date_appointment_police = change_dap_format
+            employees.dob = change_dob_format
+            employees.rank_id = rank
+            employees.aadhar_number = aadhar_number
+            employees.pan_number = pan_number
+            employees.previous_positions_held = previous_positions_held
+
+            # Update the qualifications field with a comma-separated string
+            employees.qualifications = ",".join(qualifications)
+
+            employees.computer_knowledge = computer_knowledge
+            employees.dialogue = dialogue
+            employees.adverse_report = adverse_report
+            employees.section_id = section  # section is defined above: section = Sections.objects.get(section_id=section_id)
+            employees.division_id = division
+            employees.supervisor_id = supervisor
+            # supervisor is defined above: supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+            employees.computer_knowledge = computer_knowledge
+            employees.computer_degree = computer_degree
+            employees.computer_skill = computer_skill
+
+            employees.save()
+
+            messages.success(request, "Successfully Edited Employee")
+            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Edit Employee {str(e)}")
+            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
+
+def delete_employee(request, emp_id):
+    if request.method == "POST":
+        try:
+            employee = Employees.objects.get(emp_id=emp_id)
+        except Employees.DoesNotExist:
+            raise Http404("Employee not found")
+
+        try:
+            # Get the path to the employee's profile picture
+            profile_pic_path = os.path.join(settings.MEDIA_ROOT, str(employee.profile_pic))
+
+            # Check if the profile picture file exists and is a file (not a directory)
+            if os.path.isfile(profile_pic_path):
+                os.remove(profile_pic_path)
+
+            # Delete the employee instance
+            employee.delete()
+
+            messages.success(request, "Employee and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete employee: {str(e)}")
+
+        return redirect("manage_employee")  # Redirect to the list of employees page
+
+
+# View all employee details
+def view_all_employee(request, emp_id):
+    # Fetch the specific employee using the emp_id parameter
+    # get_object_or_404 : used to retrieve a single object from the database based on certain criteria, and if the object doesn't exist, it raises a Http404 exception.
+    employee = get_object_or_404(Employees, emp_id=emp_id)
+    context = {'employee': employee}
+    return render(request, 'admin_template/view_all_employee_details.html', context)
 
 
 # Manage Users
@@ -294,211 +676,199 @@ def edit_user_save(request):
             user_model.save()
             messages.success(request, "Successfully Edited User")
             return HttpResponseRedirect(reverse("edit_user", kwargs={"id": id}))
-        except:
-            messages.error(request, "Failed to Edit User. Try using another Email and Username.")
+
+        except Exception as e:
+            messages.error(request, f"Failed To Edit User. Try using another Email and Username. {str(e)}")
             return HttpResponseRedirect(reverse("edit_user", kwargs={"staff_id": id}))
 
 
-# Edit Section
-def edit_section(request, section_id):
-    sections = Sections.objects.get(section_id=section_id)
-    return render(request, "admin_template/edit_section_template.html", {"sections": sections})
+# Feedback
+def user_feedback_message(request):
+    feedbacks = FeedBackUser.objects.all()
+    return render(request, "admin_template/user_feedback_template.html", {"feedbacks": feedbacks})
 
 
-def edit_section_save(request):
+@csrf_exempt
+def user_feedback_message_replied(request):
+    feedback_id = request.POST.get("id")
+    feedback_message = request.POST.get("message")
+
+    try:
+        feedback = FeedBackUser.objects.get(id=feedback_id)
+        feedback.feedback_reply = feedback_message
+        feedback.save()
+        return HttpResponse("True")
+    except:
+        return HttpResponse("False")
+
+
+# Leaves
+def user_leave_view(request):
+    leaves = LeaveReportEmployee.objects.all()
+    return render(request, "admin_template/user_leave_view.html", {"leaves": leaves})
+
+
+def user_approve_leave(request, leave_id):
+    leave = LeaveReportEmployee.objects.get(id=leave_id)
+    leave.leave_status = 1
+    leave.save()
+    return HttpResponseRedirect(reverse("user_leave_view"))
+
+
+def user_disapprove_leave(request, leave_id):
+    leave = LeaveReportEmployee.objects.get(id=leave_id)
+    leave.leave_status = 2
+    leave.save()
+    return HttpResponseRedirect(reverse("user_leave_view"))
+
+
+# ------------------------------- Rank---------------------------------------
+# Add Ranks
+def add_rank(request):
+    return render(request, "admin_template/add_rank_template.html")
+
+
+def add_rank_save(request):
     if request.method != "POST":
-        return HttpResponse("<h2>Method Not Allowed</h2>")
+        return HttpResponseRedirect("Method Not Allowed")
     else:
-        # created a hidden input field in edit_section_template.html in the Section Name input field for Section ID
-        section_id = request.POST.get("section_id")
-        section_name = request.POST.get("section_name")
+        rank_name = request.POST.get("rank_name")
         description = request.POST.get("description")
-        section_incharge = request.POST.get("section_incharge")
-
         try:
-            sections = Sections.objects.get(section_id=section_id)
-            sections.section_name = section_name
-            sections.description = description
-            sections.section_incharge = section_incharge
+            rank_model = Rank(rank_name=rank_name, description=description)
+            rank_model.save()
+            messages.success(request, "Successfully Added Rank")
+            return HttpResponseRedirect(reverse("add_rank"))
 
-            sections.save()
-            messages.success(request, "Successfully Edited Section")
-            return HttpResponseRedirect(reverse("edit_section", kwargs={"section_id": section_id}))
-        except:
-            messages.error(request, "Failed to Edit Section")
-            return HttpResponseRedirect(reverse("edit_section", kwargs={"section_id": section_id}))
+        except Exception as e:
+            messages.error(request, f"Failed To Add Rank {str(e)}")
+            return HttpResponseRedirect(reverse("add_rank"))
 
 
-# Edit Employees
-def edit_employee(request, emp_id):
-    # Reading all Supervisor and Sections data using objects.all() - they are foreign keys and we need to fetch all of the data in these two tables.
-    sections = Sections.objects.all()
-    # use 'supervisors'(not 'supervisor' or anything) because we are iterating over a variable named "supervisors" (note the plural form) to populate the dropdown list in edit_employee_template.html : ' {% for supervisor in supervisors %} '
-    supervisors = Supervisor.objects.all()
-
-    employees = Employees.objects.get(emp_id=emp_id)
-    return render(request, "admin_template/edit_employee_template.html",
-                  {"employees": employees, "sections": sections, "supervisors": supervisors})
+# Manage Rank
+def manage_rank(request):
+    rank = Rank.objects.all()
+    return render(request, "admin_template/manage_rank_template.html", {"rank": rank})
 
 
-def edit_employee_save(request):
+# Edit Rank
+def edit_rank(request, rank_id):
+    ranks = Rank.objects.get(rank_id=rank_id)
+    return render(request, "admin_template/edit_rank_template.html", {"ranks": ranks})
+
+
+def edit_rank_save(request):
     if request.method != "POST":
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        # created a hidden input field in edit_employee_template.html in the First Name input field for Employee ID
-        emp_id = request.POST.get("emp_id")
-
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-
-        # Picture automatically gets stored in the "media" folder
-        # This If Else condition is used to avoid MultiValueDictKeyError which occurs if no picture is selected.
-        if 'profile_pic' in request.FILES:
-            profile_pic = request.FILES['profile_pic']
-            fs = FileSystemStorage()
-            filename = fs.save(profile_pic.name, profile_pic)
-            profile_pic_url = fs.url(filename)  # Reading file path by url()
-        else:
-            profile_pic_url = None  # Set a default value if no profile pic is provided
-
-        gender = request.POST.get("gender")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        address = request.POST.get("address")
-        date_joined = request.POST.get("date_joined")
-        dob = request.POST.get("dob")
-        position = request.POST.get("position")
-        aadhar_number = request.POST.get("aadhar_number")
-        pan_number = request.POST.get("pan_number")
-        previous_positions_held = request.POST.get("previous_positions_held")
-        qualifications = request.POST.get("qualifications")
-        computer_knowledge = request.POST.get("computer_knowledge")
-        dialogue = request.POST.get("dialogue")
-        adverse_report = request.POST.get("adverse_report")
-        section_id = request.POST.get("section")
-        supervisor_id = request.POST.get("supervisor")
-
-        # Converting date format(for date_joined). Otherwise, we'll get Invalid Date Format error.
-        # change_date_format = datetime.datetime.strptime(date_joined, '%d-%m-%y').strftime('%Y-%m-%d')
-
-        # Leaving the Date Joined input date field as empty shows an error. To fix that:
-        if not date_joined:  # Check if the date_joined field is empty
-            change_date_format = None  # Set to None if the field is empty
-        else:
-            change_date_format = datetime.datetime.strptime(date_joined, '%Y-%m-%d').date()
-
-        if not dob:  # Check if the DOB field is empty
-            change_dob_format = None  # Set to None if the field is empty
-        else:
-            change_dob_format = datetime.datetime.strptime(dob, '%Y-%m-%d').date()
-
-        # Retrieve the Sections instance using section_id
-        section = Sections.objects.get(section_id=section_id)
-        supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
-
-        # Retrieve the employee instance being edited - check- it is also written below
-        # employees = Employees.objects.get(emp_id=emp_id)
-
-        # Check if the email, aadhar and PAN numbers are unique- email, aadhar, pan in Employees in models.py is set as unique. So, we need these validation:
-        # Check if the email is unique and not the same as the current employee's email.
-        # If we want to edit any field and keep the email, aadhar and phone as they were, trying to edit will give error messages like "There alrady is an existing employee with this email etc." To fix it, we use 'exclude.'
-        if Employees.objects.filter(email=email).exclude(emp_id=emp_id).exists():
-            messages.error(request, "There already is an existing employee with this Email.")
-            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
-
-        # Check if the aadhar number is unique and not the same as the current employee's aadhar number
-        if Employees.objects.filter(aadhar_number=aadhar_number).exclude(emp_id=emp_id).exists():
-            messages.error(request, "There already is an existing employee with this Aadhar Number.")
-            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
-
-        # Check if the PAN number is unique and not the same as the current employee's PAN number
-        if Employees.objects.filter(pan_number=pan_number).exclude(emp_id=emp_id).exists():
-            messages.error(request, "There already is an existing employee with this PAN Number.")
-            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+        # created a hidden input field in edit_rank_template.html in the Rank Name input field for Rank ID
+        rank_id = request.POST.get("rank_id")
+        rank_name = request.POST.get("rank_name")
+        description = request.POST.get("description")
 
         try:
-            employees = Employees.objects.get(emp_id=emp_id)
+            ranks = Rank.objects.get(rank_id=rank_id)
+            ranks.rank_name = rank_name
+            ranks.description = description
 
-            employees.first_name = first_name
-            employees.last_name = last_name
+            ranks.save()
+            messages.success(request, "Successfully Edited Rank")
+            return HttpResponseRedirect(reverse("edit_rank", kwargs={"rank_id": rank_id}))
 
-            if profile_pic_url != None:
-                employees.profile_pic = profile_pic_url
-
-            employees.gender = gender
-            employees.email = email
-            employees.phone = phone
-            employees.address = address
-            employees.date_joined = change_date_format  # Use the changed date format here
-            # date_joined=date_joined,
-            employees.dob = change_dob_format
-            employees.position = position
-            employees.aadhar_number = aadhar_number
-            employees.pan_number = pan_number
-            employees.previous_positions_held = previous_positions_held
-            employees.qualifications = qualifications
-            employees.computer_knowledge = computer_knowledge
-            employees.dialogue = dialogue
-            employees.adverse_report = adverse_report
-            employees.section_id = section  # section is defined above: section = Sections.objects.get(section_id=section_id)
-            employees.supervisor_id = supervisor
-            # supervisor is defined above: supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
-
-            employees.save()
-
-            messages.success(request, "Successfully Edited Employee")
-            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
-        except:
-            messages.error(request, "Failed to Edit Employee")
-            return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+        except Exception as e:
+            messages.error(request, f"Failed To Edit Rank {str(e)}")
+            return HttpResponseRedirect(reverse("edit_rank", kwargs={"rank_id": rank_id}))
 
 
-# Edit Supervisor
-def edit_supervisor(request, supervisor_id):
-    # Reading all Sections data using objects.all() - It is a foreign key and we need to fetch all of the data in this table.
-    sections = Sections.objects.all()
+# Delete Rank
+def delete_rank(request, rank_id):
+    if request.method == "POST":
+        rank = get_object_or_404(Rank, rank_id=rank_id)
 
-    supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+        try:
+            # Delete the rank instance
+            rank.delete()
+            messages.success(request, "Rank and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete Rank: {str(e)}")
 
-    return render(request, "admin_template/edit_supervisor_template.html",
-                  {"supervisor": supervisor, "sections": sections})
+        return redirect("manage_rank")
 
 
-def edit_supervisor_save(request):
+# ------------------------------- Division---------------------------------------
+# Add Division
+def add_division(request):
+    return render(request, "admin_template/add_division_template.html")
+
+
+def add_division_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect("Method Not Allowed")
+    else:
+        division_name = request.POST.get("division_name")
+        division_description = request.POST.get("division_description")
+        division_head = request.POST.get("division_head")
+        try:
+            # Divisions - defined in models.py
+            division_model = Divisions(division_name=division_name, division_description=division_description,
+                                       division_head=division_head)
+            division_model.save()
+
+            messages.success(request, "Successfully Added Division")
+            return HttpResponseRedirect(reverse("add_division"))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Add Division: {str(e)}")
+            return HttpResponseRedirect(reverse("add_division"))
+
+
+# Manage Divisions
+def manage_division(request):
+    divisions = Divisions.objects.all()
+    return render(request, "admin_template/manage_division_template.html", {"divisions": divisions})
+
+
+# Edit Division
+def edit_division(request, division_id):
+    divisions = Divisions.objects.get(division_id=division_id)
+    return render(request, "admin_template/edit_division_template.html", {"divisions": divisions})
+
+
+def edit_division_save(request):
     if request.method != "POST":
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        # created a hidden input field in edit_supervisor_template.html in the First Name input field for Supervisor ID
-        supervisor_id = request.POST.get("supervisor_id")
-
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        section_id = request.POST.get("section")
-
-        # Retrieve the Sections instance using section_id
-        section = Sections.objects.get(section_id=section_id)
+        # created a hidden input field in edit_division_template.html in the Division Name input field for Division ID
+        division_id = request.POST.get("division_id")
+        division_name = request.POST.get("division_name")
+        division_description = request.POST.get("division_description")
+        division_head = request.POST.get("division_head")
 
         try:
-            supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
+            divisions = Divisions.objects.get(division_id=division_id)
+            divisions.division_name = division_name
+            divisions.division_description = division_description
+            divisions.division_head = division_head
 
-            supervisor.first_name = first_name
-            supervisor.last_name = last_name
-            supervisor.section_id = section  # section is defined above: section = Sections.objects.get(section_id=section_id)
+            divisions.save()
+            messages.success(request, "Successfully Edited Division")
+            return HttpResponseRedirect(reverse("edit_division", kwargs={"division_id": division_id}))
 
-            supervisor.save()
-
-            messages.success(request, "Successfully Edited Supervisor")
-            return HttpResponseRedirect(reverse("edit_supervisor", kwargs={"supervisor_id": supervisor_id}))
-        except:
-            messages.error(request, "Failed to Edit Supervisor")
-            return HttpResponseRedirect(reverse("edit_supervisor", kwargs={"supervisor_id": supervisor_id}))
+        except Exception as e:
+            messages.error(request, f"Failed To Edit Division {str(e)}")
+            return HttpResponseRedirect(reverse("edit_division", kwargs={"division_id": division_id}))
 
 
-# View all employee details
-def view_all_employee(request, emp_id):
-    # Fetch the specific employee using the emp_id parameter
-    # get_object_or_404 : used to retrieve a single object from the database based on certain criteria, and if the object doesn't exist, it raises a Http404 exception.
-    employee = get_object_or_404(Employees, emp_id=emp_id)
-    context = {'employee': employee}
-    return render(request, 'admin_template/view_all_employee_details.html', context)
+# Delete Division
+def delete_division(request, division_id):
+    if request.method == "POST":
+        division = get_object_or_404(Divisions, division_id=division_id)
 
+        try:
+            # Delete the division instance
+            division.delete()
+            messages.success(request, "Division and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete Division: {str(e)}")
+
+        return redirect("manage_division")  # Redirect to the list of divisions page
