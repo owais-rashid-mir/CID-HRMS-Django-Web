@@ -1,9 +1,9 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
+<!--  'employee' is defined in def view_all_employee() in AdminViews.py   -->
 View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}} | #ID : {{employee.emp_id}}
 {% endblock page_title %}
 {% block main_content %}
-
 
     <!-- Main content -->
     <section class="content">
@@ -13,8 +13,13 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
            <div class="row">
           <div class="col-12">
             <div class="card">
-              <div class="card-header">
+              <div class="card-header text-center">
                 <h3 class="card-title">Employee Details</h3>
+
+                  <!-- JS code for this button is at the bottom-->
+                  <button class="btn btn-primary text-white mb-2" id="saveAsPdfButton" type="button">Download/Print Employee Information</button>
+
+
 
                 <div class="card-tools">
                   <div class="input-group input-group-sm" style="width: 150px;">
@@ -33,6 +38,7 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                   <tbody>
                     <tr>
                       <th style="width:30%"> Employee ID</th>
+                      <!-- employee is defined in def view_all_employee() in the line employee = get_object_or_404(Employees, emp_id=emp_id) -->
                       <td style="width:70%"> {{ employee.emp_id }}</td>
                     </tr>
 
@@ -49,17 +55,20 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     <tr>
                       <th style="width:30%">Profile Picture</th>
                       <td style="width:70%">
-
-                        <a href="{{ employee.profile_pic }}">
-                          <img src="{{ employee.profile_pic }}" style="width:300px; height:300px;" />
-                        </a>
-
-                        <div>
-                          <a href="{{ employee.profile_pic }}" style="text-decoration: none; color:green">Click on the picture to view it in full size</a>
-                        </div>
-
+                          {% if employee.profile_pic %}
+                              <a href="{{ employee.profile_pic.url }}">
+                                  <img src="{{ employee.profile_pic.url }}" style="width:300px; height:300px;" />
+                              </a>
+                              <div>
+                                  <a href="{{ employee.profile_pic.url }}" style="text-decoration: none; color:green">Click on the picture to view it in full size</a>
+                              </div>
+                          {% else %}
+                              <!-- Handle the case where there's no profile pic -->
+                              No profile picture available
+                          {% endif %}
                       </td>
-                    </tr>
+                  </tr>
+
 
 
 
@@ -122,6 +131,19 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     </tr>
 
                     <tr>
+                        <th style="width:30%">Date Of Joining In CID - Document File</th>
+                        <td style="width:70%">
+                            {% if doc_file %}
+                                <a href="{{ doc_file }}" target="_blank">View/Download Document</a>
+                            {% else %}
+                                No document uploaded
+                            {% endif %}
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
                       <th style="width:30%">Date Of Appointment In Police</th>
                       <td style="width:70%">{{ employee.date_appointment_police }}</td>
                     </tr>
@@ -146,10 +168,6 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                       <td style="width:70%">{{ employee.pan_number }}</td>
                     </tr>
 
-                    <tr>
-                      <th style="width:30%">Previous Positions Held</th>
-                      <td style="width:70%">{{ employee.previous_positions_held }}</td>
-                    </tr>
 
                     <tr>
                       <th style="width:30%">Qualifications</th>
@@ -157,7 +175,17 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     </tr>
 
                     <tr>
-                      <th style="width:30%">Dialogue and Communication Skills</th>
+                      <th style="width:30%">Previous Positions Held Within CID</th>
+                      <td style="width:70%">{{ employee.previous_positions_held_within_cid }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Previous Positions Held Outside CID</th>
+                      <td style="width:70%">{{ employee.previous_positions_held_outside_cid }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%; white-space: pre-line;">Dialogue and Public Speaking Skills(Average, Good or Excellent)?</th>
                       <td style="width:70%">{{ employee.dialogue }}</td>
                     </tr>
 
@@ -209,6 +237,11 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                       <td style="width:70%">{{ employee.computer_skill }}</td>
                     </tr>
 
+                  <tr>
+                      <th style="width:30%">Previous Trainings Done</th>
+                      <td style="width:70%">{{ employee.previous_trainings_done }}</td>
+                    </tr>
+
 
                   </tbody>
 
@@ -223,5 +256,14 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
       </div>
     </section>
     <!-- /.content -->
-{% endblock main_content %}
 
+
+<!-- JS code for Download/Print Employee Information button. -->
+<script>
+document.getElementById('saveAsPdfButton').addEventListener('click', function() {
+  // Trigger the browser's print dialog
+  window.print();
+});
+</script>
+
+{% endblock main_content %}

@@ -146,6 +146,23 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="date" class="form-control" placeholder="Date Of Joining In CID" name="date_joined" value="{{ employees.date_joined | date:"Y-m-d" }}" >
                   </div>
 
+
+                    <div class="form-group">
+                        <label>Date Of Joining In CID - Document File Upload</label>
+                        <label> <span class="text-danger"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
+
+                     <div class="text-success font-italic">
+                        Current Document Name: {{ employees.document_file }}
+                     </div>
+
+                            <input type="file" class="form-control" placeholder="Date Of Joining In CID - Document File Upload" name="document_file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, application/rtf, text/markdown">
+                    </div>
+
+
+
+
+
+
                   <div class="form-group">
                     <label>Date Of Appointment In Police </label>
                     <!-- Converting to d-m-Y format. -->
@@ -177,17 +194,11 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="text" class="form-control" placeholder="PAN Card Number" name="pan_number" value="{{ employees.pan_number }}" required>
                   </div>
 
-                  <div class="form-group">
-                    <label>Previous Positions Held</label>
-                    <input type="text" class="form-control" placeholder="Previous Positions Held" name="previous_positions_held" value="{{ employees.previous_positions_held }}">
-                  </div>
 
 
-
-                    <!-- For multiple qualifications: -->
+                    <!-- For multiple qualifications: Js code for this input field is at the bottom. -->
                     <div class="form-group">
                         <label>Educational Qualification(s) </label><br>
-                        <label><span class="text-danger">(Click the 'Add Another Qualification' button to add multiple educational qualifications.)</span></label>
                             <div id="qualifications_container">
                             {% for qualifications in qualifications %}
                                 <div class="input-group mb-3">
@@ -206,11 +217,60 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     </div>
 
 
+                    <!-- For multiple previous_positions_held_within_cid: -->
+                    <div class="form-group">
+                        <label>Previous Positions Held Within CID</label><br>
+                            <div id="previous_positions_held_within_cid_container">
+                            {% for previous_positions_held_within_cid in previous_positions_held_within_cid %}
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Previous Positions Held Within CID" name="previous_positions_held_within_cid[]" value="{{ previous_positions_held_within_cid }}" >
+                                    {% if not forloop.first %}
+                                        <div class="input-group-append">
+                                            <button class="btn btn-danger" type="button" onclick="removePreviousPositionsHeldWithinCid(this)">Remove</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary text-white mb-2" type="button" onclick="addPreviousPositionsHeldWithinCid()">Add Another Position</button>
+                    </div>
+                    </div>
 
-                  <div class="form-group">
-                    <label>Dialogue and public speaking</label>
-                    <input type="text" class="form-control" placeholder="Do you have public speaking skills?" name="dialogue" value="{{ employees.dialogue }}">
-                  </div>
+
+
+                    <!-- For multiple previous_positions_held_outside_cid: -->
+                    <div class="form-group">
+                        <label>Previous Positions Held Outside CID</label><br>
+                            <div id="previous_positions_held_outside_cid_container">
+                            {% for previous_positions_held_outside_cid in previous_positions_held_outside_cid %}
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Previous Positions Held Outside CID" name="previous_positions_held_outside_cid[]" value="{{ previous_positions_held_outside_cid }}" >
+                                    {% if not forloop.first %}
+                                        <div class="input-group-append">
+                                            <button class="btn btn-danger" type="button" onclick="removePreviousPositionsHeldOutsideCid(this)">Remove</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary text-white mb-2" type="button" onclick="addPreviousPositionsHeldOutsideCid()">Add Another Position</button>
+                    </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="dialogue_skill">Dialogue and Public Speaking Skills</label>
+                        <select id="dialogue_skill" name="dialogue" class="form-control">
+                            <option value="Null" {% if employees.dialogue == "None" %} selected {% endif %}>Null</option>
+                            <option value="Excellent" {% if employees.dialogue == "Excellent" %} selected {% endif %}>Excellent</option>
+                            <option value="Good" {% if employees.dialogue == "Good" %} selected {% endif %}>Good</option>
+                            <option value="Average" {% if employees.dialogue == "Average" %} selected {% endif %}>Average</option>
+                        </select>
+                    </div>
+
+
 
                     <div class="form-group">
                         <label for="adverse_report">Adverse Reports</label>
@@ -291,6 +351,27 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                         </select>
                     </div>
                 </div>
+
+
+                  <!-- For multiple previous_trainings_done: -->
+                    <div class="form-group">
+                        <label>Previous Trainings Done</label><br>
+                            <div id="previous_trainings_done_container">
+                            {% for previous_trainings_done in previous_trainings_done %}
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Previous Trainings Done" name="previous_trainings_done[]" value="{{ previous_trainings_done }}" >
+                                    {% if not forloop.first %}
+                                        <div class="input-group-append">
+                                            <button class="btn btn-danger" type="button" onclick="removePreviousTrainingsDone(this)">Remove</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary text-white mb-2" type="button" onclick="addPreviousTrainingsDone()">Add Another Training</button>
+                    </div>
+                    </div>
 
 
 
@@ -414,6 +495,130 @@ function addQualifications() {
 
 function removeQualifications(button) {
     const container = document.getElementById("qualifications_container");
+    const inputGroup = button.closest(".input-group");
+    container.removeChild(inputGroup);
+}
+
+</script>
+
+
+<!-- JS code to add multiple previous_positions_held_within_cid - with add and remove buttons. -->
+<script>
+function addPreviousPositionsHeldWithinCid() {
+    const container = document.getElementById("previous_positions_held_within_cid_container");
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group mb-3";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control";
+    input.placeholder = "Previous Positions Held Within CID";
+    input.name = "previous_positions_held_within_cid[]"; // Use an array for qualifications
+    input.value = ""; // Empty value for a new position
+    input.required = false;
+
+    const appendDiv = document.createElement("div");
+    appendDiv.className = "input-group-append";
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "btn btn-danger";
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function () {
+        container.removeChild(inputGroup);
+    };
+
+    appendDiv.appendChild(removeButton);
+    inputGroup.appendChild(input);
+    inputGroup.appendChild(appendDiv);
+    container.appendChild(inputGroup);
+}
+
+function removePreviousPositionsHeldWithinCid(button) {
+    const container = document.getElementById("previous_positions_held_within_cid_container");
+    const inputGroup = button.closest(".input-group");
+    container.removeChild(inputGroup);
+}
+</script>
+
+
+
+<!-- JS code to add multiple previous_positions_held_outside_cid - with add and remove buttons. -->
+<script>
+function addPreviousPositionsHeldOutsideCid() {
+    const container = document.getElementById("previous_positions_held_outside_cid_container");
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group mb-3";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control";
+    input.placeholder = "Previous Positions Held Outside CID";
+    input.name = "previous_positions_held_outside_cid[]"; // Use an array for Positions
+    input.value = ""; // Empty value for a new position
+    input.required = false;
+
+    const appendDiv = document.createElement("div");
+    appendDiv.className = "input-group-append";
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "btn btn-danger";
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function () {
+        container.removeChild(inputGroup);
+    };
+
+    appendDiv.appendChild(removeButton);
+    inputGroup.appendChild(input);
+    inputGroup.appendChild(appendDiv);
+    container.appendChild(inputGroup);
+}
+
+function removePreviousPositionsHeldOutsideCid(button) {
+    const container = document.getElementById("previous_positions_held_outside_cid_container");
+    const inputGroup = button.closest(".input-group");
+    container.removeChild(inputGroup);
+}
+
+</script>
+
+
+
+<!-- JS code to add multiple previous_trainings_done - with add and remove buttons. -->
+<script>
+function addPreviousTrainingsDone() {
+    const container = document.getElementById("previous_trainings_done_container");
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group mb-3";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "form-control";
+    input.placeholder = "Previous Trainings Done";
+    input.name = "previous_trainings_done[]"; // Use an array for previous_trainings_done
+    input.value = ""; // Empty value for a new Training
+    input.required = false;
+
+    const appendDiv = document.createElement("div");
+    appendDiv.className = "input-group-append";
+
+    const removeButton = document.createElement("button");
+    removeButton.className = "btn btn-danger";
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function () {
+        container.removeChild(inputGroup);
+    };
+
+    appendDiv.appendChild(removeButton);
+    inputGroup.appendChild(input);
+    inputGroup.appendChild(appendDiv);
+    container.appendChild(inputGroup);
+}
+
+function removePreviousTrainingsDone(button) {
+    const container = document.getElementById("previous_trainings_done_container");
     const inputGroup = button.closest(".input-group");
     container.removeChild(inputGroup);
 }

@@ -10,27 +10,16 @@ from django.db.models.signals import post_delete
 from django.conf import settings
 
 
-# using the Django's built-in AbstractUser model to create a custom user class and then creating two separate models (Admin and User) that link to the CustomUser model using OneToOneField.
-
-# Create your models here.
-class CustomUser(AbstractUser):
-    user_type_data = ((1, "Admin"), (2, "User"))
-    user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
-
-
-class Admin(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+# Security Question for Admin and User account signup
+class AdminSecurityQuestion(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.CharField(max_length=255)
     objects = models.Manager()
 
 
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+class UserSecurityQuestion(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.CharField(max_length=255)
     objects = models.Manager()
 
 
@@ -112,9 +101,20 @@ class Employees(models.Model):
     rank_id = models.ForeignKey(Rank, on_delete=models.SET_NULL, null=True, blank=True)
     aadhar_number = models.CharField(max_length=50, unique=True)
     pan_number = models.CharField(max_length=50, unique=True)
-    previous_positions_held = models.TextField()
+
+    previous_positions_held_within_cid = models.TextField()
+    previous_positions_held_outside_cid = models.TextField()
+
     qualifications = models.TextField()
-    dialogue = models.TextField()
+
+    DIALOGUE_CHOICES = [
+        ('Null', 'Null'),
+        ('Excellent', 'Excellent'),
+        ('Good', 'Good'),
+        ('Average', 'Average'),
+    ]
+    dialogue = models.CharField(max_length=9, choices=DIALOGUE_CHOICES, default='Null')
+
     adverse_report = models.TextField()
     section_id = models.ForeignKey(Sections, on_delete=models.SET_NULL, null=True, blank=True)
     division_id = models.ForeignKey(Divisions, on_delete=models.SET_NULL, null=True, blank=True)
@@ -146,6 +146,58 @@ class Employees(models.Model):
     ]
     computer_skill = models.CharField(max_length=9, choices=COMPUTER_SKILL_CHOICES, default='None')
 
+    previous_trainings_done = models.TextField()
+
+    objects = models.Manager()
+
+
+# using the Django's built-in AbstractUser model to create a custom user class and then creating two separate models (Admin and User) that link to the CustomUser model using OneToOneField.
+class CustomUser(AbstractUser):
+    user_type_data = ((1, "Admin"), (2, "User"))
+    user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
+    admin_security_question = models.ForeignKey(
+        AdminSecurityQuestion,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='admin_users'
+    )
+    user_security_question = models.ForeignKey(
+        UserSecurityQuestion,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='user_users'
+    )
+
+    # Use email as the username
+    username = models.EmailField(unique=True)
+
+    # Add an email field
+    email = models.EmailField(unique=True)
+
+    # Add a reference to the Employee model
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.email
+
+
+class Admin(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
+class User(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
 
 

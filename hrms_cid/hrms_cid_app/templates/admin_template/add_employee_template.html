@@ -127,6 +127,7 @@ Add Employees
                     <input type="date" class="form-control" placeholder="Joining Date" name="date_joined" >
                   </div>
 
+
                     <div class="form-group">
                         <label>Date Of Joining In CID - Document File Upload</label>
                         <label> <span class="text-danger"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
@@ -165,18 +166,10 @@ Add Employees
                     <input type="text" class="form-control" placeholder="PAN Card Number" name="pan_number" required>
                   </div>
 
-                  <div class="form-group">
-                    <label>Previous Positions Held</label>
-                    <input type="text" class="form-control" placeholder="Previous Positions Held" name="previous_positions_held">
-                  </div>
 
-
-
-                    <!-- For multiple qualifications: -->
+                    <!-- For multiple qualifications: JS code for this input filed is at the bottom -->
                     <div class="form-group">
                         <label>Educational Qualification(s) </label> <br>
-                        <label> <span class="text-danger"> (Click the 'Add Another Qualification' button to add multiple educational qualifications.) </span> </label>
-
                         <div id="qualifications_container">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Educational Qualification. Example: MCA" name="qualifications">
@@ -189,11 +182,46 @@ Add Employees
                     </div>
 
 
+                    <!-- For multiple Previous Positions Held Within CID: -->
+                    <div class="form-group">
+                        <label>Previous Positions Held Within CID </label> <br>
+                        <div id="previous_positions_held_within_cid_container">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Previous Positions Held Within CID" name="previous_positions_held_within_cid">
+                            </div>
+                        </div>
 
-                  <div class="form-group">
-                    <label>Dialogue and public speaking</label>
-                    <input type="text" class="form-control" placeholder="Do you have public speaking skills?" name="dialogue">
-                  </div>
+                        <div class="input-group-append">
+                                <button class="btn  btn-primary text-white mb-2" type="button" onclick="addPreviousPositionsHeldWithinCid()">Add Another Position</button>
+                        </div>
+                    </div>
+
+
+                    <!-- For multiple Previous Positions Held Outside CID: -->
+                    <div class="form-group">
+                        <label>Previous Positions Held Outside CID </label> <br>
+                        <div id="previous_positions_held_outside_cid_container">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Previous Positions Held Outside CID" name="previous_positions_held_outside_cid">
+                            </div>
+                        </div>
+
+                        <div class="input-group-append">
+                                <button class="btn  btn-primary text-white mb-2" type="button" onclick="addPreviousPositionsHeldOutsideCid()">Add Another Position</button>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                          <label for="dialogue_skill">Dialogue and Public Speaking Skills </label>
+                          <select id="dialogue_skill" name="dialogue" class="form-control">
+                              <option value="Null">Null</option>
+                              <option value="Excellent">Excellent</option>
+                              <option value="Good">Good</option>
+                              <option value="Poor">Average</option>
+                          </select>
+                      </div>
+
 
                     <div class="form-group">
                         <label for="adverse_report">Adverse Reports</label>
@@ -269,6 +297,21 @@ Add Employees
                   </div>
 
 
+                    <!-- For multiple previous_trainings_done: -->
+                    <div class="form-group">
+                        <label>Previous Trainings Done </label> <br>
+                        <div id="previous_trainings_done_container">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Previous Trainings Done" name="previous_trainings_done">
+                            </div>
+                        </div>
+
+                        <div class="input-group-append">
+                                <button class="btn  btn-primary text-white mb-2" type="button" onclick="addPreviousTrainingsDone()">Add Another Training</button>
+                        </div>
+                    </div>
+
+
 
                 </div>
                 <!-- /.card-body -->
@@ -288,7 +331,9 @@ Add Employees
     </section>
     <!-- /.content -->
 
-<!-- For Computer Knowledge -->
+
+
+<!-- JS code For Computer Knowledge -->
 <script>
     function showComputerOptions() {
         var computerOptions = document.getElementById("computer_options");
@@ -366,6 +411,111 @@ Add Employees
         container.appendChild(inputGroup);
     }
 </script>
+
+
+<!-- JS code to add multiple Previous Positions Held Within CID - with add and remove buttons. -->
+<script>
+    function addPreviousPositionsHeldWithinCid() {
+        const container = document.getElementById("previous_positions_held_within_cid_container");
+        const inputGroup = document.createElement("div");
+        inputGroup.className = "input-group mb-3";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control";
+        input.placeholder = "Previous Positions Held Within CID";
+        input.name = "previous_positions_held_within_cid";
+        input.required = false;
+
+        const appendDiv = document.createElement("div");
+        appendDiv.className = "input-group-append";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "btn btn-danger"; // Add the "btn-danger" class
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.onclick = function () {
+            container.removeChild(inputGroup);
+        };
+
+        appendDiv.appendChild(removeButton);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(appendDiv);
+        container.appendChild(inputGroup);
+    }
+</script>
+
+
+
+
+<!-- JS code to add multiple Previous Positions Held Outside CID - with add and remove buttons. -->
+<script>
+    function addPreviousPositionsHeldOutsideCid() {
+        const container = document.getElementById("previous_positions_held_outside_cid_container");
+        const inputGroup = document.createElement("div");
+        inputGroup.className = "input-group mb-3";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control";
+        input.placeholder = "Previous Positions Held Outside CID";
+        input.name = "previous_positions_held_outside_cid";
+        input.required = false;
+
+        const appendDiv = document.createElement("div");
+        appendDiv.className = "input-group-append";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "btn btn-danger"; // Add the "btn-danger" class
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.onclick = function () {
+            container.removeChild(inputGroup);
+        };
+
+        appendDiv.appendChild(removeButton);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(appendDiv);
+        container.appendChild(inputGroup);
+    }
+</script>
+
+
+
+<!-- JS code to add multiple previous_trainings_done - with add and remove buttons. -->
+<script>
+    function addPreviousTrainingsDone() {
+        const container = document.getElementById("previous_trainings_done_container");
+        const inputGroup = document.createElement("div");
+        inputGroup.className = "input-group mb-3";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "form-control";
+        input.placeholder = "Previous Trainings Done";
+        input.name = "previous_trainings_done";
+        input.required = false;
+
+        const appendDiv = document.createElement("div");
+        appendDiv.className = "input-group-append";
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "btn btn-danger"; // Add the "btn-danger" class
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.onclick = function () {
+            container.removeChild(inputGroup);
+        };
+
+        appendDiv.appendChild(removeButton);
+        inputGroup.appendChild(input);
+        inputGroup.appendChild(appendDiv);
+        container.appendChild(inputGroup);
+    }
+</script>
+
+
+
 
 
 {% endblock main_content %}

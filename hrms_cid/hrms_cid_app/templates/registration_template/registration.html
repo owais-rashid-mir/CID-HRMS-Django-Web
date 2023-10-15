@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Create An Account(Admin/User)</h2>
+
+    {% if success_message %}
+    <div class="alert alert-success">
+        {{ success_message }}
+    </div>
+    {% endif %}
+
+    {% if error_message %}
+    <div class="alert alert-danger">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'registration' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="employee">Employee:</label>
+            <select class="form-control" id="employee" name="employee" required>
+                <option value="" selected>Select an Employee</option>
+                {% for employee in employees %}
+                    <option value="{{ employee.emp_id }}">Name: {{ employee.first_name }} {{ employee.last_name }} | Email: {{ employee.email }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="text" class="form-control" id="password" name="password" autocomplete="off" required>
+        </div>
+
+        <div class="form-group">
+            <label for="user_type">Type:</label>
+            <select class="form-control" id="user_type" name="user_type" required>
+                <option value="2" selected>User</option>
+                <option value="1">Admin</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="security_question_div">
+            <label for="security_question">Security Question:</label>
+            <select class="form-control" id="security_question" name="security_question" required>
+                <option value="" selected>Select Security Question</option>
+                {% if user_type == 2 %}  {# Only load user security questions when the user type is User #}
+                {% for question in user_security_questions %}
+                <option value="{{ question.id }}">{{ question.question }}</option>
+                {% endfor %}
+                {% else %}  {# Load admin security questions when the user type is Admin #}
+                {% for question in admin_security_questions %}
+                <option value="{{ question.id }}">{{ question.question }}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="form-group" id="security_answer_div">
+            <label for="security_answer">Security Answer:</label>
+            <input type="text" class="form-control" id="security_answer" name="security_answer" autocomplete="off" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Show/hide and enable/disable security question and answer fields based on user type selection
+    $('#user_type').on('change', function () {
+        if (this.value == '1') { // Admin
+            $('#security_question_div select').prop('disabled', false); // Enable admin security question
+            $('#security_question_div select').attr('name', 'security_question'); // Set the name attribute
+            $('#security_question_div select').html('{{ admin_security_questions_html|safe }}'); // Replace with admin security questions
+            $('#security_question_div label').text('Admin Security Question:'); // Update label text
+        } else { // User
+            $('#security_question_div select').prop('disabled', false); // Enable user security question
+            $('#security_question_div select').attr('name', 'security_question'); // Set the name attribute
+            $('#security_question_div select').html('{{ user_security_questions_html|safe }}'); // Replace with user security questions
+            $('#security_question_div label').text('User Security Question:'); // Update label text
+        }
+    });
+
+    // Trigger the change event to initialize the security question dropdown
+    $('#user_type').trigger('change');
+</script>
+
+</body>
+</html>

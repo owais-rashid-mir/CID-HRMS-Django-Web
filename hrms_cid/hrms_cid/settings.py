@@ -26,9 +26,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Linking the media folder - it will be used for storing the uploaded media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+# Linking the static folder - it will be used for storing CSS, JS etc files
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 

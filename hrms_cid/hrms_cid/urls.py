@@ -18,14 +18,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
+from hrms_cid_app import views, AdminViews, UserViews, RegistrationViews
 from hrms_cid import settings
-from hrms_cid_app import views, AdminViews, UserViews
 
 urlpatterns = [
                   # showDemoPage, GetUsersDetails, logout_user etc functions are defined in views.py file
-                  path('', views.showIndexHomepage, name="showIndexHomepage"),
                   # Setting showIndexHomepage(index.html) as my homepage
+                  path('', views.showIndexHomepage, name="showIndexHomepage"),
                   path('index_homepage', views.showIndexHomepage),
+
                   # path('demo', views.showDemoPage),
                   path('show_login', views.ShowLoginPage, name="show_login"),
                   path('admin/', admin.site.urls),
@@ -94,6 +95,23 @@ urlpatterns = [
                   path('edit_division_save', AdminViews.edit_division_save, name="edit_division_save"),
                   path('delete_division/<int:division_id>/', AdminViews.delete_division, name='delete_division'),
 
+                  # Security Question URLs - Admin side
+                  path('add_admin_security_question', AdminViews.add_admin_security_question, name="add_admin_security_question"),
+                  path('add_admin_security_question_save', AdminViews.add_admin_security_question_save, name="add_admin_security_question_save"),
+                  path('manage_admin_security_question', AdminViews.manage_admin_security_question, name="manage_admin_security_question"),
+                  path('edit_admin_security_question/<str:id>', AdminViews.edit_admin_security_question, name="edit_admin_security_question"),
+                  path('edit_admin_security_question_save', AdminViews.edit_admin_security_question_save, name="edit_admin_security_question_save"),
+                  path('delete_admin_security_question/<int:id>/', AdminViews.delete_admin_security_question, name='delete_admin_security_question'),
+
+
+                  # Security Question URLs - User side
+                  path('add_user_security_question', AdminViews.add_user_security_question, name="add_user_security_question"),
+                  path('add_user_security_question_save', AdminViews.add_user_security_question_save, name="add_user_security_question_save"),
+                  path('manage_user_security_question', AdminViews.manage_user_security_question, name="manage_user_security_question"),
+                  path('edit_user_security_question/<str:id>', AdminViews.edit_user_security_question, name="edit_user_security_question"),
+                  path('edit_user_security_question_save', AdminViews.edit_user_security_question_save, name="edit_user_security_question_save"),
+                  path('delete_user_security_question/<int:id>/', AdminViews.delete_user_security_question, name='delete_user_security_question'),
+
                   # --------------------------- User URL Path --------------------------------
                   path('user_home', UserViews.user_home, name="user_home"),
 
@@ -102,6 +120,11 @@ urlpatterns = [
 
                   path('user_feedback', UserViews.user_feedback, name="user_feedback"),
                   path('user_feedback_save', UserViews.user_feedback_save, name="user_feedback_save"),
+
+
+                  # --------------------------- Registration URL Path --------------------------------
+                  path('registration', RegistrationViews.registration, name="registration"),
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL,
                                                                                          document_root=settings.STATIC_ROOT)

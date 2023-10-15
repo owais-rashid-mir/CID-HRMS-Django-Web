@@ -12,11 +12,17 @@ from django.conf import settings
 import logging
 
 from hrms_cid_app.models import CustomUser, User, Sections, Supervisor, Employees, FeedBackUser, LeaveReportEmployee, \
-    Rank, Divisions
+    Rank, Divisions, AdminSecurityQuestion, UserSecurityQuestion
 
 
 def admin_home(request):
-    return render(request, "admin_template/home_content.html")
+    # For fetching the count on Admin homepage(home_content.html)
+    employee_count = Employees.objects.all().count()
+    division_count = Divisions.objects.all().count()
+    section_count = Sections.objects.all().count()
+    rank_count = Rank.objects.all().count()
+
+    return render(request, "admin_template/home_content.html",{"employee_count":employee_count,"division_count":division_count, "section_count":section_count,"rank_count":rank_count} )
 
 
 # Add user login
@@ -274,7 +280,9 @@ def add_employee_save(request):
             profile_pic = request.FILES['profile_pic']
             fs = FileSystemStorage()
             filename = fs.save(profile_pic.name, profile_pic)
-            profile_pic_url = fs.url(filename)  # Reading file path by url()
+            # profile_pic_url = fs.url(filename)  # Reading file path by url()
+            # Save the file with the relative path (without 'media/') to avoid the error. Also, allows to delete the image from the'media' folder during deletion.
+            profile_pic_url = profile_pic.name
         else:
             profile_pic_url = None  # Set a default value if no profile pic is provided
 
@@ -299,7 +307,9 @@ def add_employee_save(request):
             document_file = request.FILES['document_file']
             fs = FileSystemStorage()
             filename = fs.save(document_file.name, document_file)
-            document_file_url = fs.url(filename)  # Reading file path by url()
+            # document_file_url = fs.url(filename)  # Reading file path by url()
+            # Save the file with the relative path (without 'media/') to avoid the error. Alsp, allows to delete the doc file from the'media' folder during deletion.
+            document_file_url = document_file.name
         else:
             document_file_url = None  # Set a default value if no document file is provided
 
@@ -308,10 +318,13 @@ def add_employee_save(request):
         rank_id = request.POST.get("rank")
         aadhar_number = request.POST.get("aadhar_number")
         pan_number = request.POST.get("pan_number")
-        previous_positions_held = request.POST.get("previous_positions_held")
 
         # Get the list of qualifications from the form
         qualifications = request.POST.getlist("qualifications")
+
+        # Get the list of Previous Positions Held from the form
+        previous_positions_held_within_cid = request.POST.getlist("previous_positions_held_within_cid")
+        previous_positions_held_outside_cid = request.POST.getlist("previous_positions_held_outside_cid")
 
         dialogue = request.POST.get("dialogue")
         adverse_report = request.POST.get("adverse_report")
@@ -321,6 +334,9 @@ def add_employee_save(request):
         computer_knowledge = request.POST.get("computer_knowledge")
         computer_degree = request.POST.get("computer_degree")
         computer_skill = request.POST.get("computer_skill")
+
+        # Get the list of Previous Positions Held from the form
+        previous_trainings_done = request.POST.getlist("previous_trainings_done")
 
         # Converting date format(for date_joined). Otherwise, we'll get Invalid Date Format error.
         # change_date_format = datetime.datetime.strptime(date_joined, '%d-%m-%y').strftime('%Y-%m-%d')
@@ -392,10 +408,14 @@ def add_employee_save(request):
                 rank_id=rank,  # rank is defined above: rank = Rank.objects.get(rank_id=rank_id)
                 aadhar_number=aadhar_number,
                 pan_number=pan_number,
-                previous_positions_held=previous_positions_held,
 
-                # Save the phone numbers as a comma-separated string in the database
+                # Save the qualifications as a comma-separated string in the database
                 qualifications=",".join(qualifications),  # Convert the list to a string
+
+                # Save the Previous Positions Held as a comma-separated string in the database
+                previous_positions_held_within_cid=",".join(previous_positions_held_within_cid),  # Convert the list to a string
+                previous_positions_held_outside_cid=",".join(previous_positions_held_outside_cid),
+                # Convert the list to a string
 
                 dialogue=dialogue,
                 adverse_report=adverse_report,
@@ -406,6 +426,8 @@ def add_employee_save(request):
                 computer_knowledge=computer_knowledge,
                 computer_degree=computer_degree,
                 computer_skill=computer_skill,
+                # Save the previous_trainings_done as a comma-separated string in the database
+                previous_trainings_done=",".join(previous_trainings_done),  # Convert the list to a string
             )
 
             employee_model.save()
@@ -442,9 +464,18 @@ def edit_employee(request, emp_id):
     # for multiple qualifications
     qualifications = employees.qualifications.split(",") if employees.qualifications else []
 
+    # for multiple Previous Positions Held
+    previous_positions_held_within_cid = employees.previous_positions_held_within_cid.split(",") if employees.previous_positions_held_within_cid else []
+    previous_positions_held_outside_cid = employees.previous_positions_held_outside_cid.split(
+        ",") if employees.previous_positions_held_outside_cid else []
+
+    # for multiple previous_trainings_done
+    previous_trainings_done = employees.previous_trainings_done.split(",") if employees.previous_trainings_done else []
+
     return render(request, "admin_template/edit_employee_template.html",
                   {"employees": employees, "sections": sections, "supervisors": supervisors, "divisions": divisions,
-                   "ranks": ranks, "phone_numbers": phone_numbers, "qualifications": qualifications })
+                   "ranks": ranks, "phone_numbers": phone_numbers, "qualifications": qualifications,
+                   "previous_positions_held_within_cid": previous_positions_held_within_cid, "previous_positions_held_outside_cid": previous_positions_held_outside_cid, "previous_trainings_done": previous_trainings_done })
 
 
 def edit_employee_save(request):
@@ -463,7 +494,9 @@ def edit_employee_save(request):
             profile_pic = request.FILES['profile_pic']
             fs = FileSystemStorage()
             filename = fs.save(profile_pic.name, profile_pic)
-            profile_pic_url = fs.url(filename)  # Reading file path by url()
+            # profile_pic_url = fs.url(filename)  # Reading file path by url()
+            # Save the file with the relative path (without 'media/') to avoid the error. Alsp, allows to delete the image file from the'media' folder during deletion.
+            profile_pic_url = profile_pic.name
         else:
             profile_pic_url = None  # Set a default value if no profile pic is provided
 
@@ -481,15 +514,32 @@ def edit_employee_save(request):
         belt_no = request.POST.get("belt_no")
         pid_no = request.POST.get("pid_no")
         date_joined = request.POST.get("date_joined")  # Date Of Joining In CID
+
+        # Date Of Joining In CID - Document File Upload
+        # Check if the document file is provided
+        if 'document_file' in request.FILES:
+            document_file = request.FILES['document_file']
+            fs = FileSystemStorage()
+            filename = fs.save(document_file.name, document_file)
+            # document_file_url = fs.url(filename)  # Reading file path by url()
+            # Save the file with the relative path (without 'media/') to avoid the error. Alsp, allows to delete the doc file from the'media' folder during deletion.
+            document_file_url = document_file.name
+        else:
+            document_file_url = None  # Set a default value if no document file is provided
+
+
         date_appointment_police = request.POST.get("date_appointment_police")  # Date Of Appointment In Police
         dob = request.POST.get("dob")
         rank_id = request.POST.get("rank")
         aadhar_number = request.POST.get("aadhar_number")
         pan_number = request.POST.get("pan_number")
-        previous_positions_held = request.POST.get("previous_positions_held")
 
         # Get the list of qualifications from the form
         qualifications = request.POST.getlist("qualifications[]")
+
+        # Get the list of previous_positions_held from the form
+        previous_positions_held_within_cid = request.POST.getlist("previous_positions_held_within_cid[]")
+        previous_positions_held_outside_cid = request.POST.getlist("previous_positions_held_outside_cid[]")
 
         dialogue = request.POST.get("dialogue")
         adverse_report = request.POST.get("adverse_report")
@@ -499,6 +549,9 @@ def edit_employee_save(request):
         computer_knowledge = request.POST.get("computer_knowledge")
         computer_degree = request.POST.get("computer_degree")
         computer_skill = request.POST.get("computer_skill")
+
+        # Get the list of previous_trainings_done from the form
+        previous_trainings_done = request.POST.getlist("previous_trainings_done[]")
 
         # Check if Computer Knowledge is set to "No"
         if computer_knowledge == "No":
@@ -575,15 +628,22 @@ def edit_employee_save(request):
             employees.pid_no = pid_no
             employees.date_joined = change_date_format  # Use the changed date format here
             # date_joined=date_joined,
+
+            if document_file_url != None:
+                employees.document_file = document_file_url
+
             employees.date_appointment_police = change_dap_format
             employees.dob = change_dob_format
             employees.rank_id = rank
             employees.aadhar_number = aadhar_number
             employees.pan_number = pan_number
-            employees.previous_positions_held = previous_positions_held
 
             # Update the qualifications field with a comma-separated string
             employees.qualifications = ",".join(qualifications)
+
+            # Update the previous_positions_held field with a comma-separated string
+            employees.previous_positions_held_within_cid = ",".join(previous_positions_held_within_cid)
+            employees.previous_positions_held_outside_cid = ",".join(previous_positions_held_outside_cid)
 
             employees.computer_knowledge = computer_knowledge
             employees.dialogue = dialogue
@@ -595,6 +655,9 @@ def edit_employee_save(request):
             employees.computer_knowledge = computer_knowledge
             employees.computer_degree = computer_degree
             employees.computer_skill = computer_skill
+
+            # Update the previous_trainings_done field with a comma-separated string
+            employees.previous_trainings_done = ",".join(previous_trainings_done)
 
             employees.save()
 
@@ -616,10 +679,15 @@ def delete_employee(request, emp_id):
         try:
             # Get the path to the employee's profile picture
             profile_pic_path = os.path.join(settings.MEDIA_ROOT, str(employee.profile_pic))
-
             # Check if the profile picture file exists and is a file (not a directory)
             if os.path.isfile(profile_pic_path):
                 os.remove(profile_pic_path)
+
+            # Get the path to the Document File upload for Date of Joining In CID
+            document_file_path = os.path.join(settings.MEDIA_ROOT, str(employee.document_file))
+            # Check if the document_file exists and is a file (not a directory)
+            if os.path.isfile(document_file_path):
+                os.remove(document_file_path)
 
             # Delete the employee instance
             employee.delete()
@@ -636,7 +704,14 @@ def view_all_employee(request, emp_id):
     # Fetch the specific employee using the emp_id parameter
     # get_object_or_404 : used to retrieve a single object from the database based on certain criteria, and if the object doesn't exist, it raises a Http404 exception.
     employee = get_object_or_404(Employees, emp_id=emp_id)
-    context = {'employee': employee}
+
+    #  document_file is a field in the Employees model
+    doc_file = employee.document_file.url if employee.document_file else None
+
+    context = {
+        'employee': employee,
+        'doc_file': doc_file,
+    }
     return render(request, 'admin_template/view_all_employee_details.html', context)
 
 
@@ -872,3 +947,151 @@ def delete_division(request, division_id):
             messages.error(request, f"Failed to delete Division: {str(e)}")
 
         return redirect("manage_division")  # Redirect to the list of divisions page
+
+
+# ------------------------------- Admin Security Question---------------------------------------
+# Add admin security question
+def add_admin_security_question(request):
+    return render(request, "admin_template/add_admin_security_question_template.html")
+
+
+def add_admin_security_question_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect("Method Not Allowed")
+    else:
+        id = request.POST.get("id")
+        question = request.POST.get("question")
+        answer = request.POST.get("answer")
+        try:
+            model = AdminSecurityQuestion(id=id, question=question,
+                                     answer=answer)
+            model.save()
+            messages.success(request, "Successfully Added Admin Security Question")
+            return HttpResponseRedirect(reverse("add_admin_security_question"))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Add Admin Security Question {str(e)}")
+            return HttpResponseRedirect(reverse("add_admin_security_question"))
+
+
+# Manage admin security question
+def manage_admin_security_question(request):
+    asq = AdminSecurityQuestion.objects.all()
+    return render(request, "admin_template/manage_admin_security_question_template.html", {"asq": asq})
+
+
+# Edit admin_security_question
+def edit_admin_security_question(request, id):
+    asq = AdminSecurityQuestion.objects.get(id=id)
+    return render(request, "admin_template/edit_admin_security_question_template.html", {"asq": asq})
+
+
+def edit_admin_security_question_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        # created a hidden input field in edit_admin_security_questiontemplate.html in the Question input field for ID
+        id = request.POST.get("id")
+        question = request.POST.get("question")
+        answer = request.POST.get("answer")
+
+        try:
+            asq = AdminSecurityQuestion.objects.get(id=id)
+            asq.question = question
+            asq.answer = answer
+
+            asq.save()
+            messages.success(request, "Successfully Edited Admin Security Question")
+            return HttpResponseRedirect(reverse("edit_admin_security_question", kwargs={"id": id}))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Edit Admin Security Question {str(e)}")
+            return HttpResponseRedirect(reverse("edit_admin_security_question", kwargs={"id": id}))
+
+
+# Delete admin_security_question
+def delete_admin_security_question(request, id):
+    if request.method == "POST":
+        asq = get_object_or_404(AdminSecurityQuestion, id=id)
+
+        try:
+            asq.delete()
+            messages.success(request, "Admin Security Question and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete Admin Security Question {str(e)}")
+
+        return redirect("manage_admin_security_question")
+
+
+# ------------------------------- User Security Question---------------------------------------
+# Add user security question
+def add_user_security_question(request):
+    return render(request, "admin_template/add_user_security_question_template.html")
+
+
+def add_user_security_question_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect("Method Not Allowed")
+    else:
+        id = request.POST.get("id")
+        question = request.POST.get("question")
+        answer = request.POST.get("answer")
+        try:
+            model = UserSecurityQuestion(id=id, question=question,
+                                     answer=answer)
+            model.save()
+            messages.success(request, "Successfully Added User Security Question")
+            return HttpResponseRedirect(reverse("add_user_security_question"))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Add User Security Question {str(e)}")
+            return HttpResponseRedirect(reverse("add_user_security_question"))
+
+
+# Manage user security question
+def manage_user_security_question(request):
+    usq = UserSecurityQuestion.objects.all()
+    return render(request, "admin_template/manage_user_security_question_template.html", {"usq": usq})
+
+
+# Edit user_security_question
+def edit_user_security_question(request, id):
+    usq = UserSecurityQuestion.objects.get(id=id)
+    return render(request, "admin_template/edit_user_security_question_template.html", {"usq": usq})
+
+
+def edit_user_security_question_save(request):
+    if request.method != "POST":
+        return HttpResponse("<h2>Method Not Allowed</h2>")
+    else:
+        # created a hidden input field in edit_user_security_question_template.html in the Question input field for ID
+        id = request.POST.get("id")
+        question = request.POST.get("question")
+        answer = request.POST.get("answer")
+
+        try:
+            usq = UserSecurityQuestion.objects.get(id=id)
+            usq.question = question
+            usq.answer = answer
+
+            usq.save()
+            messages.success(request, "Successfully Edited User Security Question")
+            return HttpResponseRedirect(reverse("edit_user_security_question", kwargs={"id": id}))
+
+        except Exception as e:
+            messages.error(request, f"Failed To Edit User Security Question {str(e)}")
+            return HttpResponseRedirect(reverse("edit_user_security_question", kwargs={"id": id}))
+
+
+# Delete user_security_question
+def delete_user_security_question(request, id):
+    if request.method == "POST":
+        usq = get_object_or_404(UserSecurityQuestion, id=id)
+
+        try:
+            usq.delete()
+            messages.success(request, "User Security Question and associated details deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete User Security Question {str(e)}")
+
+        return redirect("manage_user_security_question")

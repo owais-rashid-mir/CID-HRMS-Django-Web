@@ -213,6 +213,7 @@
             </ul>
 
           </li>
+
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-comments"></i>
@@ -233,6 +234,7 @@
             </ul>
 
             </li>
+
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-sign-in-alt"></i>
@@ -259,6 +261,60 @@
                 </a>
               </li>
             </ul>
+
+
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-question-circle"></i>
+              <p>
+                Security Questions
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <!-- add_admin_security_question is defined in urls.py -->
+                {% url 'add_admin_security_question' as add_admin_security_question %}
+                <a href="{% url 'add_admin_security_question' %}" class="nav-link {% if request.path == add_admin_security_question %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Admin Security Question</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_admin_security_question' as manage_admin_security_question %}
+                <a href="{% url 'manage_admin_security_question' %}" class="nav-link {% if request.path == manage_admin_security_question %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Admin Security Question</p>
+                </a>
+              </li>
+
+
+              <li class="nav-item">
+                <!-- add_user_security_question is defined in urls.py -->
+                {% url 'add_user_security_question' as add_user_security_question %}
+                <a href="{% url 'add_user_security_question' %}" class="nav-link {% if request.path == add_user_security_question %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add User Security Question</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_user_security_question' as manage_user_security_question %}
+                <a href="{% url 'manage_user_security_question' %}" class="nav-link {% if request.path == manage_user_security_question %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage User Security Question</p>
+                </a>
+              </li>
+
+
+
+
+            </ul>
+
+
+
 
             <li class="nav-item">
             {% url 'logout' as logout %}

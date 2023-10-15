@@ -88,7 +88,17 @@ Manage Employees
                       <!-- first_name etc : column names in Employees table-->
                       <td>{{ employee.first_name }}</td>
                       <td>{{ employee.last_name }}</td>
-                      <td> <img src="{{ employee.profile_pic }}" style="width:100px; height:100px;"/></td>
+
+                      <td>
+                        {% if employee.profile_pic %}
+                            <img src="{{ employee.profile_pic.url }}" style="width:100px; height:100px;"/>
+                        {% else %}
+                            <!-- Handle the case where there's no profile pic -->
+                            No profile picture available
+                        {% endif %}
+                    </td>
+
+
                       <td>{{ employee.phone }}</td>
                       <td>{{ employee.rank_id.rank_name }}</td>
 
