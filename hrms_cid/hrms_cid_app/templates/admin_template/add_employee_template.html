@@ -47,6 +47,16 @@ Add Employees
                     <input type="text" class="form-control" placeholder="Last Name" name="last_name" required>
                   </div>
 
+                    <div class="form-group">
+                    <label>PID Number <span class="text-danger"> *(required)</span> </label>
+                    <input type="text" class="form-control" placeholder="PID Number" name="pid_no" required>
+                  </div>
+
+                    <div class="form-group">
+                    <label>CPIS Number</label>
+                    <input type="text" class="form-control" placeholder="CPIS Number" name="cpis">
+                  </div>
+
                   <!-- accept="image/*" ensures that user can only select image format files. -->
                   <div class="form-group">
                     <label>Profile Picture </label>
@@ -70,7 +80,7 @@ Add Employees
                     <!-- For multiple phone numbers: -->
                     <div class="form-group">
                         <label>Phone Number(s) <span class="text-danger"> *(required) </span> </label> <br>
-                        <label> <span class="text-danger"> (Click the 'Add Another Number' button to add multiple phone numbers.) </span> </label>
+                        <label> <span class="text-primary font-italic"> (Click the 'Add Another Number' button to add multiple phone numbers.) </span> </label>
 
                         <div id="phone_numbers_container">
                             <div class="input-group mb-3">
@@ -90,16 +100,39 @@ Add Employees
                     <input type="text" class="form-control" placeholder="Address" name="address">
                   </div>
 
+                    <div class="form-group">
+                    <label>District</label>
+                    <select class="form-control" name="district">
+                        <option value="">--Choose an option--</option>
+                        <option value="Srinagar">Srinagar</option>
+                        <option value="Baramulla">Baramulla</option>
+                        <option value="Anantnag">Anantnag</option>
+                        <option value="Pulwama">Pulwama</option>
+                        <option value="Kupwara">Kupwara</option>
+                        <option value="Shopian">Shopian</option>
+                        <option value="Ganderbal">Ganderbal</option>
+                        <option value="Bandipora">Bandipora</option>
+                        <option value="Budgam">Budgam</option>
+                        <option value="Kulgam">Kulgam</option>
+                        <option value="Jammu">Jammu</option>
+                        <option value="Kathua">Kathua</option>
+                        <option value="Samba">Samba</option>
+                        <option value="Poonch">Poonch</option>
+                        <option value="Rajouri">Rajouri</option>
+                        <option value="Udhampur">Udhampur</option>
+                        <option value="Reasi">Reasi</option>
+                        <option value="Ramban">Ramban</option>
+                        <option value="Doda">Doda</option>
+                        <option value="Kishtwar">Kishtwar</option>
+                    </select>
+                </div>
+
 
                   <div class="form-group">
                     <label>Tehsil</label>
                     <input type="text" class="form-control" placeholder="Tehsil" name="tehsil">
                   </div>
 
-                  <div class="form-group">
-                    <label>District</label>
-                    <input type="text" class="form-control" placeholder="District" name="district">
-                  </div>
 
                   <div class="form-group">
                     <label>Parentage</label>
@@ -116,10 +149,6 @@ Add Employees
                     <input type="text" class="form-control" placeholder="Belt Number" name="belt_no">
                   </div>
 
-                  <div class="form-group">
-                    <label>PID Number</label>
-                    <input type="text" class="form-control" placeholder="PID Number" name="pid_no">
-                  </div>
 
 
                   <div class="form-group">
@@ -130,7 +159,7 @@ Add Employees
 
                     <div class="form-group">
                         <label>Date Of Joining In CID - Document File Upload</label>
-                        <label> <span class="text-danger"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
+                        <label> <span class="font-italic text-primary"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
 
                             <input type="file" class="form-control" placeholder="Date Of Joining In CID - Document File Upload" name="document_file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, application/rtf, text/markdown">
                     </div>
@@ -158,7 +187,8 @@ Add Employees
 
                     <div class="form-group">
                     <label>Aadhar Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Aadhar Number" name="aadhar_number" required>
+                        <p class="font-italic font-weight-bold text-primary"> (Aadhar Number should be a 12-digit number.) </p>
+                    <input type="number" class="form-control" placeholder="Aadhar Number" name="aadhar_number" required>
                   </div>
 
                     <div class="form-group">
@@ -225,7 +255,7 @@ Add Employees
 
                     <div class="form-group">
                         <label for="adverse_report">Adverse Reports</label>
-                        <textarea class="form-control" id="adverse_report" name="adverse_report" placeholder="Any Adverse Reports?"></textarea>
+                        <textarea rows="3" class="form-control" id="adverse_report" name="adverse_report" placeholder="Any Adverse Reports?"></textarea>
                     </div>
 
                   <div class="form-group">
@@ -250,9 +280,9 @@ Add Employees
                     </select>
                   </div>
 
+                    <!--
                   <div class="form-group">
                     <label>Supervisor <span class="text-danger"> *(required)</span> </label>
-                    <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
                     <select class="form-control" name="supervisor" required>
                       <option value="">--Choose an option--</option>
                       {% for supervisor in supervisors %}
@@ -260,11 +290,12 @@ Add Employees
                       {% endfor%}
                     </select>
                   </div>
+                  -->
 
 
                   <!-- Computer Knowledge. Check its JS below -->
                   <div class="form-group">
-                      <label>Computer Knowledge? <span class="text-danger"> (Selecting "Yes" will expand more options for computer knowledge.)</span> </label><br>
+                      <label>Computer Knowledge? <span class="text-primary font-italic"> (Selecting "Yes" will expand more options for computer knowledge.)</span> </label><br>
                       <div class="form-check form-check-inline">
                           <input class="form-check-input" type="radio" name="computer_knowledge" id="computer_knowledge_yes" value="Yes" onclick="showComputerOptions()">
                           <label class="form-check-label" for="computer_knowledge_yes">Yes</label>
@@ -309,6 +340,37 @@ Add Employees
                         <div class="input-group-append">
                                 <button class="btn  btn-primary text-white mb-2" type="button" onclick="addPreviousTrainingsDone()">Add Another Training</button>
                         </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="other_emp_info">Remarks/Additional Employee Information</label>
+                        <textarea rows="5" class="form-control" id="other_emp_info" name="other_emp_info" placeholder="Remarks/Other Employee Information"></textarea>
+                    </div>
+
+
+                    <!-- Employee Leave Counters -->
+                    <label class="mt-4">Leave Counters: </label> <br>
+
+                    <div class="form-group">
+                        <label>Casual Leave Counter (Limit=20)</label>
+                        <input type="number" class="form-control" placeholder="Enter the casual leaves taken by the employee this year" name="casual_leave_counter">
+                  </div>
+
+                    <div class="form-group">
+                        <label>Earned Leave Counter</label>
+                        <input type="number" class="form-control" placeholder="Enter the earned leaves taken by the employee this year" name="earned_leave_counter">
+                    </div>
+
+
+                     <div class="form-group">
+                        <label>Paternity/Maternity Leave Counter</label>
+                        <input type="number" class="form-control" placeholder="Enter the paternity/maternity leaves taken by the employee" name="paternity_maternity_leave_counter">
+                    </div>
+
+                     <div class="form-group">
+                        <label>Committed Leave Counter</label>
+                        <input type="number" class="form-control" placeholder="Enter the committed leaves taken by the employee" name="committed_leave_counter">
                     </div>
 
 

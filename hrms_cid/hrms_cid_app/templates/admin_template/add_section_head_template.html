@@ -1,0 +1,310 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Add Section Head/Supervisor/Incharge Login
+{% endblock page_title %}
+{% block main_content %}
+
+<!-- Add section head login - Admin can add users with some administrator privileges. -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Section Head/Supervisor/Incharge Login</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <!-- form start -->
+                    <form role="form" action="/add_section_head_save" method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+
+                            <!--
+                            <div class="form-group">
+                                <label>Section Head <span class="text-danger"> *(required)</span> </label>
+                                <select class="form-control" name="employee" id="employeeSelect" required>
+                                    <option value="">--Choose an option--</option>
+                                    {% for employee in employees %}
+                                    <option value="{{ employee.emp_id }}" data-email="{{ employee.email }}" data-section="{{ employee.section_id.section_name }}">{{ employee.first_name }} {{ employee.last_name }} | Email: {{ employee.email }} | PID: {{ employee.pid_no }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            -->
+
+                            <div class="form-group">
+                                <label for="employeeSearchInput">Employee <span class="text-danger"> *(required)</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="employeeSearchInput" placeholder="Search employee by First name, Last name, Email or PID..." autocomplete="off">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearSearchButton">Clear</button>
+                                    </div>
+                                    <div class="dropdown-menu" aria-labelledby="employeeSearchInput" style="max-height: 300px; overflow-y: auto;">
+                                        {% for employee in employees %}
+                                        <a class="dropdown-item" href="#" data-value="{{ employee.emp_id }}" data-email="{{ employee.email }}" data-section="{{ employee.section_id.section_name }}">
+                                            {{ employee.first_name }} {{ employee.last_name }} | Email: {{ employee.email }} | PID: {{ employee.pid_no }}
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="employee" id="selectedEmployee" value="">
+
+                            <!-- Readonly fields for Email and Section -->
+                            <div class="form-group">
+                                <label for="section">Section</label>
+                                <input type="text" class="form-control" id="section" name="section" value="" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="" readonly>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Password <span class="text-danger"> *(required)</span> </label> <br>
+                                <p class="font-italic text-primary"> (Password must be at least 8 characters or longer and must not contain any spaces.) </p>
+                                <input type="text" class="form-control" placeholder="Password" name="password" autocomplete="off" required>
+                            </div>
+
+                            <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary btn-block">Add Section Head Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+<script>
+    // Add event listener to the employee search input for the input event (NOT BEING USED, KEPT FOR REFERENCE)
+document.getElementById('employeeSearchInput').addEventListener('input', function () {
+    // Get the selected employee option
+    var selectedEmployee = document.querySelector('.dropdown-menu a:hover');
+
+    // Update the readonly fields with the selected employee's email and section
+    if (selectedEmployee) {
+        document.getElementById('email').value = selectedEmployee.dataset.email;
+        document.getElementById('section').value = selectedEmployee.dataset.section;
+    } else {
+        // If no employee is selected, reset the values
+        document.getElementById('email').value = '';
+        document.getElementById('section').value = '';
+    }
+});
+</script>
+
+
+<!--  JS Code for searching employees in dropdown menu - for Section Head Login Accounts -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const employeeSearchInput = document.getElementById('employeeSearchInput');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const emailInput = document.getElementById('email');
+    const sectionInput = document.getElementById('section');
+    const originalDropdownItems = Array.from(dropdownMenu.children);
+
+    // Function to update the email and section fields based on the selected employee
+    function updateFields(selectedEmployee) {
+        if (selectedEmployee) {
+            emailInput.value = selectedEmployee.dataset.email;
+            sectionInput.value = selectedEmployee.dataset.section;
+        } else {
+            emailInput.value = '';
+            sectionInput.value = '';
+        }
+    }
+
+    // Function to reset the dropdown to its original state
+    function resetDropdown() {
+        dropdownMenu.innerHTML = '';
+        originalDropdownItems.forEach(function (item) {
+            dropdownMenu.appendChild(item.cloneNode(true));
+        });
+    }
+
+    // Function to highlight the matching text in yellow
+    function highlightText(cell, searchTerm) {
+        const cellText = cell.textContent;
+        const highlightedText = cellText.replace(
+            new RegExp(searchTerm, 'gi'),
+            match => `<span style="background-color: yellow;">${match}</span>`
+        );
+        cell.innerHTML = highlightedText;
+    }
+
+    // Event listener for input in the search bar
+    employeeSearchInput.addEventListener('input', function () {
+        const searchTerm = employeeSearchInput.value.toLowerCase();
+
+        if (searchTerm === '') {
+            // If search term is empty, reset the dropdown and exit
+            resetDropdown();
+            return;
+        }
+
+        // Filter dropdown items based on the search term
+        originalDropdownItems.forEach(function (employeeOption) {
+            const employeeText = employeeOption.textContent.toLowerCase();
+            const isVisible = employeeText.includes(searchTerm);
+            employeeOption.style.display = isVisible ? 'block' : 'none';
+
+            // Highlight matching text directly
+            if (isVisible) {
+                highlightText(employeeOption, searchTerm);
+            }
+        });
+
+        // Show "No results found" if no matching items
+        const noResultsFound = originalDropdownItems.every(function (employeeOption) {
+            return employeeOption.style.display === 'none';
+        });
+
+        if (noResultsFound) {
+            showNoResultsMessage();
+        } else {
+            resetDropdown();
+        }
+    });
+
+    // Event listener for clicking on an employee option
+    dropdownMenu.addEventListener('click', function (event) {
+        if (event.target.tagName === 'A') {
+            // Set the selected employee value
+            employeeSearchInput.value = event.target.textContent;
+
+            // Extract employee data from the selected option
+            const empId = event.target.dataset.value;
+            const email = event.target.dataset.email;
+            const section = event.target.dataset.section;
+
+            // Update the readonly fields with the selected employee's email and section
+            updateFields({ dataset: { email, section } });
+
+            // Append a hidden input field to submit the selected employee data with the form
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'employee'; // This should match the name attribute in the form
+            hiddenInput.value = empId;
+
+            // Check if the hidden input already exists and replace it if needed
+            const existingHiddenInput = document.querySelector('input[name="employee"]');
+            if (existingHiddenInput) {
+                existingHiddenInput.replaceWith(hiddenInput);
+            } else {
+                document.querySelector('form').appendChild(hiddenInput);
+            }
+        }
+    });
+
+    // Event listener for closing the dropdown
+    document.addEventListener('click', function (event) {
+        if (!event.target.matches('.dropdown-toggle') && !event.target.matches('#employeeSearchInput')) {
+            // Hide the dropdown menu when clicking outside
+            dropdownMenu.style.display = 'none';
+        }
+    });
+
+    // Event listener for focusing on the search input
+    employeeSearchInput.addEventListener('focus', function () {
+        // Show the dropdown menu when focusing on the search input
+        dropdownMenu.style.display = 'block';
+    });
+
+    // Event listener for clicking on the search input
+    employeeSearchInput.addEventListener('click', function () {
+        // Show the dropdown menu when clicking on the search input
+        dropdownMenu.style.display = 'block';
+    });
+
+    // Event listener for clicking outside the dropdown
+    document.addEventListener('click', function (event) {
+        if (!event.target.matches('.dropdown-toggle') && !event.target.matches('#employeeSearchInput')) {
+            // Hide the dropdown menu when clicking outside
+            dropdownMenu.style.display = 'none';
+        }
+    });
+
+    // Event listener for input in the search bar
+    employeeSearchInput.addEventListener('input', function () {
+        const searchTerm = employeeSearchInput.value.toLowerCase();
+
+        if (searchTerm === '') {
+            // If search term is empty, reset the dropdown and exit
+            resetDropdown();
+            return;
+        }
+
+        // Filter dropdown items based on the search term
+        originalDropdownItems.forEach(function (employeeOption) {
+            const employeeText = employeeOption.textContent.toLowerCase();
+            const isVisible = employeeText.includes(searchTerm);
+            employeeOption.style.display = isVisible ? 'block' : 'none';
+        });
+
+        // Show "No results found" if no matching items
+        const noResultsFound = originalDropdownItems.every(function (employeeOption) {
+            return employeeOption.style.display === 'none';
+        });
+
+        if (noResultsFound) {
+            showNoResultsMessage();
+        } else {
+            resetDropdown();
+        }
+    });
+
+    // Function to show "No results found" message
+    function showNoResultsMessage() {
+        dropdownMenu.innerHTML = '<div class="dropdown-item">No results found</div>';
+    }
+
+});
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Add event listener to the clear button to the search and select button.
+    const clearSearchButton = document.getElementById('clearSearchButton');
+    if (clearSearchButton) {
+        clearSearchButton.addEventListener('click', function () {
+            const employeeSearchInput = document.getElementById('employeeSearchInput');
+            if (employeeSearchInput) {
+                employeeSearchInput.value = '';
+            }
+        });
+    }
+});
+</script>
+
+
+{% endblock main_content %}
+
+
+
+
+

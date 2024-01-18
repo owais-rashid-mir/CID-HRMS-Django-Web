@@ -31,17 +31,23 @@ Add Sections
                   </div>
 
 
-                   <!-- <div class="form-group">
-                    <label>Section Description </label>
-                    <input type="text" class="form-control" placeholder="Section Description" name="description">
-                  </div>   -->
-
                     <div class="form-group">
-                    <label>Section Supervisor/Incharge</label>
+                    <label>Section Head/Supervisor</label>
                     <input type="text" class="form-control" placeholder="Section Incharge" name="section_incharge">
                     </div>
 
-                      <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                    <!-- Add the dropdown for selecting the division -->
+                  <div class="form-group">
+                    <label>Select Division to which this Section belongs: <span class="text-danger"> *(required)</span></label>
+                    <select class="form-control" id="division" name="division" required>
+                      {% for division in divisions %}
+                        <option value="{{ division.division_id }}">{{ division.division_name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+
+                      <!--  success and error messages -->
                       <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}

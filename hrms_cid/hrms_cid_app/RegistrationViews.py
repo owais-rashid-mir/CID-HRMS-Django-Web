@@ -1,3 +1,4 @@
+# For account registration by the employee - NOT BEING USED.
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from .models import CustomUser, AdminSecurityQuestion, UserSecurityQuestion, Employees, Admin, User

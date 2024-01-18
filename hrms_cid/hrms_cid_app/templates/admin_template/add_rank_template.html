@@ -20,10 +20,32 @@ Add Rank
                   {% csrf_token %}
                 <div class="card-body">
 
-                   <div class="form-group">
-                    <label>Rank Name <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Rank Name" name="rank_name" required>
-                  </div>
+
+                    <div class="form-group">
+                    <label for="rank">Rank Name <span class="text-danger"> *(required)</span> </label>
+                    <select class="form-control" id="rank" name="rank_name" required>
+                        <option value="">--Choose an option--</option>
+                        <option value="SPO">SPO</option>
+                        <option value="Follower">Follower</option>
+                        <option value="Constable">Constable</option>
+                        <option value="SGCT">SGCT</option>
+                        <option value="HC">HC</option>
+                        <option value="ASI">ASI</option>
+                        <option value="SI">SI</option>
+                        <option value="Inspector">Inspector</option>
+                        <option value="DySP">DySP</option>
+                        <option value="SP">SP</option>
+                        <option value="SSP">SSP</option>
+                        <option value="Senior PO">Senior PO</option>
+                        <option value="CPO">CPO</option>
+                        <option value="DDP">DDP</option>
+                        <option value="DIG">DIG</option>
+                        <option value="IGP">IGP</option>
+                        <option value="ADGP">ADGP</option>
+                        <option value="Special DG">Special DG</option>
+                    </select>
+                </div>
+
 
                     <div class="form-group">
                         <label for="description">Description:</label>

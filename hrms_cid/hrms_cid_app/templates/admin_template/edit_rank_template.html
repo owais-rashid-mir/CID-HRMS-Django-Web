@@ -20,11 +20,34 @@ Edit Ranks | Rank ID : {{ranks.rank_id}} | Rank Name : {{ranks.rank_name}}
                   {% csrf_token %}
                 <div class="card-body">
 
-                   <div class="form-group">
-                    <label>Rank Name <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Rank Name" name="rank_name" value="{{ ranks.rank_name }}" required>
 
-                       <!-- Creating hidden input field for Division ID-->
+                    <div class="form-group">
+                        <label>Rank Name <span class="text-danger"> *(required)</span> </label>
+                        <select class="form-control" name="rank_name" required>
+                            <option value="">--Choose an option--</option>
+                            <option value="SPO" {% if ranks.rank_name == 'SPO' %}selected{% endif %}>SPO</option>
+                            <option value="Follower" {% if ranks.rank_name == 'Follower' %}selected{% endif %}>Follower</option>
+                            <option value="Constable" {% if ranks.rank_name == 'Constable' %}selected{% endif %}>Constable</option>
+                            <option value="SGCT" {% if ranks.rank_name == 'SGCT' %}selected{% endif %}>SGCT</option>
+                            <option value="HC" {% if ranks.rank_name == 'HC' %}selected{% endif %}>HC</option>
+                            <option value="ASI" {% if ranks.rank_name == 'ASI' %}selected{% endif %}>ASI</option>
+                            <option value="SI" {% if ranks.rank_name == 'SI' %}selected{% endif %}>SI</option>
+                            <option value="Inspector" {% if ranks.rank_name == 'Inspector' %}selected{% endif %}>Inspector</option>
+                            <option value="DySP" {% if ranks.rank_name == 'DySP' %}selected{% endif %}>DySP</option>
+                            <option value="SP" {% if ranks.rank_name == 'SP' %}selected{% endif %}>SP</option>
+                            <option value="SSP" {% if ranks.rank_name == 'SSP' %}selected{% endif %}>SSP</option>
+                            <option value="Senior PO" {% if ranks.rank_name == 'Senior PO' %}selected{% endif %}>Senior PO</option>
+                            <option value="CPO" {% if ranks.rank_name == 'CPO' %}selected{% endif %}>CPO</option>
+                            <option value="DDP" {% if ranks.rank_name == 'DDP' %}selected{% endif %}>DDP</option>
+                            <option value="DIG" {% if ranks.rank_name == 'DIG' %}selected{% endif %}>DIG</option>
+                            <option value="IGP" {% if ranks.rank_name == 'IGP' %}selected{% endif %}>IGP</option>
+                            <option value="ADGP" {% if ranks.rank_name == 'ADGP' %}selected{% endif %}>ADGP</option>
+                            <option value="Special DG" {% if ranks.rank_name == 'Special DG' %}selected{% endif %}>Special DG</option>
+                        </select>
+
+
+
+                       <!-- Creating hidden input field for Rank ID-->
                        <input type="hidden" name="rank_id" value="{{ ranks.rank_id }}" >
                   </div>
 

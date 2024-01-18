@@ -1,8 +1,9 @@
 {% extends 'user_template/base_template.html' %}
 {% block page_title %}
-Feedback Message
+Feedback/Report a Problem
 {% endblock page_title %}
 {% block main_content %}
+
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -11,27 +12,11 @@ Feedback Message
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Leave a Feedback Message</h3>
+                <h3 class="card-title">Leave a Feedback Message or Report a Problem</h3>
               </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-               <form action="{% url 'user_feedback_save' %}" method="post">
-                <div class="card-body">
 
-                    {% csrf_token %}
-
-                    <div class="form-group">
-                    <label>Name </label>
-                       {% csrf_token %}
-                    <input type="text" name="name" class="form-control" placeholder="Name" required>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Feedback Message</label>
-                    <textarea class="form-control" rows="6" name="feedback_msg"></textarea>
-                  </div>
-
-                   <div class="form-group">
+                <!-- Success and error messages -->
+                <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}
                         {% if message.tags == 'error' %}
@@ -44,42 +29,65 @@ Feedback Message
                       {% endif %}
                     </div>
 
+              <!-- /.card-header -->
+              <!-- form start -->
+               <form action="{% url 'user_feedback_save' %}" method="post">
+                <div class="card-body">
+
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Name </label>
+                        {% csrf_token %}
+                        <input type="text" name="name" class="form-control" value="{{ employee.first_name }} {{ employee.last_name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PID </label>
+                        {% csrf_token %}
+                        <input type="text" name="pid" class="form-control" value="{{ employee.pid_no }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone </label>
+                        {% csrf_token %}
+                        <input type="text" name="phone" class="form-control" value="{{ employee.phone }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rank </label>
+                        {% csrf_token %}
+                        <input type="text" name="rank" class="form-control" value="{{ employee.rank_id.rank_name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Section </label>
+                        {% csrf_token %}
+                        <input type="text" name="section" class="form-control" value="{{ employee.section_id.section_name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Division </label>
+                        {% csrf_token %}
+                        <input type="text" name="division" class="form-control" value="{{ employee.division_id.division_name }}" readonly>
+                    </div>
+
+
+
+                  <div class="form-group">
+                    <label>Feedback/Report a Problem Message</label>
+                    <textarea class="form-control" rows="6" name="feedback_msg"></textarea>
+                  </div>
+
+
                 </div>
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block" id="fetch_student">Leave a Feedback Message</button>
+                  <button type="submit" class="btn btn-primary btn-block">Send Feedback/Report a Problem</button>
                 </div>
                </form>
             </div>
-
-            <!-- /.card -->
-           <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Feedback History</h3>
-              </div>
-
-               <div class="table">
-               <table class="table">
-                   <tr>
-                       <th>ID</th>
-                       <th>Name</th>
-                       <th>Feedback Message</th>
-                       <th>Feedback Reply</th>
-                   </tr>
-                   {% for row in feedback_data %}
-                        <tr>
-                            <td>{{ row.id }}</td>
-                            <td>{{ row.name }}</td>
-                            <td>{{ row.feedback }}</td>
-                            <td>{{ row.feedback_reply }}</td>
-                        </tr>
-                   {% endfor %}
-               </table>
-               </div>
-            </div>
-
-
 
           </div>
           </div>

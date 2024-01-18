@@ -58,17 +58,20 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="/admin_home" class="nav-link text-primary">Admin Home</a>
       </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/my_profile_admin" class="nav-link text-primary">My Profile</a>
+      </li>
     </ul>
 
     <!-- Centered title -->
   <div class="navbar-title-container">
-    <h5 class="navbar-title text-success">Admin Panel - HR Management System - Crime Investigation Department</h5>
+    <h5 class="navbar-title text-success">Admin Panel - HR Management System - Criminal Investigation Department</h5>
   </div>
 
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->
       <li class="nav-item">
-        <a class="nav-link text-primary" href="/logout_user">
+        <a class="nav-link text-primary font-weight-bold" href="/logout_user">
           Logout
         </a>
       </li>
@@ -80,7 +83,7 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <!--  with user=user   : For fetching the name of the admin who's currently loged in- used at the top of sidebar. -->
+  <!--  with user=user   : For fetching the name of the admin who's currently logged in- used at the top of sidebar. -->
   {% include 'admin_template/sidebar_template.html' with user=user %}
 
   <!-- Content Wrapper. Contains page content -->

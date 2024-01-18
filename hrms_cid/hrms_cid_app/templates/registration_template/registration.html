@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Create An Account(Admin/User)</h2>
+    <h4>Create An Account (Admin/User/SectionSupervisor/DivisionHead/DDO/SpecialDG)</h4>
 
     {% if success_message %}
     <div class="alert alert-success">
@@ -46,6 +46,12 @@
             <select class="form-control" id="user_type" name="user_type" required>
                 <option value="2" selected>User</option>
                 <option value="1">Admin</option>
+
+                <option value="3">Section Supervisor</option>
+                <option value="4">Division Head</option>
+                <option value="5">DDO</option>
+                <option value="6">Special DG</option>
+                <option value="7">PHQ</option>
             </select>
         </div>
 

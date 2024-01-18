@@ -20,16 +20,6 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                   <button class="btn btn-primary text-white mb-2" id="saveAsPdfButton" type="button">Download/Print Employee Information</button>
 
 
-
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                    <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                    </div>
-                  </div>
-                </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -50,6 +40,16 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     <tr>
                       <th style="width:30%">Last Name</th>
                       <td style="width:70%">{{ employee.last_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">PID Number</th>
+                      <td style="width:70%">{{ employee.pid_no }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">CPIS Number</th>
+                      <td style="width:70%">{{ employee.cpis }}</td>
                     </tr>
 
                     <tr>
@@ -117,11 +117,6 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                     <tr>
                       <th style="width:30%">Belt Number</th>
                       <td style="width:70%">{{ employee.belt_no }}</td>
-                    </tr>
-
-                    <tr>
-                      <th style="width:30%">PID Number</th>
-                      <td style="width:70%">{{ employee.pid_no }}</td>
                     </tr>
 
 
@@ -207,20 +202,12 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                       <td style="width:70%">{{ employee.division_id.division_name }}</td>
                     </tr>
 
+                    <!--
                     <tr>
                       <th style="width:30%">Supervisor</th>
                       <td style="width:70%">{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
                     </tr>
-
-                    <tr>
-                      <th style="width:30%">Created at</th>
-                      <td style="width:70%">{{ employee.created_at }}</td>
-                    </tr>
-
-                    <tr>
-                      <th style="width:30%">Updated at</th>
-                      <td style="width:70%">{{ employee.updated_at }}</td>
-                    </tr>
+                    -->
 
                     <tr>
                       <th style="width:30%">Computer Knowledge?</th>
@@ -240,6 +227,42 @@ View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}
                   <tr>
                       <th style="width:30%">Previous Trainings Done</th>
                       <td style="width:70%">{{ employee.previous_trainings_done }}</td>
+                    </tr>
+
+                  <tr>
+                      <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
+                      <th style="width:30%">Remarks/Additional Employee Information</th>
+                      <td style="width:70%; white-space: pre-line;">{{ employee.other_emp_info }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Casual Leave Counter</th>
+                      <td style="width:70%">{{ employee.casual_leave_counter }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Earned Leave Counter</th>
+                      <td style="width:70%">{{ employee.earned_leave_counter }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Paternity/Maternity Leave Counter</th>
+                      <td style="width:70%">{{ employee.paternity_maternity_leave_counter }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Committed Leave Counter</th>
+                      <td style="width:70%">{{ employee.committed_leave_counter }}</td>
+                    </tr>
+
+                  <tr>
+                      <th style="width:30%">Created at</th>
+                      <td style="width:70%">{{ employee.created_at }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Updated at</th>
+                      <td style="width:70%">{{ employee.updated_at }}</td>
                     </tr>
 
 

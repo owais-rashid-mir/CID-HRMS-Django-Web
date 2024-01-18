@@ -10,6 +10,7 @@ class EmailBackEnd(ModelBackend):
         try:
             # Fetching the user from database
             user = UserModel.objects.get(email=username)
+            # print("User Type:", user.user_type)  # Add this line to print the user type
         except UserModel.DoesNotExist:
             return None
         else:

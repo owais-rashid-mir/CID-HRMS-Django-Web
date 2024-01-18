@@ -1,0 +1,153 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Search Employees And Their Related Information
+{% endblock page_title %}
+{% block main_content %}
+
+<!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Search</h3>
+              </div>
+              <!-- /.card-header -->
+
+                <form action="{% url 'employee_search' %}" method="post">
+                    {% csrf_token %}
+
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By First Name</label>
+                                    <!-- autocomplete="off" : to clear the input fields of search page when employee comes back to it after searching. -->
+                                    <input type="text" class="form-control" placeholder="Search By First Name" name="first_name" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Last Name</label>
+                                    <input type="text" class="form-control" placeholder="Search By Last Name" name="last_name" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Gender</label>
+                                    <input type="text" class="form-control" placeholder="Search By Gender" name="gender" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Email</label>
+                                    <input type="text" class="form-control" placeholder="Search By Email" name="email" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Phone</label>
+                                    <input type="number" class="form-control" placeholder="Search By Phone" name="phone" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Address</label>
+                                    <input type="text" class="form-control" placeholder="Search By Address" name="address" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Tehsil</label>
+                                    <input type="text" class="form-control" placeholder="Search By Tehsil" name="tehsil" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By District</label>
+                                    <input type="text" class="form-control" placeholder="Search By District" name="district" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Qualifications</label>
+                                    <input type="text" class="form-control" placeholder="Search By Qualifications" name="qualifications" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Section</label>
+                                    <input type="text" class="form-control" placeholder="Search By Section" name="section" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Division</label>
+                                    <input type="text" class="form-control" placeholder="Search By Division" name="division" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By Rank</label>
+                                    <input type="text" class="form-control" placeholder="Search By Rank" name="rank" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By PID Number</label>
+                                    <input type="text" class="form-control" placeholder="Search By PID Number" name="pid_no" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Search By CPIS Number</label>
+                                    <input type="text" class="form-control" placeholder="Search By CPIS Number" name="cpis" autocomplete="off">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <input type="submit" class="btn btn-primary btn-block" value="Search">
+
+                    </div>      <!-- card body end -->
+                </form>
+
+
+
+
+
+            </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+
+{% endblock main_content %}

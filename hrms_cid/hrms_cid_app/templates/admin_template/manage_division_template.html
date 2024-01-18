@@ -28,16 +28,22 @@ Manage Divisions
               <div class="card-header">
                 <h3 class="card-title">Division Details</h3>
 
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                <!-- Search -->
+                <div class="card-tools mb-2">
+                  <div class="input-group input-group-sm" style="width: 500px;">
+                    <span class="input-group-prepend">
+                      <label class="input-group-text" for="divisionSearchInput">Search by Division Name</label>
+                    </span>
+
+                    <input type="text" id="divisionSearchInput" class="form-control" style="height: 38px;" placeholder="Search">
 
                     <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
                   </div>
                 </div>
-              </div>
+
+
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
 
@@ -50,6 +56,8 @@ Manage Divisions
                       <th>Division Name</th>
                       <th>Description</th>
                       <th>Division Head/Supervisor</th>
+                      <!-- <th>Sections under this Division</th>  -->
+                      <th>View More Details</th>
                     </tr>
                   </thead>
 
@@ -72,6 +80,19 @@ Manage Divisions
                       <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
                       <td style="white-space: pre-line;"> {{ division.division_description }}</td>
                       <td>{{ division.division_head }}</td>
+
+                      <!--
+                      <td>
+                          {% for section in division.sections %}
+                          {{ section.section_name }}<br>
+                          {% endfor %}
+                      </td>
+                      -->
+
+                      <td>
+                        <a href="{% url 'view_all_division_details' division.division_id %}" class="btn btn-primary">View</a>
+                      </td>
+
                     </tr>
                   {% endfor %}
                   </tbody>
@@ -87,5 +108,48 @@ Manage Divisions
       </div>
     </section>
     <!-- /.content -->
+
+
+<!-- Javascript live search. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const divisionSearchInput = document.getElementById('divisionSearchInput');
+    const tableRows = document.querySelectorAll('.table tbody tr');
+
+    divisionSearchInput.addEventListener('input', function () {
+      const searchTerm = divisionSearchInput.value;
+
+      tableRows.forEach(function (row) {
+        // Division Name is the 3rd column in the table, and we will search on that.
+        const divisionNameCell = row.querySelector('td:nth-child(3)');
+        const originalText = divisionNameCell.getAttribute('data-original-text');
+        const divisionName = originalText.toLowerCase();
+
+        if (divisionName.includes(searchTerm.toLowerCase())) {
+          // Highlight matching text
+          const highlightedText = originalText.replace(
+            new RegExp(searchTerm, 'gi'),
+            match => `<span style="background-color: yellow;">${match}</span>`
+          );
+          divisionNameCell.innerHTML = highlightedText;
+
+          row.style.display = '';
+        } else {
+          // Reset the content and hide the row if not matching
+          divisionNameCell.innerHTML = originalText;
+          row.style.display = 'none';
+        }
+      });
+    });
+
+    // Store the original text in a data attribute
+    tableRows.forEach(function (row) {
+      const divisionNameCell = row.querySelector('td:nth-child(3)');
+      divisionNameCell.setAttribute('data-original-text', divisionNameCell.textContent);
+    });
+  });
+</script>
+
+
 {% endblock main_content %}
 

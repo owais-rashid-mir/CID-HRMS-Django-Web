@@ -1,0 +1,162 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Manage Archived Employees
+{% endblock page_title %}
+{% block main_content %}
+
+<style>
+  /* Custom CSS to control table cell wrapping */
+.table td {
+  white-space: normal; /* Allow text to wrap within cells */
+  word-break: break-word; /* Break words when they overflow the cell */
+}
+
+</style>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+        <!--  success and error messages . -->
+                      <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title ml-2 mb-1">Archived Employee Details</h3>
+              <!-- /.card-header -->
+
+              <div class="card-body table-responsive p-0">
+                  <hr>
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>PID</th>
+                      <th>Profile Picture</th>
+                      <th>Phone</th>
+                      <th>Rank</th>
+                      <th>Section</th>
+                      <th>Division</th>
+                      <!-- <th>Supervisor</th> -->
+
+                      <th>View All Details</th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  <!-- FOR loop to print all data. "employees" is defined in def manage_archived_employee() in AdminViews.py -->
+                  {% for employee in employees %}
+                    <tr>
+
+                      <td style="min-width: 110px;">
+
+                        <form method="post" action="{% url 'delete_archived_employee' emp_id=employee.emp_id %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger mb-1" onclick="return confirm('Are you sure you want to permanently delete this employee?')">Delete</button>
+                        </form>
+
+                      </td>
+
+                      <!-- first_name etc : column names in Employees table-->
+                      <td>{{ employee.first_name }}</td>
+                      <td>{{ employee.last_name }}</td>
+                      <td>{{ employee.pid_no }}</td>
+
+                      <td>
+                        {% if employee.profile_pic %}
+                            <img src="{{ employee.profile_pic.url }}" style="width:100px; height:100px;"/>
+                        {% else %}
+                            <!-- Handle the case where there's no profile pic -->
+                            No profile picture available
+                        {% endif %}
+                    </td>
+
+
+                      <td>{{ employee.phone }}</td>
+                      <td>{{ employee.rank_id.rank_name }}</td>
+
+                      <!-- section_id is defined in models.py of Employees class, section_name is its column that we want to display. -->
+                      <td>{{ employee.section_id.section_name }}</td>
+                      <td>{{ employee.division_id.division_name }}</td>
+
+                      <!--
+                      <td>{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
+                      -->
+
+                      <!-- <td> <a href="/view_all_employee/{{ employee.emp_id }}" class="btn btn-success">View All Details</a> </td> -->
+                      <td>
+                        <a href="{% url 'view_all_archived_employee' employee.emp_id %}" class="btn btn-primary">View All Details</a>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+
+
+              <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if employees.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ employees.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ employees.number }} of {{ employees.paginator.num_pages }}.
+                        </span>
+
+                        {% if employees.has_next %}
+                            <a href="?page={{ employees.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ employees.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in employees.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == employees.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+
+
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+

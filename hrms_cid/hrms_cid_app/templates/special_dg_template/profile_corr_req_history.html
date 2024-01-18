@@ -1,0 +1,96 @@
+{% extends 'special_dg_template/base_template.html' %}
+{% block page_title %}
+Profile Correction Status & History
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+
+
+
+            <!-- /.card -->
+           <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Profile Correction Status & History</h3>
+              </div>
+
+               <div class="table table-responsive">
+               <table class="table">
+                   <tr>
+                       <th>ID</th>
+                       <th>Name</th>
+                       <th>PID</th>
+                       <th>Phone</th>
+                       <th>Rank</th>
+                       <th>Section</th>
+                       <th>Division</th>
+                       <th style="width:30%;">Profile Correction Request Message</th>
+                       <th style="width:20%;">Profile Correction Request Reply</th>
+                       <th>Sent On</th>
+                   </tr>
+
+
+                   {% for row in corr_req_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.pid }}</td>
+                            <td>{{ row.phone }}</td>
+                            <td>{{ row.rank }}</td>
+                            <td>{{ row.section }}</td>
+                            <td>{{ row.division }}</td>
+                            <td style="width:30%; white-space: pre-line;">{{ row.corr_req_msg }}</td>
+                            <td style="width:20%; white-space: pre-line;">{{ row.corr_req_reply }}</td>
+                            <td>{{ row.created_at }}</td>
+                        </tr>
+                   {% endfor %}
+
+               </table>
+               </div>
+
+               <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if corr_req_data.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ corr_req_data.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ corr_req_data.number }} of {{ corr_req_data.paginator.num_pages }}.
+                        </span>
+
+                        {% if corr_req_data.has_next %}
+                            <a href="?page={{ corr_req_data.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ corr_req_data.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in corr_req_data.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == corr_req_data.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+            </div>
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

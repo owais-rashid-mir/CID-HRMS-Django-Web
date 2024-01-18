@@ -1,11 +1,27 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
+{% load static %}    <!-- For loading 'live_search_for_login_acc.js present in 'static' folder. '  -->
 Manage User Login
 {% endblock page_title %}
 {% block main_content %}
+
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+
+        <!--  success and error messages -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
 
 
            <div class="row">
@@ -14,16 +30,22 @@ Manage User Login
               <div class="card-header">
                 <h3 class="card-title">User Login Details</h3>
 
-                <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                <!-- JS Live Search -->
+                <div class="card-tools mb-3">
+                  <div class="input-group input-group-sm" style="width: 500px;">
+                    <span class="input-group-prepend">
+                      <label class="input-group-text" for="searchInput">Search by Email</label>
+                    </span>
+
+                    <input type="text" id="searchInput" class="form-control" style="height: 38px;" placeholder="Search">
 
                     <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
                   </div>
                 </div>
-              </div>
+
+
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
 
@@ -36,8 +58,7 @@ Manage User Login
                       <th>ID</th>
                       <th>Username</th>
                       <th>Email</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
+                      <th>Last Login</th>
                       <th>Created At</th>
                       <th>User Type</th>
                     </tr>
@@ -47,14 +68,16 @@ Manage User Login
                   <!-- FOR loop to print all data. -->
                   {% for user in user %}
                     <tr>
-                      <td> <a href="/edit_user/{{ user.admin.id }}" class="btn btn-success">Edit</a> </td>
-                      <!-- Since we are using built-in Django's AbstractUser, we can fetch details from both User table and as well as CustomUser table. -->
+                      <td>
+                        <a href="/edit_user/{{ user.admin.id }}" class="btn btn-success">Edit</a>
+                        <a href="/delete_user/{{ user.admin.id }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                      </td>
+
                       <!-- username, email etc from CustomUser table. created_at from User table-->
                       <td>{{ user.admin.id }}</td>
                       <td>{{ user.admin.username }}</td>
                       <td>{{ user.admin.email }}</td>
-                      <td>{{ user.admin.first_name }}</td>
-                      <td>{{ user.admin.last_name }}</td>
+                      <td>{{ user.admin.last_login }}</td>
                       <td>{{ user.created_at }}</td>
                       <td>{{ user.admin.user_type }}</td>
 
@@ -73,5 +96,11 @@ Manage User Login
       </div>
     </section>
     <!-- /.content -->
+
+
+<!--  JS file for Live Search - for Login Accounts -->
+<script src="{% static 'dist/js/live_search_for_login_acc.js' %}"></script>
+
+
 {% endblock main_content %}
 

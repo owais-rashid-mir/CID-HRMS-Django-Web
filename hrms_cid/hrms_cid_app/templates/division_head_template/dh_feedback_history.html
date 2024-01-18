@@ -1,0 +1,96 @@
+{% extends 'division_head_template/base_template.html' %}
+{% block page_title %}
+Feedback/Report a Problem Status & History
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+
+
+
+            <!-- /.card -->
+           <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Feedback/Report a Problem Status & History</h3>
+              </div>
+
+               <div class="table table-responsive">
+               <table class="table">
+                   <tr>
+                       <th>ID</th>
+                       <th>Name</th>
+                       <th>PID</th>
+                       <th>Phone</th>
+                       <th>Rank</th>
+                       <th>Section</th>
+                       <th>Division</th>
+                       <th style="width:30%;">Feedback/Report a Problem Message</th>
+                       <th style="width:20%;">Feedback/Report a Problem Reply</th>
+                       <th>Sent On</th>
+                   </tr>
+
+
+                   {% for row in feedback_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.pid }}</td>
+                            <td>{{ row.phone }}</td>
+                            <td>{{ row.rank }}</td>
+                            <td>{{ row.section }}</td>
+                            <td>{{ row.division }}</td>
+                            <td style="width:30%; white-space: pre-line;">{{ row.feedback }}</td>
+                            <td style="width:20%; white-space: pre-line;">{{ row.feedback_reply }}</td>
+                            <td>{{ row.created_at }}</td>
+                        </tr>
+                   {% endfor %}
+
+               </table>
+               </div>
+
+               <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if feedback_data.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ feedback_data.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ feedback_data.number }} of {{ feedback_data.paginator.num_pages }}.
+                        </span>
+
+                        {% if feedback_data.has_next %}
+                            <a href="?page={{ feedback_data.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ feedback_data.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in feedback_data.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == feedback_data.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+            </div>
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

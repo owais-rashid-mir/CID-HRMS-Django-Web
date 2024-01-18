@@ -14,8 +14,14 @@ def showIndexHomepage(request):
     return render(request, "index.html")
 
 
-# def showDemoPage(request):
-     # return render(request, "demo.html")
+# About page
+def about(request):
+    return render(request, "about.html")
+
+
+# About the Developer page
+def about_the_dev(request):
+    return render(request, "about_the_dev.html")
 
 
 def ShowLoginPage(request):
@@ -23,23 +29,36 @@ def ShowLoginPage(request):
 
 
 def doLogin(request):
-    # if method is not POST, print error message
     if request.method != "POST":
         return HttpResponse("<h2>Method Not Allowed</h2>")
-    # If method is Post, allow login:
     else:
-        # "email" and "password" are the names of email and password input fields in login_page.html.
-        # EmailBackEnd is in EmailBackEnd.py file
         user = EmailBackEnd.authenticate(request, username=request.POST.get("email"),
                                          password=request.POST.get("password"))
-        # Two types of login - Admin and User
-        if user != None:
+
+        if user is not None:
             login(request, user)
+
             if user.user_type == "1":
-                # On login success, redirecting user to admin homepage
+                # Admin login
                 return HttpResponseRedirect('/admin_home')
-            else:
+            elif user.user_type == "2":
+                # User login
                 return HttpResponseRedirect(reverse("user_home"))
+            elif user.user_type == "3":
+                # Section Head login
+                return HttpResponseRedirect(reverse("section_head_home"))
+            elif user.user_type == "4":
+                # Division Head login
+                return HttpResponseRedirect(reverse("division_head_home"))
+            elif user.user_type == "5":
+                # DDO login
+                return HttpResponseRedirect(reverse("ddo_home"))
+            elif user.user_type == "6":
+                # Special DG login
+                return HttpResponseRedirect(reverse("special_dg_home"))
+            elif user.user_type == "7":
+                # IGP login
+                return HttpResponseRedirect(reverse("igp_home"))
         else:
             messages.error(request, "Invalid Login Details")
             return HttpResponseRedirect("/show_login")
@@ -53,5 +72,5 @@ def GetUserDetails(request):
 
 
 def logout_user(request):
-    logout(request)     # logout is a built-in method
-    return HttpResponseRedirect("/")    # Redirecting user back to login page
+    logout(request)  # logout is a built-in method
+    return HttpResponseRedirect("/")  # Redirecting user back to login page

@@ -1,8 +1,9 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
-User Feedback
+Feedback/Report a Problem
 {% endblock page_title %}
 {% block main_content %}
+
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -11,27 +12,37 @@ User Feedback
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">User Feedback</h3>
+                <h3 class="card-title">Feedback/Report a Problem</h3>
               </div>
               <!-- /.card-header -->
+
               <!-- form start -->
                 <div class="table">
                     <table class="table">
                         <tr>
                             <th>ID</th>
-
-                            <th>User Name</th>
-                            <th>Message</th>
+                            <th>Name</th>
+                            <th>PID</th>
+                            <th>Phone</th>
+                            <th>Rank</th>
+                            <th>Section</th>
+                            <th>Division</th>
+                            <th style="width:30%;">Feedback/Report a Problem Message</th>
+                            <th style="width:20%;">Feedback/Report a Problem Reply</th>
                             <th>Sent On</th>
-                            <th>Reply</th>
                         </tr>
+
                         {% for feedback in feedbacks %}
                         <tr>
                             <td>{{ feedback.id }}</td>
-
                             <td>{{ feedback.name }}</td>
+                            <td>{{ feedback.pid }}</td>
+                            <td>{{ feedback.phone }}</td>
+                            <td>{{ feedback.rank }}</td>
+                            <td>{{ feedback.section }}</td>
+                            <td>{{ feedback.division }}</td>
                             <td>{{ feedback.feedback }}</td>
-                            <td>{{ feedback.created_at }}</td>
+
                             <td>
                                 {% if feedback.feedback_reply == "" %}
                                 <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#reply_modal">Reply</button>
@@ -40,9 +51,44 @@ User Feedback
                                 {% endif %}
                             </td>
 
+                            <td>{{ feedback.created_at }}</td>
+
                         </tr>
                         {% endfor %}
                     </table>
+
+                </div>
+                
+                <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if feedbacks.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ feedbacks.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ feedbacks.number }} of {{ feedbacks.paginator.num_pages }}.
+                        </span>
+
+                        {% if feedbacks.has_next %}
+                            <a href="?page={{ feedbacks.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ feedbacks.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in feedbacks.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == feedbacks.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
                 </div>
 
             </div>

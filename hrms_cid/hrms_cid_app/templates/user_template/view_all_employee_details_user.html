@@ -1,0 +1,288 @@
+{% extends 'user_template/base_template.html' %}
+{% block page_title %}
+<!--  'employee' is defined in def view_all_employee_user() in UserViews.py   -->
+View All Employee Details | Name : {{employee.first_name}} {{employee.last_name}} | #ID : {{employee.emp_id}}
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header text-center">
+                <h3 class="card-title">Employee Details</h3>
+
+                  <!-- JS code for this button is at the bottom-->
+                  <button class="btn btn-primary text-white mb-2" id="saveAsPdfButton" type="button">Download/Print Employee Information</button>
+
+
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered" style="width:100%">
+                  <tbody>
+                    <tr>
+                      <th style="width:30%"> Employee ID</th>
+                      <!-- employee is defined in def view_all_employee() in the line employee = get_object_or_404(Employees, emp_id=emp_id) -->
+                      <td style="width:70%"> {{ employee.emp_id }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">First Name</th>
+                      <td style="width:70%">{{ employee.first_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Last Name</th>
+                      <td style="width:70%">{{ employee.last_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">PID Number</th>
+                      <td style="width:70%">{{ employee.pid_no }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Profile Picture</th>
+                      <td style="width:70%">
+                          {% if employee.profile_pic %}
+                              <a href="{{ employee.profile_pic.url }}">
+                                  <img src="{{ employee.profile_pic.url }}" style="width:300px; height:300px;" />
+                              </a>
+                              <div>
+                                  <a href="{{ employee.profile_pic.url }}" style="text-decoration: none; color:green">Click on the picture to view it in full size</a>
+                              </div>
+                          {% else %}
+                              <!-- Handle the case where there's no profile pic -->
+                              No profile picture available
+                          {% endif %}
+                      </td>
+                  </tr>
+
+
+
+
+
+                    <tr>
+                      <th style="width:30%">Gender</th>
+                      <td style="width:70%">{{ employee.gender }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Email</th>
+                      <td style="width:70%">{{ employee.email }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Phone</th>
+                      <td style="width:70%">{{ employee.phone }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Address</th>
+                      <td style="width:70%">{{ employee.address }}</td>
+                    </tr>
+
+
+                    <tr>
+                      <th style="width:30%">Tehsil</th>
+                      <td style="width:70%">{{ employee.tehsil }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">District</th>
+                      <td style="width:70%">{{ employee.district }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Parentage</th>
+                      <td style="width:70%">{{ employee.parentage }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Mother's Name</th>
+                      <td style="width:70%">{{ employee.mother_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Belt Number</th>
+                      <td style="width:70%">{{ employee.belt_no }}</td>
+                    </tr>
+
+
+                    <tr>
+                      <th style="width:30%">Date Of Joining In CID</th>
+                      <td style="width:70%">{{ employee.date_joined }}</td>
+                    </tr>
+
+                    <tr>
+                        <th style="width:30%">Date Of Joining In CID - Document File</th>
+                        <td style="width:70%">
+                            {% if doc_file %}
+                                <a href="{{ doc_file }}" target="_blank">View/Download Document</a>
+                            {% else %}
+                                No document uploaded
+                            {% endif %}
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                      <th style="width:30%">Date Of Appointment In Police</th>
+                      <td style="width:70%">{{ employee.date_appointment_police }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">DOB</th>
+                      <td style="width:70%">{{ employee.dob }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Rank</th>
+                      <td style="width:70%">{{ employee.rank_id.rank_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Aadhar Number</th>
+                      <td style="width:70%">{{ employee.aadhar_number }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">PAN Card Number</th>
+                      <td style="width:70%">{{ employee.pan_number }}</td>
+                    </tr>
+
+
+                    <tr>
+                      <th style="width:30%">Qualifications</th>
+                      <td style="width:70%">{{ employee.qualifications }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Previous Positions Held Within CID</th>
+                      <td style="width:70%">{{ employee.previous_positions_held_within_cid }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Previous Positions Held Outside CID</th>
+                      <td style="width:70%">{{ employee.previous_positions_held_outside_cid }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%; white-space: pre-line;">Dialogue and Public Speaking Skills(Average, Good or Excellent)?</th>
+                      <td style="width:70%">{{ employee.dialogue }}</td>
+                    </tr>
+
+                    <tr>
+                      <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
+                      <th style="width:30%">Adverse Reports</th>
+                      <td style="width:70%; white-space: pre-line;">{{ employee.adverse_report }}</td>
+                    </tr>
+
+
+                    <tr>
+                      <!-- section_id is defined in models.py of Employees class, section_name is its column that we want to display. -->
+                      <th style="width:30%">Section</th>
+                      <td style="width:70%">{{ employee.section_id.section_name }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Division</th>
+                      <td style="width:70%">{{ employee.division_id.division_name }}</td>
+                    </tr>
+
+                    <!--
+                    <tr>
+                      <th style="width:30%">Supervisor</th>
+                      <td style="width:70%">{{ employee.supervisor_id.first_name }} {{ employee.supervisor_id.last_name }}</td>
+                    </tr>
+                    -->
+
+                    <tr>
+                      <th style="width:30%">Computer Knowledge?</th>
+                      <td style="width:70%">{{ employee.computer_knowledge }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Computer Degree or Diploma?</th>
+                      <td style="width:70%">{{ employee.computer_degree }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Computer Skill(Poor, Good or Excellent)?</th>
+                      <td style="width:70%">{{ employee.computer_skill }}</td>
+                    </tr>
+
+                  <tr>
+                      <th style="width:30%">Previous Trainings Done</th>
+                      <td style="width:70%">{{ employee.previous_trainings_done }}</td>
+                    </tr>
+
+                  <tr>
+                      <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
+                      <th style="width:30%">Remarks/Additional Employee Information</th>
+                      <td style="width:70%; white-space: pre-line;">{{ employee.other_emp_info }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Casual Leave Counter</th>
+                      <td style="width:70%">{{ employee.casual_leave_counter }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Earned Leave Counter</th>
+                      <td style="width:70%">{{ employee.earned_leave_counter }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Paternity/Maternity Leave Counter</th>
+                      <td style="width:70%">{{ employee.paternity_maternity_leave_counter }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Committed Leave Counter</th>
+                      <td style="width:70%">{{ employee.committed_leave_counter }}</td>
+                    </tr>
+
+
+                  <tr>
+                      <th style="width:30%">Created at</th>
+                      <td style="width:70%">{{ employee.created_at }}</td>
+                    </tr>
+
+                    <tr>
+                      <th style="width:30%">Updated at</th>
+                      <td style="width:70%">{{ employee.updated_at }}</td>
+                    </tr>
+
+
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+
+<!-- JS code for Download/Print Employee Information button. -->
+<script>
+document.getElementById('saveAsPdfButton').addEventListener('click', function() {
+  // Trigger the browser's print dialog
+  window.print();
+});
+</script>
+
+{% endblock main_content %}

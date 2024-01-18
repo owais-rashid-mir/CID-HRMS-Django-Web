@@ -9,14 +9,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
+      <!-- Sidebar user panel  -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
           <img src="{% static "dist/img/avatar5.png" %}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <!-- Displaying the admin name at the top of sidebar. -->
-          <a href="{% url 'admin_home' %}" class="d-block">Logged in as: {{ user.username }}</a>
+          <a href="{% url 'my_profile_admin' %}" class="d-block">Logged In As : <br> {{ user.username }}</a>
         </div>
       </div>
 
@@ -44,6 +44,14 @@
             </ul>
           </li>
 
+          <li class="nav-item">
+                {% url 'my_profile_admin' as my_profile_admin %}
+                <a href="{% url 'my_profile_admin' %}" class="nav-link {% if request.path == my_profile_admin %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="fas fa-user-circle nav-icon"></i>
+                  <p>My Profile</p>
+                </a>
+              </li>
+
 
           <li class="nav-item has-treeview">
             <a href="" class="nav-link">
@@ -68,13 +76,30 @@
                 {% url 'manage_employee' as manage_employee %}
                 <a href="{% url 'manage_employee' %}" class="nav-link {% if request.path == manage_employee %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Employees</p>
+                  <p>Manage/View Employees</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'employee_search' as employee_search %}
+                <a href="{% url 'employee_search' %}" class="nav-link {% if request.path == employee_search %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Search Employees</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_archived_employee' as manage_archived_employee %}
+                <a href="{% url 'manage_archived_employee' %}" class="nav-link {% if request.path == manage_archived_employee %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Archived Employees</p>
                 </a>
               </li>
 
             </ul>
-
           </li>
+
+
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-building"></i>
@@ -129,9 +154,9 @@
                 </a>
               </li>
             </ul>
-
-
             </li>
+
+
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-star"></i>
@@ -159,9 +184,8 @@
               </li>
 
             </ul>
-
-
           </li>
+
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-edit"></i>
@@ -173,10 +197,36 @@
             <ul class="nav nav-treeview">
 
               <li class="nav-item">
-                {% url 'user_leave_view' as user_leave_view %}
-                <a href="{% url 'user_leave_view' %}" class="nav-link {% if request.path == user_leave_view %} active {% endif %}">
+                {% url 'admin_apply_leave' as admin_apply_leave %}
+                <a href="{{ admin_apply_leave }}" class="nav-link {% if request.path == admin_apply_leave %} active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Manage Leaves</p>
+                  <p>Apply for Leave</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'admin_leave_history' as admin_leave_history %}
+                <a href="{{ admin_leave_history }}" class="nav-link {% if request.path == admin_leave_history %} active {% endif %} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Applied Leave Status</p> <br>
+                  <p class="text-center">& History</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'edit_leave_counters' as edit_leave_counters %}
+                <a href="{% url 'edit_leave_counters' %}" class="nav-link {% if request.path == edit_leave_counters %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Edit Leave Counters</p> <br>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'view_all_dept_leaves' as view_all_dept_leaves %}
+                <a href="{% url 'view_all_dept_leaves' %}" class="nav-link {% if request.path == view_all_dept_leaves %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View All Department</p> <br>
+                  <p>Leaves</p>
                 </a>
               </li>
 
@@ -184,6 +234,7 @@
 
             </ul>
 
+            <!--
           </li>
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -213,12 +264,13 @@
             </ul>
 
           </li>
+          -->
 
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-comments"></i>
               <p>
-                Feedbacks
+                Feedback/R.A.P
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -227,10 +279,32 @@
                 {% url 'user_feedback_message' as user_feedback_message %}
                 <a href="{% url 'user_feedback_message' %}" class="nav-link {% if request.path == user_feedback_message %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>View/Manage Feedbacks</p>
+                  <p>Manage Feedback/Reports</p>
                 </a>
               </li>
 
+            </ul>
+
+            </li>
+
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-check-square"></i>
+              <p>
+                Profile Correction Request
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'pcr_msg' as pcr_msg %}
+                <a href="{{ pcr_msg }}" class="nav-link {% if request.path == pcr_msg %} active {% endif %} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Profile Correction Request</p>
+                </a>
+              </li>
             </ul>
 
             </li>
@@ -239,13 +313,30 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-sign-in-alt"></i>
               <p>
-                User Login
+                Login Accounts
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
+
               <li class="nav-item">
-                <!-- add_user is defined in urls.py. It is a function in AdminViews.py which calls add_user_template.html. -->
+                <!-- add_admin is defined in urls.py. It is a function in AdminViews.py which calls add_admin_template.html. -->
+                {% url 'add_admin' as add_admin %}
+                <a href="{% url 'add_admin' %}" class="nav-link {% if request.path == add_admin %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Admin Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_admin' as manage_admin %}
+                <a href="{% url 'manage_admin' %}" class="nav-link {% if request.path == manage_admin %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Admin Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
                 {% url 'add_user' as add_user %}
                 <a href="{% url 'add_user' %}" class="nav-link {% if request.path == add_user %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -260,9 +351,91 @@
                   <p>Manage User Login</p>
                 </a>
               </li>
+
+              <li class="nav-item">
+                {% url 'add_section_head' as add_section_head %}
+                <a href="{% url 'add_section_head' %}" class="nav-link {% if request.path == add_section_head %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Section Head Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_section_head' as manage_section_head %}
+                <a href="{% url 'manage_section_head' %}" class="nav-link {% if request.path == manage_section_head %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Section Head Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'add_division_head' as add_division_head %}
+                <a href="{% url 'add_division_head' %}" class="nav-link {% if request.path == add_division_head %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Division Head Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_division_head' as manage_division_head %}
+                <a href="{% url 'manage_division_head' %}" class="nav-link {% if request.path == manage_division_head %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Division Head Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'add_ddo' as add_ddo %}
+                <a href="{% url 'add_ddo' %}" class="nav-link {% if request.path == add_ddo %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add DDO Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_ddo' as manage_ddo %}
+                <a href="{% url 'manage_ddo' %}" class="nav-link {% if request.path == manage_ddo %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage DDO Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'add_special_dg' as add_special_dg %}
+                <a href="{% url 'add_special_dg' %}" class="nav-link {% if request.path == add_special_dg %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Special DG Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_special_dg' as manage_special_dg %}
+                <a href="{% url 'manage_special_dg' %}" class="nav-link {% if request.path == manage_special_dg %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Special DG Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'add_igp' as add_igp %}
+                <a href="{% url 'add_igp' %}" class="nav-link {% if request.path == add_igp %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add IGP Login</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_igp' as manage_igp %}
+                <a href="{% url 'manage_igp' %}" class="nav-link {% if request.path == manage_igp %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage IGP Login</p>
+                </a>
+              </li>
+
+
             </ul>
 
-
+          <!--
           </li>
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -274,7 +447,6 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <!-- add_admin_security_question is defined in urls.py -->
                 {% url 'add_admin_security_question' as add_admin_security_question %}
                 <a href="{% url 'add_admin_security_question' %}" class="nav-link {% if request.path == add_admin_security_question %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -292,7 +464,6 @@
 
 
               <li class="nav-item">
-                <!-- add_user_security_question is defined in urls.py -->
                 {% url 'add_user_security_question' as add_user_security_question %}
                 <a href="{% url 'add_user_security_question' %}" class="nav-link {% if request.path == add_user_security_question %} active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -308,12 +479,9 @@
                 </a>
               </li>
 
-
-
-
             </ul>
 
-
+            -->
 
 
             <li class="nav-item">
@@ -330,7 +498,7 @@
           </li>
           <li class="nav-header">OTHER QUICK LINKS</li>
           <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="/about" class="nav-link">
               <i class="nav-icon fas fa-info"></i>
               <p>
                 About
@@ -340,7 +508,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="/about_the_dev" class="nav-link">
               <i class="nav-icon fas fa-info-circle"></i>
               <p>
                 About the Developers

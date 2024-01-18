@@ -1,0 +1,107 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+{% load static %}
+Add IGP Login
+{% endblock page_title %}
+{% block main_content %}
+
+<!-- Add IGP login  -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add IGP Login</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <!-- form start -->
+                    <form role="form" action="/add_igp_save" method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label for="employeeSearchInput">Employee <span class="text-danger"> *(required)</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="employeeSearchInput" placeholder="Search employee by First name, Last name, Email or PID..." autocomplete="off">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearSearchButton">Clear</button>
+                                    </div>
+                                    <div class="dropdown-menu" aria-labelledby="employeeSearchInput" style="max-height: 300px; overflow-y: auto;">
+                                        {% for employee in employees %}
+                                        <a class="dropdown-item" href="#" data-value="{{ employee.emp_id }}" data-email="{{ employee.email }}">
+                                            {{ employee.first_name }} {{ employee.last_name }} | Email: {{ employee.email }} | PID: {{ employee.pid_no }}
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="employee" id="selectedEmployee" value="">
+
+                            <!-- Readonly fields for Email -->
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="" readonly>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Password <span class="text-danger"> *(required)</span> </label> <br>
+                                <p class="font-italic text-primary"> (Password must be at least 8 characters or longer and must not contain any spaces.) </p>
+                                <input type="text" class="form-control" placeholder="Password" name="password" autocomplete="off" required>
+                            </div>
+
+                            <!--  success and error messages -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary btn-block">Add IGP Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+<script>
+    // THIS SCRIPT IS NOT BEING USED - KEPT FOR REFERENCE.
+    // Add event listener to the employee select dropdown
+    document.getElementById('employeeSelect').addEventListener('change', function () {
+        // Get the selected employee option
+        var selectedEmployee = this.options[this.selectedIndex];
+
+        // Update the readonly fields with the selected employee's email and division
+        document.getElementById('email').value = selectedEmployee.dataset.email;
+    });
+</script>
+
+<!--  JS file for searching employees in dropdown menu - for Login Accounts -->
+<script src="{% static 'dist/js/search_employee_in_dropdown.js' %}"></script>
+
+{% endblock main_content %}
+
+
+
+
+

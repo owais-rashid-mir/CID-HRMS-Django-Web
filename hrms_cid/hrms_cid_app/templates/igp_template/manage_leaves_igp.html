@@ -1,0 +1,166 @@
+{% extends 'igp_template/base_template.html' %}
+{% block page_title %}
+Manage Leaves - IGP
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Manage Leaves</h3>
+              </div>
+              <!-- /.card-header -->
+
+                <!-- For printing error and success messages. -->
+                <div class="form-group">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == 'error' or message.tags == 'warning' %}
+                                <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                            {% endif %}
+                            {% if message.tags == 'success' %}
+                                <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+
+              <!-- form start -->
+                <div class="table">
+                    <table class="table">
+                        <tr>
+                            <th>User Name</th>
+                            <th>Leave Start Date</th>
+                            <th>Leave End Date</th>
+                            <th>Leave Message</th>
+                            <th>Applied On</th>
+
+                            <th>Leave Type</th>
+                            <th>Rank</th>
+                            <th>Section</th>
+                            <th>Division</th>
+
+                            <th>Division Head Approval Status</th>
+
+                            <th>Approve/Disapprove</th>
+                            <th>Override Approve/Disapprove</th>
+                        </tr>
+
+                        {% for leave in leaves %}
+                        <tr>
+                            <td>{{ leave.name }} </td>
+                            <td>{{ leave.leave_start_date }}</td>
+                            <td>{{ leave.leave_end_date }}</td>
+                            <td>{{ leave.leave_message }}</td>
+                            <td>{{ leave.created_at }}</td>
+
+                            <td>{{ leave.leave_type }}</td>
+                            <td>{{ leave.rank }}</td>
+                            <td>{{ leave.section }}</td>
+                            <td>{{ leave.division }}</td>
+
+
+                            
+                            {% if leave and leave.rank == 'DySP' or leave.rank == 'SP' or leave.rank == 'Senior PO' or leave.rank == 'CPO' or leave.rank == 'DDP' or leave.rank == 'DIG' or leave.rank == 'IGP' or leave.rank == 'ADGP' or leave.rank == 'Special DG' %}
+                                    <!-- Division Head Approval Status - Show only for Gazetted ranks (without SSP) -->
+                                        <td>
+                                            {% if leave.division_head_approval_status == 1 %}
+                                                <span class="text-success font-weight-bold">Approved</span>
+                                            {% elif leave.division_head_approval_status == 2 %}
+                                                <span class="text-danger font-weight-bold">Disapproved</span>
+                                            {% else %}
+                                                <span class="text-primary font-weight-bold">Pending</span>
+                                            {% endif %}
+                                        </td>
+                            {% else %}
+                                <!-- Show "Not Required" for Non Gazetted ranks -->
+                            <td class="text-secondary font-weight-bold">
+                                Not Required
+                            </td>
+                            {% endif %}
+
+
+
+                            <td>
+                                {% if leave.igp_approval_status == 0 %}
+                                <a href="{% url 'approve_leave_igp' leave_id=leave.id %}" class="btn btn-success mb-1" onclick="return confirm('Are you sure you want to approve this leave?')" >Approve</a>
+
+                                <a class="btn btn-danger" href="{% url 'disapprove_leave_igp' leave_id=leave.id %}" onclick="return confirm('Are you sure you want to disapprove this leave?')" >Disapprove</a>
+
+                                {% elif leave.igp_approval_status == 1  %}
+                                 <button class="btn btn-warning" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Approved</button>
+
+                                {% else %}
+                                <button class="btn btn-danger" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Disapproved</button>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if leave.igp_approval_status == 0 %}
+                                <a href="{% url 'override_approve_leave_igp' leave_id=leave.id %}" class="btn btn-success mb-1" onclick="return confirm('Are you sure you want to approve this leave by overriding?')" >Override Approve</a>
+
+                                <a class="btn btn-danger" href="{% url 'override_disapprove_leave_igp' leave_id=leave.id %}" onclick="return confirm('Are you sure you want to disapprove this leave by overriding?')" >Override Disapprove</a>
+
+                                {% elif leave.igp_approval_status == 1  %}
+                                 <button class="btn btn-warning" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Approved(Overridden)</button>
+
+                                {% else %}
+                                <button class="btn btn-danger" disabled="disabled" data-toggle="modal" data-target="#reply_modal">Disapproved(Overridden)</button>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if leaves.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ leaves.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ leaves.number }} of {{ leaves.paginator.num_pages }}.
+                        </span>
+
+                        {% if leaves.has_next %}
+                            <a href="?page={{ leaves.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ leaves.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in leaves.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == leaves.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+            </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+  <!-- Modal -->
+
+    <!-- /.content -->
+{% endblock main_content %}

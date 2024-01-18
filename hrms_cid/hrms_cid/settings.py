@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'hrms_cid_app',
-    # 'django_cleanup.apps.CleanupConfig',    # For automatically deleting the images or files in the "media" local folder when the associated record with these images/files are deleted.
 ]
 
 MIDDLEWARE = [
@@ -57,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'hrms_cid_app.LoginCheckMiddleWare.LoginCheckMiddleWare'
+    'hrms_cid_app.LoginCheckMiddleWare.LoginCheckMiddleWare',   # Middleware file
 ]
 
 ROOT_URLCONF = 'hrms_cid.urls'
@@ -129,7 +128,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# This assumes that you have a directory named static at the root of your Django project where your static files are located. I
+# This assumes that we have a directory named static at the root of your Django project where the static files are located. I
 STATIC_URL = 'static/'
 
 # Default primary key field type
@@ -137,5 +136,26 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'user_activity_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'user_activity.log',  # Logging data stored in user_activity.log file.
+        },
+    },
+    'loggers': {
+        'user_activity': {
+            'handlers': ['user_activity_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
 # EmailBackEnd is in EmailBackEnd.py file
 AUTHENTICATION_BACKENDS = ['hrms_cid_app.EmailBackEnd.EmailBackEnd']
+

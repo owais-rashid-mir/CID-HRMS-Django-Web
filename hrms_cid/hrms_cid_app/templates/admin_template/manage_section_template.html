@@ -8,7 +8,7 @@ Manage Sections
       <div class="container-fluid">
 
 
-        <!--  code for success and error messages - will be displayed at the top -->
+        <!--  code for success and error messages -->
                       <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}
@@ -29,15 +29,22 @@ Manage Sections
               <div class="card-header">
                 <h3 class="card-title">Section Details</h3>
 
+                <!-- Search -->
                 <div class="card-tools">
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                  <div class="input-group input-group-sm" style="width: 500px;">
+                    <span class="input-group-prepend">
+                      <label class="input-group-text" for="sectionSearchInput">Search by Section Name</label>
+                    </span>
+
+                    <input type="text" id="sectionSearchInput" class="form-control" style="height: 38px;" placeholder="Search">
 
                     <div class="input-group-append">
-                      <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
                   </div>
                 </div>
+
+
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -50,7 +57,9 @@ Manage Sections
                       <th>Section ID</th>
                       <th>Section Name</th>
                       <th>Description</th>
-                      <th>Section Supervisor/Incharge</th>
+                      <th>Section Head/Supervisor</th>
+                      <th>Division to which this Section belongs</th>
+                      <th>View More Details</th>
                     </tr>
                   </thead>
 
@@ -73,6 +82,12 @@ Manage Sections
                       <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
                       <td style="white-space: pre-line;"> {{ section.description }}</td>
                       <td>{{ section.section_incharge }}</td>
+                      <td style="white-space: pre-line;"> {{ section.division.division_name }}</td>
+
+                      <td>
+                        <a href="{% url 'view_all_section_details' section.section_id %}" class="btn btn-primary">View</a>
+                      </td>
+
                     </tr>
                   {% endfor %}
                   </tbody>
@@ -88,5 +103,48 @@ Manage Sections
       </div>
     </section>
     <!-- /.content -->
+
+
+<!-- Javascript live search. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const sectionSearchInput = document.getElementById('sectionSearchInput');
+    const tableRows = document.querySelectorAll('.table tbody tr');
+
+    sectionSearchInput.addEventListener('input', function () {
+      const searchTerm = sectionSearchInput.value;
+
+      tableRows.forEach(function (row) {
+        // Section Head is the 3rd column in the table, and we will search on that.
+        const sectionNameCell = row.querySelector('td:nth-child(3)');
+        const originalText = sectionNameCell.getAttribute('data-original-text');
+        const sectionName = originalText.toLowerCase();
+
+        if (sectionName.includes(searchTerm.toLowerCase())) {
+          // Highlight matching text
+          const highlightedText = originalText.replace(
+            new RegExp(searchTerm, 'gi'),
+            match => `<span style="background-color: yellow;">${match}</span>`
+          );
+          sectionNameCell.innerHTML = highlightedText;
+
+          row.style.display = '';
+        } else {
+          // Reset the content and hide the row if not matching
+          sectionNameCell.innerHTML = originalText;
+          row.style.display = 'none';
+        }
+      });
+    });
+
+    // Store the original text in a data attribute
+    tableRows.forEach(function (row) {
+      const sectionNameCell = row.querySelector('td:nth-child(3)');
+      sectionNameCell.setAttribute('data-original-text', sectionNameCell.textContent);
+    });
+  });
+</script>
+
+
 {% endblock main_content %}
 

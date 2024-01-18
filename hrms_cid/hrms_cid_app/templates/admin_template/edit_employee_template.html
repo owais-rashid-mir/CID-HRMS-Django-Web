@@ -22,7 +22,7 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                 <div class="card-body">
 
 
-                  <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                  <!--   success and error messages  -->
                       <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}
@@ -51,13 +51,23 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ employees.last_name }}" required>
                   </div>
 
+                    <div class="form-group">
+                    <label>PID Number <span class="text-danger"> *(required)</span> </label>
+                    <input type="text" class="form-control" placeholder="PID Number" name="pid_no" value="{{ employees.pid_no }}" required>
+                  </div>
+
+                    <div class="form-group">
+                    <label>CPIS Number</label>
+                    <input type="text" class="form-control" placeholder="CPIS Number" name="cpis" value="{{ employees.cpis }}" >
+                  </div>
+
 
                   <!-- accept="image/*" ensures that user can only select image format files. -->
                    <div class="form-group">
                     <label>Profile Picture </label>
 
                      <!-- value="{{ employee.profile_pic }}" in <input> will NOT work with an image, so use this: -->
-                     <div class="text-success font-italic">
+                     <div class="text-primary font-weight-bold font-italic">
                         Current Image Name: {{ employees.profile_pic }}
                      </div>
 
@@ -84,7 +94,7 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <!-- For multiple phone numbers: -->
                     <div class="form-group">
                         <label>Phone Number(s) <span class="text-danger"> *(required) </span></label><br>
-                        <label><span class="text-danger">(Click the 'Add Another Number' button to add multiple phone numbers.)</span></label>
+                        <label><span class="text-primary font-italic">(Click the 'Add Another Number' button to add multiple phone numbers.)</span></label>
                             <div id="phone_numbers_container">
                             {% for phone in phone_numbers %}
                                 <div class="input-group mb-3">
@@ -109,15 +119,22 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                   </div>
 
 
+                    <div class="form-group">
+                    <label>District</label>
+                    <select class="form-control" name="district">
+                        <option value="">--Choose an option--</option>
+                        {% for district in districts %}
+                            <option value="{{ district }}" {% if employees.district == district %} selected {% endif %}>{{ district }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
                   <div class="form-group">
                     <label>Tehsil</label>
                     <input type="text" class="form-control" placeholder="Tehsil" name="tehsil" value="{{ employees.tehsil }}">
                   </div>
 
-                  <div class="form-group">
-                    <label>District</label>
-                    <input type="text" class="form-control" placeholder="District" name="district" value="{{ employees.district }}">
-                  </div>
 
                   <div class="form-group">
                     <label>Parentage</label>
@@ -134,10 +151,6 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <input type="text" class="form-control" placeholder="Belt Number" name="belt_no" value="{{ employees.belt_no }}">
                   </div>
 
-                  <div class="form-group">
-                    <label>PID Number</label>
-                    <input type="text" class="form-control" placeholder="PID Number" name="pid_no" value="{{ employees.pid_no }}">
-                  </div>
 
 
                   <div class="form-group">
@@ -149,9 +162,9 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
 
                     <div class="form-group">
                         <label>Date Of Joining In CID - Document File Upload</label>
-                        <label> <span class="text-danger"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
+                        <label> <span class="text-primary font-italic"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
 
-                     <div class="text-success font-italic">
+                     <div class="text-primary font-italic font-weight-bold">
                         Current Document Name: {{ employees.document_file }}
                      </div>
 
@@ -186,7 +199,8 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
 
                     <div class="form-group">
                     <label>Aadhar Number <span class="text-danger"> *(required)</span> </label>
-                    <input type="text" class="form-control" placeholder="Aadhar Number" name="aadhar_number" value="{{ employees.aadhar_number }}" required>
+                        <p class="font-italic text-primary font-weight-bold"> (Aadhar Number should be a 12-digit number.) </p>
+                    <input type="number" class="form-control" placeholder="Aadhar Number" name="aadhar_number" value="{{ employees.aadhar_number }}" required>
                   </div>
 
                     <div class="form-group">
@@ -275,7 +289,7 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     <div class="form-group">
                         <label for="adverse_report">Adverse Reports</label>
                       <!-- <textarea> element doesn't use the value attribute like other input elements -->
-                        <textarea class="form-control" id="adverse_report" name="adverse_report" placeholder="Any Adverse Reports?"> {{ employees.adverse_report }} </textarea>
+                        <textarea rows="3" class="form-control" id="adverse_report" name="adverse_report" placeholder="Any Adverse Reports?"> {{ employees.adverse_report }} </textarea>
                     </div>
 
                   <div class="form-group">
@@ -301,9 +315,9 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     </select>
                   </div>
 
+                    <!--
                   <div class="form-group">
                     <label>Supervisor <span class="text-danger"> *(required)</span> </label>
-                    <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
                     <select class="form-control" name="supervisor" required>
                       <option value="">--Choose an option--</option>
                       {% for supervisor in supervisors %}
@@ -311,11 +325,12 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                       {% endfor%}
                     </select>
                   </div>
+                  -->
 
 
                   <!-- Computer Knowledge. Check its JS below -->
                   <div class="form-group">
-                    <label>Computer Knowledge</label>
+                    <label>Computer Knowledge?</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="computer_knowledge" id="computer_knowledge_yes" value="Yes" {% if employees.computer_knowledge == "Yes" %} checked {% endif %}>
                         <label class="form-check-label" for="computer_knowledge_yes">
@@ -374,15 +389,43 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     </div>
 
 
+                  <div class="form-group">
+                        <label for="other_emp_info">Remarks/Additional Employee Information</label>
+                      <!-- <textarea> element doesn't use the value attribute like other input elements -->
+                        <textarea rows="5" class="form-control" id="other_emp_info" name="other_emp_info" placeholder="Remarks/Additional Employee Information"> {{ employees.other_emp_info }} </textarea>
+                    </div>
 
 
-                  <!-- You can also put the success and error messages here to show them at the bottom. -->
+                  <!-- Leave Counters -->
+                  <label class="mt-4">Leave Counters: </label> <br>
+
+                  <div class="form-group">
+                    <label>Casual Leave Counter (Limit=20)</label>
+                    <input type="number" class="form-control" placeholder="Enter the casual leaves taken by the employee this year" name="casual_leave_counter" value="{{ employees.casual_leave_counter }}" >
+                  </div>
+
+                  <div class="form-group">
+                    <label>Earned Leave Counter</label>
+                    <input type="number" class="form-control" placeholder="Enter the earned leaves taken by the employee this year" name="earned_leave_counter" value="{{ employees.earned_leave_counter }}">
+                </div>
+
+                  <div class="form-group">
+                    <label>Paternity/Maternity Leave Counter</label>
+                    <input type="number" class="form-control" placeholder="Enter the paternity/maternity leaves taken by the employee" name="paternity_maternity_leave_counter" value="{{ employees.paternity_maternity_leave_counter }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Committed Leave Counter</label>
+                    <input type="number" class="form-control" placeholder="Enter the committed leaves taken by the employee" name="committed_leave_counter" value="{{ employees.committed_leave_counter }}">
+                </div>
+
+
 
                 </div>
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Edit Employee</button>
+                  <button type="submit" class="btn btn-primary btn-block">Edit/Update Employee</button>
                 </div>
               </form>
             </div>

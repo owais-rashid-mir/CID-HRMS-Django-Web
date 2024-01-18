@@ -1,0 +1,167 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Profile Correction Request
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Profile Correction Request</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="table">
+                    <table class="table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>PID</th>
+                            <th>Phone</th>
+                            <th>Rank</th>
+                            <th>Section</th>
+                            <th>Division</th>
+                            <th>Sent On</th>
+                            <th style="width:30%;">Profile Correction Request Message</th>
+                            <th style="width:20%;">Reply</th>
+                        </tr>
+                        {% for pcr_msgs in pcr_msgs %}
+                        <tr>
+                            <td>{{ pcr_msgs.id }}</td>
+                            <td>{{ pcr_msgs.name }}</td>
+                            <td>{{ pcr_msgs.pid }}</td>
+                            <td>{{ pcr_msgs.phone }}</td>
+                            <td>{{ pcr_msgs.rank }}</td>
+                            <td>{{ pcr_msgs.section }}</td>
+                            <td>{{ pcr_msgs.division }}</td>
+                            <td>{{ pcr_msgs.created_at }}</td>
+                            <td style="width:30%; white-space: pre-line;">{{ pcr_msgs.corr_req_msg }}</td>
+                            <td>
+                                {% if pcr_msgs.corr_req_reply == "" %}
+                                <button class="btn btn-success reply_open_modal" data-toggle="modal" data-target="#reply_modal">Reply</button>
+                                {% else %}
+                                {{ pcr_msgs.corr_req_reply }}
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if pcr_msgs.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ pcr_msgs.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ pcr_msgs.number }} of {{ pcr_msgs.paginator.num_pages }}.
+                        </span>
+
+                        {% if pcr_msgs.has_next %}
+                            <a href="?page={{ pcr_msgs.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ pcr_msgs.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in pcr_msgs.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == pcr_msgs.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+            </div>
+            <!-- /.card -->
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+
+  <!-- Modal - a pop-up window for Feedback Reply -->
+  <div class="modal fade" id="reply_modal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Reply</h4>
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+        </div>
+        <div class="modal-body">
+          <p>Reply To : <span id="reply_name"></span></p>
+            <input type="hidden" id="reply_id" name="reply_id">
+            <textarea class="form-control" rows="5" id="reply_message"></textarea>
+            <button id="reply_btn" class="btn btn-info btn-block">Reply</button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+    <!-- /.content -->
+{% endblock main_content %}
+{% block custom_js %}
+
+
+<script>
+    $(document).ready(function(){
+        $(".reply_open_modal").click(function(){
+            var id=$(this).parents("tr").children("td:eq(0)").text();
+            var name=$(this).parents("tr").children("td:eq(2)").text();
+            $("#reply_id").val(id);
+            $("#reply_name").text(name);
+        });
+
+
+        $(document).on("click","#reply_btn",function(){
+
+                $(this).attr("disabled","disabled")
+                $(this).text("Sending Reply...")
+
+                var id=$("#reply_id").val();
+                var message=$("#reply_message").val()
+
+                $.ajax({
+                        url:'{% url 'pcr_msg_replied' %}',
+                        type:'POST',
+                        data:{id:id,message:message},
+                    })
+                    .done(function(response){
+
+                        if(response=="True"){
+                            alert("Reply Sent")
+                        }
+                        else{
+                            alert("Error in Sending Reply")
+                        }
+                        location.reload()
+                    })
+                    .fail(function(){
+                        alert("Error in Sending Reply")
+                    })
+           });
+
+    });
+</script>
+{% endblock custom_js %}

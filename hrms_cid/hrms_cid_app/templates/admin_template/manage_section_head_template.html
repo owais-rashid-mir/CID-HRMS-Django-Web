@@ -1,0 +1,105 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+{% load static %}
+Manage Section Head Login
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+        <!--  success and error messages -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+
+           <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Section Head Login Details</h3>
+
+                <!-- JS Live Search -->
+                <div class="card-tools mb-3">
+                  <div class="input-group input-group-sm" style="width: 500px;">
+                    <span class="input-group-prepend">
+                      <label class="input-group-text" for="searchInput">Search by Email</label>
+                    </span>
+
+                    <input type="text" id="searchInput" class="form-control" style="height: 38px;" placeholder="Search">
+
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                  </div>
+                </div>
+
+
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+                      <th>ID</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Section</th>
+                      <th>Last Login</th>
+                      <th>Created At</th>
+                      <th>User Type</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                  {% for section_head in section_head %}
+                    <tr>
+                      <td>
+                        <a href="{% url 'edit_section_head' section_head.admin.id %}" class="btn btn-success">Edit</a>
+                        <a href="/delete_section_head/{{ section_head.admin.id }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                      </td>
+
+                      <td>{{ section_head.admin.id }}</td>
+                      <td>{{ section_head.admin.username }}</td>
+                      <td>{{ section_head.admin.email }}</td>
+                      <td>{{ section_head.section.section_name }}</td>
+                      <td>{{ section_head.admin.last_login }}</td>
+                      <td>{{ section_head.created_at }}</td>
+                      <td>{{ section_head.admin.user_type }}</td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+
+<!--  JS file for Live Search - for Login Accounts -->
+<script src="{% static 'dist/js/live_search_for_login_acc.js' %}"></script>
+
+
+{% endblock main_content %}
+

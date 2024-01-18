@@ -1,16 +1,14 @@
 import os
-
 from django.contrib.auth.models import AbstractUser  # Admin User Model (Built-in Django User Model)
 from django.db import models
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from datetime import datetime
-
 from django.db.models.signals import post_delete
 from django.conf import settings
 
 
-# Security Question for Admin and User account signup
+# Security Question for Admin and User account signup - (NOT BEING USED BUT DON'T REMOVE IT.)
 class AdminSecurityQuestion(models.Model):
     question = models.CharField(max_length=255)
     answer = models.CharField(max_length=255)
@@ -23,12 +21,23 @@ class UserSecurityQuestion(models.Model):
     objects = models.Manager()
 
 
+# Division Model
+class Divisions(models.Model):
+    division_id = models.AutoField(primary_key=True)
+    division_name = models.CharField(max_length=100)
+    division_description = models.TextField()
+    division_head = models.CharField(max_length=50)
+    objects = models.Manager()
+
+
 # Section Model
 class Sections(models.Model):
     section_id = models.AutoField(primary_key=True)
     section_name = models.CharField(max_length=100)
     description = models.TextField()
     section_incharge = models.CharField(max_length=50)
+    # Add a ForeignKey to establish the relationship between Sections and Divisions
+    division = models.ForeignKey(Divisions, on_delete=models.CASCADE)
     objects = models.Manager()
 
 
@@ -47,15 +56,6 @@ class Rank(models.Model):
     rank_id = models.AutoField(primary_key=True)
     rank_name = models.CharField(max_length=50)
     description = models.TextField()
-    objects = models.Manager()
-
-
-# Division Model
-class Divisions(models.Model):
-    division_id = models.AutoField(primary_key=True)
-    division_name = models.CharField(max_length=100)
-    division_description = models.TextField()
-    division_head = models.CharField(max_length=50)
     objects = models.Manager()
 
 
@@ -80,11 +80,12 @@ class Employees(models.Model):
     phone = models.CharField(max_length=50)
     address = models.TextField()
     tehsil = models.TextField()
-    district = models.TextField()
+    district = models.CharField(max_length=50)
     parentage = models.TextField()
     mother_name = models.TextField()
     belt_no = models.TextField()
     pid_no = models.TextField()
+    cpis = models.TextField()
     # date_joined = models.DateField()
     # null=True, blank=True : It allows the field to accept None and empty values, which is important since the field can be left empty. Otherwise, some Data error occurs if field is left empty.
     date_joined = models.DateField(null=True, blank=True)  # Date of joining in CID
@@ -148,13 +149,23 @@ class Employees(models.Model):
 
     previous_trainings_done = models.TextField()
 
+    other_emp_info = models.TextField(null=True, blank=True)
+
+    # Leave Counters
+    casual_leave_counter = models.IntegerField(default=0)
+    # casual_leave_reset_year = models.IntegerField(default=0)    # For resetting the leave counter at the start of new year.
+    earned_leave_counter = models.IntegerField(default=0)
+    paternity_maternity_leave_counter = models.IntegerField(default=0)
+    committed_leave_counter = models.IntegerField(default=0)
+
     objects = models.Manager()
 
 
-# using the Django's built-in AbstractUser model to create a custom user class and then creating two separate models (Admin and User) that link to the CustomUser model using OneToOneField.
+# using the Django's built-in AbstractUser model to create a custom user class and then creating 7 separate models that link to the CustomUser model using OneToOneField.
 class CustomUser(AbstractUser):
-    user_type_data = ((1, "Admin"), (2, "User"))
+    user_type_data = ((1, "Admin"), (2, "User"), (3, "Section Head"), (4, "Division Head"), (5, "DDO"), (6, "Special DG"), (7, "IGP"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
+
     admin_security_question = models.ForeignKey(
         AdminSecurityQuestion,
         on_delete=models.SET_NULL,
@@ -201,14 +212,74 @@ class User(models.Model):
     objects = models.Manager()
 
 
+class SectionHead(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    section = models.ForeignKey(Sections, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
+class DivisionHead(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    division = models.ForeignKey(Divisions, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
+class Ddo(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
+class SpecialDg(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
+class Igp(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
 class LeaveReportEmployee(models.Model):
     id = models.AutoField(primary_key=True)
-    # emp_id = models.ForeignKey(Employees, on_delete=models.SET_NULL, null=True, blank=True)
+    # employee = models.ForeignKey(Employees, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
+    pid = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50)
     leave_start_date = models.CharField(max_length=255)
     leave_end_date = models.CharField(max_length=255)
     leave_message = models.TextField()
-    leave_status = models.IntegerField(default=0)
+    leave_type = models.CharField(max_length=255)  # Example: Casual, Earned, Paternity/Maternity, Committed
+    rank = models.CharField(max_length=50)
+    section = models.CharField(max_length=50)
+    division = models.CharField(max_length=50)
+
+    section_head_approval_status = models.IntegerField(default=0)
+    division_head_approval_status = models.IntegerField(default=0)
+    ddo_approval_status = models.IntegerField(default=0)
+    igp_approval_status = models.IntegerField(default=0)
+    special_dg_approval_status = models.IntegerField(default=0)
+
+    # leave_status = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -216,8 +287,12 @@ class LeaveReportEmployee(models.Model):
 
 class FeedBackUser(models.Model):
     id = models.AutoField(primary_key=True)
-    # emp_id = models.ForeignKey(Staffs, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=50)
+    pid = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50)
+    rank = models.CharField(max_length=50)
+    section = models.CharField(max_length=50)
+    division = models.CharField(max_length=50)
     feedback = models.TextField()
     feedback_reply = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -225,18 +300,106 @@ class FeedBackUser(models.Model):
     objects = models.Manager()
 
 
+# Profile Correction Request
+class ProfileCorrReq(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50)
+    pid = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50)
+    rank = models.CharField(max_length=50)
+    section = models.CharField(max_length=50)
+    division = models.CharField(max_length=50)
+    corr_req_msg = models.TextField()
+
+    # column_name, current_value, correct_value are not being used right now.
+    column_name = models.CharField(max_length=50)  # New field for column name where data is incorrect.
+    current_value = models.TextField()  # New field for current value
+    correct_value = models.TextField()  # New field for correct value
+
+    corr_req_reply = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
+
+
+class ArchivedEmployees(models.Model):
+    emp_id = models.AutoField(primary_key=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    profile_pic = models.FileField()
+    gender = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=50)
+    address = models.TextField()
+    tehsil = models.TextField()
+    district = models.CharField(max_length=50)
+    parentage = models.TextField()
+    mother_name = models.TextField()
+    belt_no = models.TextField()
+    pid_no = models.TextField()
+    cpis = models.TextField()
+    date_joined = models.DateField(null=True, blank=True)
+    document_file = models.FileField(upload_to=document_upload_path, null=True, blank=True)
+    date_appointment_police = models.DateField(null=True, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    rank_id = models.ForeignKey(Rank, on_delete=models.SET_NULL, null=True, blank=True)
+    aadhar_number = models.CharField(max_length=50, unique=True)
+    pan_number = models.CharField(max_length=50, unique=True)
+    previous_positions_held_within_cid = models.TextField()
+    previous_positions_held_outside_cid = models.TextField()
+    qualifications = models.TextField()
+    dialogue = models.CharField(max_length=9, default='Null')
+    adverse_report = models.TextField()
+    section_id = models.ForeignKey(Sections, on_delete=models.SET_NULL, null=True, blank=True)
+    division_id = models.ForeignKey(Divisions, on_delete=models.SET_NULL, null=True, blank=True)
+    supervisor_id = models.ForeignKey(Supervisor, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    computer_knowledge = models.CharField(max_length=3, default='No', null=True, blank=True)
+    computer_degree = models.CharField(max_length=7, default='None')
+    computer_skill = models.CharField(max_length=9, default='None')
+    previous_trainings_done = models.TextField()
+    other_emp_info = models.TextField(null=True, blank=True)
+    archived_at = models.DateTimeField(auto_now_add=True)
+
+    objects = models.Manager()
+
+
+
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.user_type == 1:
-            Admin.objects.create(admin=instance)
-        if instance.user_type == 2:
-            User.objects.create(admin=instance)
+            # Admin.objects.create(admin=instance)
+            Admin.objects.create(admin=instance, employee=instance.employee)
+        elif instance.user_type == 2:
+            #User.objects.create(user=instance)
+            User.objects.create(admin=instance, employee=instance.employee)
+        elif instance.user_type == 3:
+            SectionHead.objects.create(admin=instance, employee=instance.employee)
+        elif instance.user_type == 4:
+            DivisionHead.objects.create(admin=instance, employee=instance.employee)
+        elif instance.user_type == 5:
+            Ddo.objects.create(admin=instance, employee=instance.employee)
+        elif instance.user_type == 6:
+            SpecialDg.objects.create(admin=instance, employee=instance.employee)
+        elif instance.user_type == 7:
+            Igp.objects.create(admin=instance, employee=instance.employee)
 
 
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 1:
         instance.admin.save()
-    if instance.user_type == 2:
+    elif instance.user_type == 2:
         instance.user.save()
+    elif instance.user_type == 3:
+        instance.sectionhead.save()
+    elif instance.user_type == 4:
+        instance.divisionhead.save()
+    elif instance.user_type == 5:
+        instance.ddo.save()
+    elif instance.user_type == 6:
+        instance.specialdg.save()
+    elif instance.user_type == 7:
+        instance.igp.save()

@@ -45,7 +45,19 @@ Edit Sections | Section ID : {{sections.section_id}} | Section Name : {{sections
                     <input type="text" class="form-control" placeholder="Section Incharge" name="section_incharge" value="{{ sections.section_incharge }}" >
                     </div>
 
-                      <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                    <div class="form-group">
+                    <label>Select Division to which this Section belongs <span class="text-danger"> *(required)</span></label>
+                    <select class="form-control" name="division" required>
+                        <option value="" disabled>Select Division</option>
+                        {% for division in divisions %}
+                            <option value="{{ division.division_id }}" {% if division.division_id == sections.division.division_id %}selected{% endif %}>
+                                {{ division.division_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    </div>
+
+                      <!--  success and error messages -->
                       <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}

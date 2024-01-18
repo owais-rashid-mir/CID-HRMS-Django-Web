@@ -1,0 +1,152 @@
+{% extends 'igp_template/base_template.html' %}
+{% block page_title %}
+Apply for Leave
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+          <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title">Leave Counters</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <ul class="list-group">
+                            <li class="list-group-item">Casual Leave: {{ employee.casual_leave_counter }}</li>
+                            <li class="list-group-item">Earned Leave: {{ employee.earned_leave_counter }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <ul class="list-group">
+                            <li class="list-group-item">Paternity/Maternity Leave: {{ employee.paternity_maternity_leave_counter }}</li>
+                            <li class="list-group-item">Committed Leave: {{ employee.committed_leave_counter }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <div class="text-center">
+              <a href="/igp_leave_history" class="btn btn-success mb-2">Leave Status & History</a>
+          </div>
+
+                    <div class="row">
+              <div class="col-md-12">
+
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Apply for Leave</h3>
+              </div>
+
+
+                <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+
+
+              <!-- /.card-header -->
+              <!-- form start -->
+               <form action="{% url 'igp_apply_leave_save' %}" method="post">
+                <div class="card-body">
+
+                    <div class="form-group">
+                        <label>Name </label>
+                        {% csrf_token %}
+                        <input type="text" name="name" class="form-control" value="{{ employee.first_name }} {{ employee.last_name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PID </label>
+                        {% csrf_token %}
+                        <input type="text" name="pid" class="form-control" value="{{ employee.pid_no }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone </label>
+                        {% csrf_token %}
+                        <input type="text" name="phone" class="form-control" value="{{ employee.phone }}" readonly>
+                    </div>
+
+                   <div class="form-group">
+                    <label>Leave Start Date <span class="text-danger"> *(required)</span> </label>
+                       {% csrf_token %}
+                    <input type="date" name="leave_start_date" class="form-control" placeholder="Leave Start Date" required>
+                  </div>
+
+                    <div class="form-group">
+                    <label>Leave End Date <span class="text-danger"> *(required)</span> </label>
+                       {% csrf_token %}
+                    <input type="date" name="leave_end_date" class="form-control" placeholder="Leave End Date" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Leave Reason/Message</label>
+                    <textarea class="form-control" rows="6" name="leave_msg"></textarea>
+                  </div>
+
+
+
+                    <div class="form-group">
+                       <label>Leave Type <span class="text-danger"> *(required)</span>  </label>
+                       <select name="leave_type" class="form-control" required>
+                          <option value="Casual">Casual</option>
+                          <option value="Earned">Earned</option>
+                          <option value="Paternity/Maternity">Paternity/Maternity</option>
+                          <option value="Committed">Committed</option>
+                       </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Rank </label>
+                        {% csrf_token %}
+                        <input type="text" name="rank" class="form-control" value="{{ employee.rank_id.rank_name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Section </label>
+                        {% csrf_token %}
+                        <input type="text" name="section" class="form-control" value="{{ employee.section_id.section_name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Division </label>
+                        {% csrf_token %}
+                        <input type="text" name="division" class="form-control" value="{{ employee.division_id.division_name }}" readonly>
+                    </div>
+
+
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary btn-block" id="fetch_student">Apply for Leave</button>
+                </div>
+               </form>
+            </div>
+
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

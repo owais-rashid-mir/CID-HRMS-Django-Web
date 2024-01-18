@@ -73,122 +73,399 @@ Home
 
 
 
-        </div>
-          <div class="row">
-              <div class="col-lg-6">
-                <div class="card card-danger">
-                  <div class="card-header">
-                    <h3 class="card-title">Employee and Rank Chart</h3>
+              <div class="container-fluid">     <!-- container-fluid starts -->
 
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                <h3 class="mt-3">Employee Management</h3>
+                <!-- First pair of cards -->
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-primary">
+                            <div class="card-body">
+                                <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Add Employees</h4>
+                                <a href="{% url 'add_employee' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-success">
+                            <div class="card-body">
+                                <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage/view Employees</h5>
+                                <a href="{% url 'manage_employee' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-info">
+                            <div class="card-body">
+                                <i class="fas fa-search fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Search Employees</h5>
+                                <!-- Add the link for the third card here -->
+                                <a href="{% url 'employee_search' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-success">
+                            <div class="card-body">
+                                <i class="fas fa-archive fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Archived Employees</h5>
+                                <!-- Add the link for the fourth card here -->
+                                <a href="{% url 'manage_archived_employee' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                   <div class="card card-success">
-                  <div class="card-header">
-                    <h3 class="card-title">Total Subject in Each Courses</h3>
 
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-lg-6">
-                 <div class="card card-info">
-                  <div class="card-header">
-                    <h3 class="card-title">Total Student in Each Course</h3>
 
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                <h3 class="mt-3">Section Management</h3>
+                <!-- 2nd pair of cards -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-warning">
+                            <div class="card-body">
+                                <i class="fas fa-building fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Add Sections</h4>
+                                <a href="{% url 'add_section' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="pieChart3" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-danger">
+                            <div class="card-body">
+                                <i class="fas fa-building fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage Sections</h5>
+                                <a href="{% url 'manage_section' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                 <div class="card card-warning">
-                  <div class="card-header">
-                    <h3 class="card-title">Total Student in Each Subject</h3>
 
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                <h3 class="mt-3">Division Management</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-secondary">
+                            <div class="card-body">
+                                <i class="fas fa-building fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Add Divisions</h4>
+                                <a href="{% url 'add_division' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body">
-                    <canvas id="pieChart4" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                  </div>
-                  <!-- /.card-body -->
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-info">
+                            <div class="card-body">
+                                <i class="fas fa-building fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage Divisions</h5>
+                                <a href="{% url 'manage_division' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-lg-12">
-                  <div class="card card-success">
-                  <div class="card-header">
-                    <h3 class="card-title">Staff Leaves vs Attendance</h3>
 
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="chart">
-                      <canvas id="barChart1" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                  </div>
-                  <!-- /.card-body -->
-                </div>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-lg-12">
-                  <div class="card card-success">
-                  <div class="card-header">
-                    <h3 class="card-title">Student Leaves vs Attendance</h3>
 
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                <h3 class="mt-3">Rank Management</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-primary">
+                            <div class="card-body">
+                                <i class="fas fa-star fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Add Ranks</h4>
+                                <a href="{% url 'add_rank' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="chart">
-                      <canvas id="barChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-success">
+                            <div class="card-body">
+                                <i class="fas fa-star fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage Ranks</h5>
+                                <a href="{% url 'manage_rank' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <!-- /.card-body -->
                 </div>
-              </div>
-          </div>
-      </div>
+
+                  <h3 class="mt-3">Leave Management</h3>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-primary">
+                            <div class="card-body">
+                                <i class="fas fa-edit fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Apply For Leave</h4>
+                                <a href="{% url 'admin_apply_leave' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-success">
+                            <div class="card-body">
+                                <i class="fas fa-edit fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Leave Status & History</h5>
+                                <a href="{% url 'admin_leave_history' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-primary">
+                            <div class="card-body">
+                                <i class="fas fa-edit fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Edit Leave Counters</h5>
+                                <a href="{% url 'edit_leave_counters' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card card-custom bg-info">
+                            <div class="card-body">
+                                <i class="fas fa-edit fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">View All Department Leaves</h5>
+                                <!-- Add the link for the third card here -->
+                                <a href="{% url 'view_all_dept_leaves' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h3 class="mt-3">Profile Correction Request and Feedback/Report A Problem</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-warning">
+                            <div class="card-body">
+                                <i class="fas fa-check-square fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Profile Correction Request</h4>
+                                <a href="{% url 'pcr_msg' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-secondary">
+                            <div class="card-body">
+                                <i class="fas fas fa-comments fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage Feedbacks/Reports</h5>
+                                <a href="{% url 'user_feedback_message' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                  <h3 class="mt-3">Login Accounts</h3>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-primary">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h4 class="card-title text-white mr-4">Add Admin Login</h4>
+                                    <a href="{% url 'add_admin' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-success">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage Admin Login</h5>
+                                    <a href="{% url 'manage_admin' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-info">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Add User Login</h5>
+                                    <a href="{% url 'add_user' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-info">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage User Login</h5>
+                                    <a href="{% url 'manage_user' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-primary">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h4 class="card-title text-white mr-4">Add Section Head Login</h4>
+                                    <a href="{% url 'add_section_head' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-success">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage Section Head</h5>
+                                    <a href="{% url 'manage_section_head' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-info">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Add Division Head Login</h5>
+                                    <a href="{% url 'add_division_head' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-info">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage Division Head</h5>
+                                    <a href="{% url 'manage_division_head' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-primary">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h4 class="card-title text-white mr-4">Add DDO Login</h4>
+                                    <a href="{% url 'add_ddo' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-success">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage DDO Login</h5>
+                                    <a href="{% url 'manage_ddo' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-info">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Add Special DG Login</h5>
+                                    <a href="{% url 'add_special_dg' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-info">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage SpecialDG Login</h5>
+                                    <a href="{% url 'manage_special_dg' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-primary">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h4 class="card-title text-white mr-4">Add IGP Login</h4>
+                                    <a href="{% url 'add_igp' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="card card-custom bg-success">
+                                <div class="card-body">
+                                    <i class="fas fa-user fa-3x text-white mb-2"></i>
+                                    <h5 class="card-title text-white mr-4">Manage IGP Login</h5>
+                                    <a href="{% url 'manage_igp' %}" class="btn btn-light btn-block">Visit</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                  <!--
+                <h3 class="mt-3">Admin Security Questions Management</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-secondary">
+                            <div class="card-body">
+                                <i class="fas fa-question-circle fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Add Admin Security Questions</h4>
+                                <a href="{% url 'add_admin_security_question' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-info">
+                            <div class="card-body">
+                                <i class="fas fa-question-circle fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage Admin Security Questions</h5>
+                                <a href="{% url 'manage_admin_security_question' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h3 class="mt-3">User Security Questions Management</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-primary">
+                            <div class="card-body">
+                                <i class="fas fa-question-circle fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Add User Security Questions</h4>
+                                <a href="{% url 'add_user_security_question' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-success">
+                            <div class="card-body">
+                                <i class="fas fa-question-circle fa-3x text-white mb-2"></i>
+                                <h5 class="card-title text-white mr-4">Manage User Security Questions</h5>
+                                <a href="{% url 'manage_user_security_question' %}" class="btn btn-light btn-block">Visit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                -->
+
+
+
+
+                <h3 class="mt-3">Logout</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-custom bg-danger">
+                            <div class="card-body">
+                                <i class="fas fa-sign-out-alt fa-3x text-white mb-2"></i>
+                                <h4 class="card-title text-white mr-4">Logout</h4>
+                                <a href="{% url 'logout' %}" class="btn btn-light btn-block">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>      <!-- container-fluid ends -->
+
+
+
+
     </section>
     <!-- /.content -->
 {% endblock main_content %}
@@ -196,212 +473,7 @@ Home
 
 
 {% block custom_js %}
-<script>
-    $(document).ready(function(){
 
-            var pieData        = {
-                  labels: [
-                      'Employees',
-                      'Ranks'
-                  ],
-                  datasets: [
-                    {
-                      data: [{{ employee_count }},{{ rank_count }}],
-                      backgroundColor : ['#f56954', '#00a65a'],
-                    }
-                  ]
-             };
-
-            var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-            var pieOptions     = {
-              maintainAspectRatio : false,
-              responsive : true,
-            }
-            //Create pie or doughnut chart
-            // You can switch between pie and doughnut using the method below.
-            var pieChart = new Chart(pieChartCanvas, {
-              type: 'pie',
-              data: pieData,
-              options: pieOptions
-            });
-
-            //Second Chart for Total Subject in Each Course
-                var subject_count_list={{ subject_count_list }};
-                var course_name_list={{ course_name_list|safe }};
-                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-                var donutData        = {
-                  labels:course_name_list,
-                  datasets: [
-                    {
-                      data: subject_count_list,
-                      backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
-                    }
-                  ]
-                }
-                var donutOptions     = {
-                  maintainAspectRatio : false,
-                  responsive : true,
-                }
-                //Create pie or douhnut chart
-                // You can switch between pie and douhnut using the method below.
-                var donutChart = new Chart(donutChartCanvas, {
-                  type: 'doughnut',
-                  data: donutData,
-                  options: donutOptions
-                });
-
-
-                //show total student in each course
-                var student_count_list_in_course={{ student_count_list_in_course }};
-
-                  var pieData2        = {
-                          labels:course_name_list,
-                          datasets: [
-                            {
-                              data: student_count_list_in_course,
-                              backgroundColor : ['#f56954', '#00a65a','#aa00ff', '#ff3d00'],
-                            }
-                          ]
-                     };
-
-                    var pieChartCanvas2 = $('#pieChart3').get(0).getContext('2d')
-                    var pieOptions2     = {
-                      maintainAspectRatio : false,
-                      responsive : true,
-                    }
-                    var pieChart = new Chart(pieChartCanvas2, {
-                      type: 'pie',
-                      data: pieData2,
-                      options: pieOptions2
-                    });
-
-                //show total student in each Subject
-                var student_count_list_in_subject={{ student_count_list_in_subject }};
-                var subject_list={{ subject_list|safe }};
-
-                  var pieData3  = {
-                          labels:subject_list,
-                          datasets: [
-                            {
-                              data: student_count_list_in_subject,
-                              backgroundColor : ['#f56954', '#00a65a','#aa00ff', '#ff3d00','#bf360c','#ffff00','#00e676','#40c4ff','#f56954', '#00a65a','#aa00ff', '#ff3d00','#bf360c','#ffff00','#00e676','#40c4ff'],
-                            }
-                          ]
-                     };
-
-                    var pieChartCanvas3 = $('#pieChart4').get(0).getContext('2d')
-                    var pieOption3     = {
-                      maintainAspectRatio : false,
-                      responsive : true,
-                    }
-                    var pieChart = new Chart(pieChartCanvas3, {
-                      type: 'pie',
-                      data: pieData3,
-                      options: pieOption3
-                    });
-
-                        ///Staff Leave vs Attendance Bar Chart
-                        var attendance_present_list_staff={{ attendance_present_list_staff }};
-                        var attendance_absent_list_staff={{ attendance_absent_list_staff }};
-                        var staff_name_list={{ staff_name_list|safe }};
-                        var barChartData = {
-                          labels  : staff_name_list,
-                          datasets: [
-                            {
-                              label               : 'Leaves',
-                              backgroundColor     : 'rgba(60,141,188,0.9)',
-                              borderColor         : 'rgba(60,141,188,0.8)',
-                              pointRadius          : false,
-                              pointColor          : '#3b8bba',
-                              pointStrokeColor    : 'rgba(60,141,188,1)',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(60,141,188,1)',
-                              data                : attendance_absent_list_staff
-                            },
-                            {
-                              label               : 'Attendance',
-                              backgroundColor     : 'rgba(210, 214, 222, 1)',
-                              borderColor         : 'rgba(210, 214, 222, 1)',
-                              pointRadius         : false,
-                              pointColor          : 'rgba(210, 214, 222, 1)',
-                              pointStrokeColor    : '#c1c7d1',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(220,220,220,1)',
-                              data                : attendance_present_list_staff
-                            },
-                          ]
-                        }
-                        var barChartCanvas = $('#barChart1').get(0).getContext('2d')
-                        var temp0 = barChartData.datasets[0]
-                        var temp1 = barChartData.datasets[1]
-                        barChartData.datasets[0] = temp1
-                        barChartData.datasets[1] = temp0
-
-                        var barChartOptions = {
-                          responsive              : true,
-                          maintainAspectRatio     : false,
-                          datasetFill             : false
-                        }
-
-                        var barChart = new Chart(barChartCanvas, {
-                          type: 'bar',
-                          data: barChartData,
-                          options: barChartOptions
-                        })
-
-                        //Student Leaves vs Attendance
-                        var attendance_present_list_student={{ attendance_present_list_student }};
-                        var attendance_absent_list_student={{ attendance_absent_list_student }};
-                        var student_name_list={{ student_name_list|safe }};
-                        var barChartData2 = {
-                          labels  : student_name_list,
-                          datasets: [
-                            {
-                              label               : 'Leaves',
-                              backgroundColor     : 'rgba(60,141,188,0.9)',
-                              borderColor         : 'rgba(60,141,188,0.8)',
-                              pointRadius          : false,
-                              pointColor          : '#3b8bba',
-                              pointStrokeColor    : 'rgba(60,141,188,1)',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(60,141,188,1)',
-                              data                : attendance_absent_list_student
-                            },
-                            {
-                              label               : 'Attendance',
-                              backgroundColor     : 'rgba(210, 214, 222, 1)',
-                              borderColor         : 'rgba(210, 214, 222, 1)',
-                              pointRadius         : false,
-                              pointColor          : 'rgba(210, 214, 222, 1)',
-                              pointStrokeColor    : '#c1c7d1',
-                              pointHighlightFill  : '#fff',
-                              pointHighlightStroke: 'rgba(220,220,220,1)',
-                              data                : attendance_present_list_student
-                            },
-                          ]
-                        }
-                        var barChartCanvas2 = $('#barChart2').get(0).getContext('2d')
-                        var temp02 = barChartData2.datasets[0]
-                        var temp12 = barChartData2.datasets[1]
-                        barChartData2.datasets[0] = temp12
-                        barChartData2.datasets[1] = temp02
-
-                        var barChartOptions2 = {
-                          responsive              : true,
-                          maintainAspectRatio     : false,
-                          datasetFill             : false
-                        }
-
-                        var barChart2 = new Chart(barChartCanvas2, {
-                          type: 'bar',
-                          data: barChartData2,
-                          options: barChartOptions2
-                        })
-
-
-
-    });
-</script>
 
 
 {% endblock custom_js %}

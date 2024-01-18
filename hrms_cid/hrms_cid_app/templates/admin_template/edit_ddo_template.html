@@ -1,0 +1,66 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Edit DDO Login | Email : {{ ddo.email }} |  #ID : {{ ddo.id }}
+{% endblock page_title %}
+{% block main_content %}
+
+<!-- Edit DDO login - Admin can edit email and password. -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit DDO Login</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <!-- form start -->
+                    <form role="form" action="{% url 'edit_ddo_save' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ ddo.id }}">
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label for="email">Email <span class="text-danger"> *(required)</span> </label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ ddo.email }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password </label> <br>
+                                <p class="font-italic text-primary"> (Password must be at least 8 characters or longer and must not contain any spaces.) </p>
+                                <p class="font-weight-bold font-italic text-primary"> (Leave this Password field blank to keep the existing password. If you want to set a new password, enter it here.) </p>
+                                <input type="text" class="form-control" placeholder="Password" name="password" autocomplete="off">
+                            </div>
+
+                            <!--  success and error messages -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- /.card-body -->
+
+                            <button type="submit" class="btn btn-primary btn-block">Edit DDO Login</button>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+
+{% endblock main_content %}

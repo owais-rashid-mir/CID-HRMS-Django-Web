@@ -1,0 +1,75 @@
+<!-- edit_leave_counters_template.html -->
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Edit Leave Counters
+{% endblock page_title %}
+{% block main_content %}
+
+<style>
+  .custom-hr {
+    border-top: 1px solid #6c757d; /* Adjust thickness and color as needed */
+    margin-top: 1.5rem; /* Adjust the gap between counters */
+  }
+</style>
+
+  <div class="container mt-4">
+    <h2>Edit Leave Counters for All Employees</h2>
+
+    <div class="alert alert-info">
+      <strong>Important:</strong> Updating the leave counters here will apply the changes to all employees. Please proceed with caution.
+    </div>
+
+    <!--   success and error messages  -->
+    <div class="form-group">
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+          {% endif %}
+          {% if message.tags == 'success' %}
+            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <form method="post" onsubmit="return confirm('Are you sure you want to update this leave counter for all employees?');">
+      {% csrf_token %}
+
+      <div class="form-group mt-5">
+        <label for="casual_leave_counter">&bull; Casual Leave Counter:</label>
+        <input type="number" name="casual_leave_counter" class="form-control">
+        <button type="submit" name="update_casual_leave" class="btn btn-primary mt-2">Update Casual Leave Counter For All Employees</button>
+      </div>
+
+      <hr class="custom-hr">
+
+      <div class="form-group mt-5">
+        <!-- &bull; for bullet symbol -->
+        <label for="earned_leave_counter">&bull; Earned Leave Counter:</label>
+        <input type="number" name="earned_leave_counter" class="form-control">
+        <button type="submit" name="update_earned_leave" class="btn btn-primary mt-2">Update Earned Leave Counter For All Employees</button>
+      </div>
+
+      <hr class="custom-hr">
+
+      <div class="form-group mt-5">
+        <label for="paternity_maternity_leave_counter">&bull; Paternity/Maternity Leave Counter:</label>
+        <input type="number" name="paternity_maternity_leave_counter" class="form-control">
+        <button type="submit" name="update_paternity_maternity_leave" class="btn btn-primary mt-2">Update Paternity/Maternity Leave Counter For All Employees</button>
+      </div>
+
+      <hr class="custom-hr">
+
+      <div class="form-group mt-5">
+        <label for="committed_leave_counter">&bull; Committed Leave Counter:</label>
+        <input type="number" name="committed_leave_counter" class="form-control">
+        <button type="submit" name="update_committed_leave" class="btn btn-primary mt-2">Update Committed Leave Counter For All Employees</button>
+      </div>
+
+      <hr class="custom-hr">
+
+    </form>
+  </div>
+
+{% endblock main_content %}

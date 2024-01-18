@@ -100,11 +100,11 @@
       </ul>
 
       <li class="nav-item d-none d-sm-inline-block">
-          <a href="/" class="nav-link text-secondary">About</a>
+          <a href="/about" class="nav-link text-secondary">About</a>
         </li>
 
       <li class="nav-item d-none d-sm-inline-block">
-          <a href="/" class="nav-link text-secondary">About the Developer</a>
+          <a href="/about_the_dev" class="nav-link text-secondary">About the Developer</a>
         </li>
 
     </nav>
@@ -163,7 +163,7 @@
             </li>
             <li class="nav-header">OTHER QUICK LINKS</li>
             <li class="nav-item">
-              <a href="" class="nav-link">
+              <a href="/about" class="nav-link">
                 <i class="nav-icon fas fa-info"></i>
                 <p>
                   About
@@ -173,7 +173,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="" class="nav-link">
+              <a href="/about_the_dev" class="nav-link">
                 <i class="nav-icon fas fa-info-circle"></i>
                 <p>
                   About the Developers
@@ -217,7 +217,7 @@
             <!-- /.login-logo -->
               <div class="card">
               <div class="card-body login-card-body">
-              <p class="login-box-msg">Sign in to HRMS - CID (Admin/User)</p>
+              <p class="login-box-msg">Sign in to HRMS - CID (Admin/User/SectionHead/DivisionHead/DDO/IGP/SpecialDG)</p>
 
             <form action="/doLogin" method="post" class="form">
             {% csrf_token %}
@@ -262,11 +262,12 @@
 
 
 
-        <!-- Add button for creating an account  -->
+        <!-- Add button for creating an account - Uses Security Questions - (NOT BEING USED) -->
+        <!--
         <div class="mt-4">
           <a href="{% url 'registration' %}" class="btn btn-success btn-block btn-sm">Create an Account </a>
         </div>
-
+        -->
 
       </div>
       <!-- /.login-card-body -->

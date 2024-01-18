@@ -1,0 +1,172 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+View All Department Leaves
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+
+
+
+            <!-- /.card -->
+           <div class="card card-primary">
+
+               <div class="ml-3 mt-3 mb-3">
+                <h6 class="text-success">
+                    <u> Note: </u> <br>
+                    - For Non-Gazetted Police Officers & Casual Leave Type - Approval of Section Head and Division Head is Required. <br>
+                    - For Non-Gazetted Police Officers & Earned, Paternity/Maternity and Committed Leave Type - Approval of Section Head, Division Head and DDO is Required. <br>
+                    - For Gazetted Police Officers & Casual Leave Type - Approval of Division Head is Required. <br>
+                    - For Gazetted Police Officers & Earned, Paternity/Maternity and Committed Leave Type - Approval of Division Head, IGP and Special DG is required. <br>
+                </h6>
+              </div>
+
+              <div class="card-header">
+                <h3 class="card-title">View All Department Leaves</h3>
+              </div>
+
+               <div class="table table-responsive">
+               <table class="table">
+                   <tr>
+                       <th>ID</th>
+                       <th>Name</th>
+                       <th>Phone</th>
+                       <th>PID</th>
+                       <th>Leave Start Date</th>
+                       <th>Leave End Date</th>
+                       <th>Leave Reason/Message</th>
+                       <th>Leave Type</th>
+                       <th>Rank</th>
+                       <th>Section</th>
+                       <th>Division</th>
+
+                       <th>Section Head Approval Status</th>
+                       <th>Division Head Approval Status</th>
+                       <th>DDO Approval Status</th>
+                       <th>IGP Approval Status</th>
+                       <th>Special DG Approval Status</th>
+
+                   </tr>
+
+
+
+                   {% for row in leave_data %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.phone }}</td>
+                            <td>{{ row.pid }}</td>
+                            <td>{{ row.leave_start_date }}</td>
+                            <td>{{ row.leave_end_date }}</td>
+                            <td style="white-space: pre-line;">{{ row.leave_message }}</td>
+                            <td>{{ row.leave_type }}</td>
+                            <td>{{ row.rank }}</td>
+                            <td>{{ row.section }}</td>
+                            <td>{{ row.division }}</td>
+
+
+
+                                        <td>
+                                            {% if row.section_head_approval_status == 1 %}
+                                                <span class="alert alert-success">Approved</span>
+                                            {% elif row.section_head_approval_status == 2 %}
+                                                <span class="alert alert-danger">Disapproved</span>
+                                            {% else %}
+                                                <span class="alert alert-info">Pending</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if row.division_head_approval_status == 1 %}
+                                                <span class="alert alert-success">Approved</span>
+                                            {% elif row.division_head_approval_status == 2 %}
+                                                <span class="alert alert-danger">Disapproved</span>
+                                            {% else %}
+                                                <span class="alert alert-info">Pending</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                                {% if row.ddo_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.ddo_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+                                        </td>
+
+                                        <td>
+                                                {% if row.igp_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.igp_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+                                        </td>
+
+                                        <td>
+                                                {% if row.special_dg_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.special_dg_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+                                        </td>
+
+
+
+                        </tr>
+                   {% endfor %}
+               </table>
+               </div>
+
+               <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if leave_data.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ leave_data.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ leave_data.number }} of {{ leave_data.paginator.num_pages }}.
+                        </span>
+
+                        {% if leave_data.has_next %}
+                            <a href="?page={{ leave_data.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ leave_data.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in leave_data.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == leave_data.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+
+            </div>
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}

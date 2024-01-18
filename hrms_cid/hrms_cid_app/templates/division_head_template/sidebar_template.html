@@ -1,0 +1,222 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/division_head_home" class="brand-link">
+      <img src="{% static "dist/img/img2.png" %}" alt="HRMS" class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">HRMS - CID</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static "dist/img/avatar5.png" %}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <!-- Displaying the User's name at the top of sidebar. -->
+          <a href="/my_profile_dh" class="d-block">Logged In As : <br> {{ user.username }}</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item has-treeview menu-open">
+            {% url 'division_head_home' as division_head_home %}
+            <a href="{{ division_head_home }} " class="nav-link {% if request.path == division_head_home %} active {% endif %} ">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard- HRMS-CID
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'division_head_home' as division_head_home %}
+                <a href="{% url 'division_head_home' %}" class="nav-link {% if request.path == division_head_home %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+                {% url 'my_profile_dh' as my_profile_dh %}
+                <a href="{% url 'my_profile_dh' %}" class="nav-link {% if request.path == my_profile_dh %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="fas fa-user-circle nav-icon"></i>
+                  <p>My Profile</p>
+                </a>
+          </li>
+
+          <li class="nav-item">
+                {% url 'my_division_dh' as my_division_dh %}
+                <a href="{% url 'my_division_dh' %}" class="nav-link {% if request.path == my_division_dh %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="fas fa-building nav-icon"></i>
+                  <p>My Division</p>
+                </a>
+          </li>
+
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                Leaves
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                {% url 'dh_apply_leave' as dh_apply_leave %}
+                <a href="{{ dh_apply_leave }}" class="nav-link {% if request.path == dh_apply_leave %} active {% endif %} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Apply for Leave</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'dh_leave_history' as dh_leave_history %}
+                <a href="{{ dh_leave_history }}" class="nav-link {% if request.path == dh_leave_history %} active {% endif %} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Applied Leave Status</p> <br>
+                  <p class="text-center">& History</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'manage_leaves_dh' as manage_leaves_dh %}
+                <a href="{% url 'manage_leaves_dh' %}" class="nav-link {% if request.path == manage_leaves_dh %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Leaves</p> <br>
+                  <p>(Approve/Disapprove)</p>
+                </a>
+              </li>
+
+            </ul>
+
+
+
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-comments"></i>
+              <p>
+                Feedbacks/R.A.P
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                {% url 'dh_feedback' as dh_feedback %}
+                <a href="{{ dh_feedback }}" class="nav-link {% if request.path == dh_feedback %} active {% endif %} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Feedback/R.A.P</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'dh_feedback_history' as dh_feedback_history %}
+                <a href="{% url 'dh_feedback_history' %}" class="nav-link {% if request.path == dh_feedback_history %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Feedback Status & History</p>
+                </a>
+              </li>
+            </ul>
+
+            </li>
+
+
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-check-square"></i>
+              <p>
+                Profile Correction Request
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'profile_corr_req_dh' as profile_corr_req_dh %}
+                <a href="{{ profile_corr_req_dh }}" class="nav-link {% if request.path == profile_corr_req_dh %} active {% endif %} ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Profile Correction Request</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                {% url 'profile_corr_req_dh_history' as profile_corr_req_dh_history %}
+                <a href="{% url 'profile_corr_req_dh_history' %}" class="nav-link {% if request.path == profile_corr_req_dh_history %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>PCR Status & History</p>
+                </a>
+              </li>
+            </ul>
+
+            </li>
+
+
+            <li class="nav-item">
+            <a href="/logout_user" class="nav-link">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>
+                Logout
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+
+          </li>
+          <li class="nav-header">OTHER QUICK LINKS</li>
+          <li class="nav-item">
+            <a href="/about" class="nav-link">
+              <i class="nav-icon fas fa-info"></i>
+              <p>
+                About
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="/about_the_dev" class="nav-link">
+              <i class="nav-icon fas fa-info-circle"></i>
+              <p>
+                About the Developers
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview">
+
+            <ul class="nav nav-treeview">
+
+            </ul>
+          </li>
+
+          <li class="nav-item has-treeview">
+            <ul class="nav nav-treeview">
+            </ul>
+          </li>
+
+          <li class="nav-item has-treeview">
+            <ul class="nav nav-treeview">
+            </ul>
+          </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

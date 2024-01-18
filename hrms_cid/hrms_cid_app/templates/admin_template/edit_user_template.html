@@ -1,79 +1,68 @@
 {% extends 'admin_template/base_template.html' %}
 {% block page_title %}
-Edit User Login | Username : {{ user.admin.username }} |  #ID : {{ user.admin.id }}    <!--  Passing user id and username in the page title-->
+Edit User Login | Email : {{ user.email }} |  #ID : {{ user.id }}    <!--  Passing user id and email in the page title-->
 {% endblock page_title %}
 {% block main_content %}
 
-<!-- Add user login - Admin can add users with some administrator privileges. -->
+<!-- Edit user login - Admin can edit email and password. -->
 <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Edit User Login</h3>
-              </div>
-              <!-- /.card-header -->
-
-              <!-- form start -->
-              <form role="form" action="/edit_user_save" method="post">
-                  {% csrf_token %}
-                <div class="card-body">
-
-                  <div class="form-group">
-                    <label>Email address</label>
-                      <!-- Fetching the value of User email in the input field for editing by value="{{ user.admin.email }}-->
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" value="{{ user.admin.email }}" >
-                  </div>
-
-                   <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{ user.admin.first_name }}" >
-                  </div>
-
-                   <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{ user.admin.last_name }}" >
-                     <input type="hidden"  name="id" value="{{ user.admin.id }}">
-                  </div>
-
-                   <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" class="form-control" placeholder="Username" name="username" value="{{ user.admin.username }}" >
-                  </div>
-
-                      <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
-                      <div class="form-group">
-                      {% if messages %}
-                        {% for message in messages %}
-                        {% if message.tags == 'error' %}
-                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% if message.tags == 'success' %}
-                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% endfor %}
-                      {% endif %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit User/Employee Login</h3>
                     </div>
+                    <!-- /.card-header -->
+
+                    <!-- form start -->
+                    <form role="form" action="{% url 'edit_user_save' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ user.id }}">
+                        <div class="card-body">
+
+                            <!-- Only allow editing of email and password -->
+                            <div class="form-group">
+                                <label for="email">Email <span class="text-danger"> *(required)</span> </label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password </label> <br>
+                                <p class="font-italic text-primary"> (Password must be at least 8 characters or longer and must not contain any spaces.) </p>
+                                <p class="font-weight-bold font-italic text-primary"> (Leave this Password field blank to keep the existing password. If you want to set a new password, enter it here.) </p>
+                                <input type="text" class="form-control" placeholder="Password" name="password" autocomplete="off">
+                            </div>
+
+                            <!--  success and error messages -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            <!-- /.card-body -->
+
+                            <button type="submit" class="btn btn-primary btn-block">Edit User/Employee Login</button>
+                        </form>
+                    </div>
+                    <!-- /.card -->
 
                 </div>
-                <!-- /.card-body -->
-
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Edit User Login</button>
-                </div>
-              </form>
             </div>
-            <!-- /.card -->
+        </div>
+    </div>
+</section>
+<!-- /.content -->
 
-
-
-          </div>
-          </div>
-      </div>
-    </section>
-    <!-- /.content -->
 
 {% endblock main_content %}

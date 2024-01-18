@@ -1,0 +1,75 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Edit Division Head Details
+{% endblock page_title %}
+{% block main_content %}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Division Head Details</h3>
+                    </div>
+
+                    <!-- form start -->
+                    <form role="form" action="/edit_division_head_save" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="admin_id" value="{{ division_head.admin.id }}">
+
+                        <div class="card-body">
+                            <!-- Email field -->
+                            <div class="form-group">
+                                <label for="email">Email <span class="text-danger"> *(required)</span> </label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ division_head.admin.email }}" required>
+                            </div>
+
+                            <!-- Password field -->
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <p class="font-italic text-primary"> (Password must be at least 8 characters or longer and must not contain any spaces.) </p>
+                                <p class="font-weight-bold font-italic text-primary"> (Leave this Password field blank to keep the existing password. If you want to set a new password, enter it here.) </p>
+                                <input type="name" class="form-control" id="password" name="password" placeholder="Password" autocomplete="off">
+                            </div>
+
+                            <!-- Division field -->
+                            <div class="form-group">
+                                <label for="division">Division <span class="text-danger"> *(required)</span> </label>
+                                <select class="form-control" name="division" id="division" required>
+                                    <option value="">--Choose a section--</option>
+                                    {% for division in divisions %}
+                                        <option value="{{ division.division_id }}" {% if division_head.division.division_id == division.division_id %}selected{% endif %}>{{ division.division_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Success and error messages -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Update/Edit Division Head</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+{% endblock main_content %}

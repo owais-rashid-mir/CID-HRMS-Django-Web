@@ -1,0 +1,172 @@
+{% extends 'division_head_template/base_template.html' %}
+{% block page_title %}
+View Division Details
+{% endblock page_title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+          <hr>
+           <div class="row">
+            <div class="col-12">
+              <div class="">
+                <h3>Division ID: <b> {{ division.division_id }} </b> </h3>
+                <h3>Division Name: <b> {{ division.division_name }} </b> </h3>
+                <!-- <h3>Division Head/Supervisor: <b> {{ division.division_head }} </b> </h3> -->
+                <h3>Division Description: <b> {{ division.division_description }} </b> </h3>
+                <h3>Total Employees In This Division: <b> {{ employees.count }} </b> </h3>
+
+                <h3 class="d-inline-block">Sections Under This Division:</h3>
+                <p class="d-inline-block ml-2">
+                  {% for section in sections %}
+                    <span class="text-lg font-weight-bold">{{ section.section_name }}</span>
+                    {% if not forloop.last %}, {% endif %}  <!-- Don't print comma after last section name. -->
+                  {% endfor %}
+                </p>
+
+              </div>
+
+              <hr>
+
+              <!-- Search -->
+              <div class="card-tools mt-3">
+                <div class="input-group input-group-sm" style="width: 500px;">
+                  <input type="text" id="employeeSearchInput" class="form-control" style="height: 38px;" placeholder="Search by First Name, Last Name, or PID" autocomplete="off">
+
+                  <div class="input-group-append">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  </div>
+                </div>
+              </div>
+
+            <div class="card mt-4">
+              <div class="card-header">
+                <div class="">
+                  <h5 class="font-weight-bold">List of employees in this division:</h5>
+                </div>
+              </div>
+
+              <!-- /.card-header -->
+              <div class="card-body table-responsive p-0">
+
+                <table class="table table-hover text-nowrap table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Employee ID</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>PID Number</th>
+                      <th>Phone Number</th>
+                      <th>Section</th>
+                      <th>Division</th>
+
+                      <th>View All Details</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  <!-- FOR loop to print all data. -->
+                  {% for employee in employees %}
+                    <tr>
+                      <td>{{ employee.emp_id }}</td>
+                      <td>{{ employee.first_name }}</td>
+                      <td>{{ employee.last_name }}</td>
+                      <td>{{ employee.pid_no }}</td>
+                      <td>{{ employee.phone }}</td>
+                      <td>{{ employee.section_id.section_name }}</td>
+                      <td>{{ employee.division_id.division_name }}</td>
+
+                      <td>
+                        <a href="{% url 'view_all_employee_dh' employee.emp_id %}" class="btn btn-primary">View All Details</a>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+
+<!--JavaScript code for live search. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const employeeSearchInput = document.getElementById('employeeSearchInput');
+    const tableRows = document.querySelectorAll('.table tbody tr');
+
+    employeeSearchInput.addEventListener('input', function () {
+      const searchTerm = employeeSearchInput.value;
+
+      // 2, 3, and 4 are the column numbers in the table for first name, last name, and PID.
+      tableRows.forEach(function (row) {
+        const firstNameCell = row.querySelector('td:nth-child(2)');
+        const lastNameCell = row.querySelector('td:nth-child(3)');
+        const pidCell = row.querySelector('td:nth-child(4)');
+
+        const originalFirstName = firstNameCell.getAttribute('data-original-text');
+        const originalLastName = lastNameCell.getAttribute('data-original-text');
+        const originalPID = pidCell.getAttribute('data-original-text');
+
+        const firstName = originalFirstName.toLowerCase();
+        const lastName = originalLastName.toLowerCase();
+        const pid = originalPID.toLowerCase();
+
+        if (firstName.includes(searchTerm.toLowerCase()) || lastName.includes(searchTerm.toLowerCase()) || pid.includes(searchTerm.toLowerCase())) {
+          // Highlight matching text
+          const highlightedFirstName = originalFirstName.replace(
+            new RegExp(searchTerm, 'gi'),
+            match => `<span style="background-color: yellow;">${match}</span>`
+          );
+          const highlightedLastName = originalLastName.replace(
+            new RegExp(searchTerm, 'gi'),
+            match => `<span style="background-color: yellow;">${match}</span>`
+          );
+          const highlightedPID = originalPID.replace(
+            new RegExp(searchTerm, 'gi'),
+            match => `<span style="background-color: yellow;">${match}</span>`
+          );
+
+          // Update cell content with highlighted text
+          firstNameCell.innerHTML = highlightedFirstName;
+          lastNameCell.innerHTML = highlightedLastName;
+          pidCell.innerHTML = highlightedPID;
+
+          row.style.display = '';
+        } else {
+          // Reset the content and hide the row if not matching
+          firstNameCell.innerHTML = originalFirstName;
+          lastNameCell.innerHTML = originalLastName;
+          pidCell.innerHTML = originalPID;
+
+          row.style.display = 'none';
+        }
+      });
+    });
+
+    // Store the original text in a data attribute
+    tableRows.forEach(function (row) {
+      const firstNameCell = row.querySelector('td:nth-child(2)');
+      const lastNameCell = row.querySelector('td:nth-child(3)');
+      const pidCell = row.querySelector('td:nth-child(4)');
+
+      firstNameCell.setAttribute('data-original-text', firstNameCell.textContent);
+      lastNameCell.setAttribute('data-original-text', lastNameCell.textContent);
+      pidCell.setAttribute('data-original-text', pidCell.textContent);
+    });
+  });
+</script>
+
+
+
+{% endblock main_content %}
+

@@ -1,0 +1,236 @@
+{% extends 'user_template/base_template.html' %}
+{% block page_title %}
+User Leave Status & History
+{% endblock page_title %}
+{% block main_content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+
+            <!-- Display Leave Counters -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Leave Counters</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">Casual Leave: {{ employee.casual_leave_counter }}</li>
+                                        <li class="list-group-item">Earned Leave: {{ employee.earned_leave_counter }}</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">Paternity/Maternity Leave: {{ employee.paternity_maternity_leave_counter }}</li>
+                                        <li class="list-group-item">Committed Leave: {{ employee.committed_leave_counter }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+            <!-- /.card -->
+           <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">User Leave Status & History</h3>
+              </div>
+
+               <div class="table table-responsive">
+               <table class="table">
+                   <tr>
+                       <th>Applied On</th>
+                       <th>Name</th>
+                       <th>Phone</th>
+                       <th>PID</th>
+                       <th>Leave Start Date</th>
+                       <th>Leave End Date</th>
+                       <th>Leave Message/Reason</th>
+                       <th>Leave Type</th>
+                       <th>Rank</th>
+                       <th>Section</th>
+                       <th>Division</th>
+
+                       {% if leave_data and leave_data.0.rank == 'SPO' or leave_data.0.rank == 'Follower' or leave_data.0.rank == 'Constable' or leave_data.0.rank == 'SGCT' or leave_data.0.rank == 'HC' or leave_data.0.rank == 'ASI' or leave_data.0.rank == 'SI' or leave_data.0.rank == 'Inspector' %}
+                                    <!-- Show only for Non-Gazetted -->
+                                    <th>Section Head Approval Status</th>
+                                    <th>Division Head Approval Status</th>
+                                    <th>DDO Approval Status</th>
+
+                       {% elif leave_data and leave_data.0.rank == 'DySP' or leave_data.0.rank == 'SP' or leave_data.0.rank == 'Senior PO' or leave_data.0.rank == 'CPO' or leave_data.0.rank == 'DDP' or leave_data.0.rank == 'DIG' or leave_data.0.rank == 'IGP' or leave_data.0.rank == 'ADGP' or leave_data.0.rank == 'Special DG' %}
+                                    <!-- Show only for Gazetted (without SSP) -->
+                                    <th>Division Head Approval Status</th>
+                                    <th>IGP Approval Status</th>
+                                    <th>Special DG Approval Status</th>
+
+                       {% elif leave_data and leave_data.0.rank == 'SSP' %}
+                                    <!-- Show only for SSP (DivHead and DDO) -->
+                                    <th>Special DG Approval Status</th>
+
+                       {% endif %}
+                   </tr>
+
+
+
+                   {% for row in leave_data %}
+                        <tr>
+                            <td>{{ row.created_at }}</td>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.phone }}</td>
+                            <td>{{ row.pid }}</td>
+                            <td>{{ row.leave_start_date }}</td>
+                            <td>{{ row.leave_end_date }}</td>
+                            <td style="white-space: pre-line;">{{ row.leave_message }}</td>
+                            <td>{{ row.leave_type }}</td>
+                            <td>{{ row.rank }}</td>
+                            <td>{{ row.section }}</td>
+                            <td>{{ row.division }}</td>
+
+
+                            {% if leave_data and leave_data.0.rank == 'SPO' or leave_data.0.rank == 'Follower' or leave_data.0.rank == 'Constable' or leave_data.0.rank == 'SGCT' or leave_data.0.rank == 'HC' or leave_data.0.rank == 'ASI' or leave_data.0.rank == 'SI' or leave_data.0.rank == 'Inspector' %}
+                                        <!-- Show only for Non-Gazetted -->
+                                        <td>
+                                            {% if row.section_head_approval_status == 1 %}
+                                                <span class="alert alert-success">Approved</span>
+                                            {% elif row.section_head_approval_status == 2 %}
+                                                <span class="alert alert-danger">Disapproved</span>
+                                            {% else %}
+                                                <span class="alert alert-info">Pending</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if row.division_head_approval_status == 1 %}
+                                                <span class="alert alert-success">Approved</span>
+                                            {% elif row.division_head_approval_status == 2 %}
+                                                <span class="alert alert-danger">Disapproved</span>
+                                            {% else %}
+                                                <span class="alert alert-info">Pending</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if row.leave_type == 'Casual' %}
+                                            <div class="text-success font-weight-bold"> Not Required </div>
+                                            {% else %}
+                                                {% if row.ddo_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.ddo_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+
+
+
+                                    {% elif leave_data and leave_data.0.rank == 'DySP' or leave_data.0.rank == 'SP' or leave_data.0.rank == 'Senior PO' or leave_data.0.rank == 'CPO' or leave_data.0.rank == 'DDP' or leave_data.0.rank == 'DIG' or leave_data.0.rank == 'IGP' or leave_data.0.rank == 'ADGP' or leave_data.0.rank == 'Special DG' %}
+                                        <!-- Show only for Gazetted (without SSP) -->
+                                        <td>
+                                            {% if row.division_head_approval_status == 1 %}
+                                                <span class="alert alert-success">Approved</span>
+                                            {% elif row.division_head_approval_status == 2 %}
+                                                <span class="alert alert-danger">Disapproved</span>
+                                            {% else %}
+                                                <span class="alert alert-info">Pending</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if row.leave_type == 'Casual' %}
+                                                <div class="text-success font-weight-bold"> Not Required </div>
+                                            {% else %}
+                                                {% if row.igp_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.igp_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if row.leave_type == 'Casual' %}
+                                                <div class="text-success font-weight-bold"> Not Required </div>
+                                            {% else %}
+                                                {% if row.special_dg_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.special_dg_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+
+
+                                        {% elif leave_data and leave_data.0.rank == 'SSP' %}
+                                        <!-- Show only for SSP (DivHead and DDO) -->
+                                        <td>
+                                                {% if row.special_dg_approval_status == 1 %}
+                                                    <span class="alert alert-success">Approved</span>
+                                                {% elif row.special_dg_approval_status == 2 %}
+                                                    <span class="alert alert-danger">Disapproved</span>
+                                                {% else %}
+                                                    <span class="alert alert-info">Pending</span>
+                                                {% endif %}
+
+                                        </td>
+
+                                    {% endif %}
+
+
+                        </tr>
+                   {% endfor %}
+               </table>
+               </div>
+
+               <!-- Pagination controls -->
+                <div class="pagination d-flex justify-content-center mt-4 ml-4">
+                    <span class="step-links">
+                        {% if leave_data.has_previous %}
+                            <a href="?page=1" class="mr-2">&laquo; First</a>
+                            <a href="?page={{ leave_data.previous_page_number }}" class="mr-2">Previous</a>
+                        {% endif %}
+
+                        <span class="current mr-2">
+                            Page {{ leave_data.number }} of {{ leave_data.paginator.num_pages }}.
+                        </span>
+
+                        {% if leave_data.has_next %}
+                            <a href="?page={{ leave_data.next_page_number }}" class="mr-2">Next</a>
+                            <a href="?page={{ leave_data.paginator.num_pages }}" class="mr-2">Last &raquo;</a>
+                        {% endif %}
+                    </span>
+
+                    <!-- Form for direct page jump -->
+                    <form method="get" class="page-jump-form ml-3">
+                        <label for="id_page_number">Jump to page: </label>
+                        <select name="page" id="id_page_number">
+                            {% for page_num in leave_data.paginator.page_range %}
+                                <option value="{{ page_num }}" {% if page_num == leave_data.number %}selected{% endif %}>
+                                    {{ page_num }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                </div>
+
+
+            </div>
+
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
