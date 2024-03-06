@@ -84,11 +84,30 @@ def approve_leave_dh(request, leave_id):
 
         # Check leave type and rank before approval
         if leave.leave_type == 'Casual' and leave.rank in non_gazetted_ranks:
+            '''
             # Non-gazetted officers with Casual leave require Section Head approval
             if leave.section_head_approval_status == 1:
                 leave.division_head_approval_status = 1
                 leave.save()
                 messages.success(request, "Leave Approved by Division Head")
+            else:
+                messages.warning(request, "Leave has not been approved by Section Head")
+            '''
+            # Non-gazetted officers with Casual leave require Section Head approval
+            if leave.section_head_approval_status == 1:
+                # Increment the leave counters if the leave is approved by division head
+                try:
+                    # Since LeaveReportEmployee does no have emp_id, we will find the employee to increment its leave counter using PID. If the pid_no (defined in Employees model = pid (defined in LeaveReportEmployee model, then we increment the leave counter of that employee. ))
+                    employee = Employees.objects.get(pid_no=leave.pid)
+
+                    if employee.casual_leave_counter < 20:
+                        employee.casual_leave_counter += 1
+                    employee.save()
+                    leave.division_head_approval_status = 1
+                    leave.save()
+                    messages.success(request, "Leave Approved by Division Head. Leave counters incremented.")
+                except Exception as e:
+                    messages.error(request, f"Failed to increment leave counters. Error: {str(e)}")
             else:
                 messages.warning(request, "Leave has not been approved by Section Head")
 
@@ -102,10 +121,26 @@ def approve_leave_dh(request, leave_id):
                 messages.warning(request, "Leave has not been approved by Section Head")
 
         elif leave.leave_type == 'Casual' and leave.rank in gazetted_ranks:
+            '''
             # Gazetted officers with Casual leave require only Division Head approval
             leave.division_head_approval_status = 1
             leave.save()
             messages.success(request, "Leave Approved by Division Head")
+            '''
+            # Gazetted officers with Casual leave require only Division Head approval
+            # Increment the leave counters if the leave is approved
+            try:
+                # Since LeaveReportEmployee does no have emp_id, we will find the employee to increment its leave counter using PID. If the pid_no (defined in Employees model = pid (defined in LeaveReportEmployee model, then we increment the leave counter of that employee. ))
+                employee = Employees.objects.get(pid_no=leave.pid)
+
+                if employee.casual_leave_counter < 20:
+                    employee.casual_leave_counter += 1
+                employee.save()
+                leave.division_head_approval_status = 1
+                leave.save()
+                messages.success(request, "Leave Approved by Division Head. Leave counters incremented.")
+            except Exception as e:
+                messages.error(request, f"Failed to increment leave counters. Error: {str(e)}")
 
         elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in gazetted_ranks:
             # Gazetted officers with these leaves require  Division Head, IGP and Special DG approval
@@ -189,16 +224,22 @@ def override_approve_leave_dh(request, leave_id):
 
         # Check leave type and rank before approval
         if leave.leave_type == 'Casual' and leave.rank in non_gazetted_ranks:
-            # Non-gazetted officers with Casual leave require Section Head approval
             if leave.division_head_approval_status == 0:
-                leave.division_head_approval_status = 1
-                leave.save()
-                messages.success(request, "Leave Approved by Division Head")
-            else:
-                messages.warning(request, "Leave has not been approved by Section Head")
+                # Increment the leave counters if the leave is approved by division head
+                try:
+                    # Since LeaveReportEmployee does no have emp_id, we will find the employee to increment its leave counter using PID. If the pid_no (defined in Employees model = pid (defined in LeaveReportEmployee model, then we increment the leave counter of that employee. ))
+                    employee = Employees.objects.get(pid_no=leave.pid)
+
+                    if employee.casual_leave_counter < 20:
+                        employee.casual_leave_counter += 1
+                    employee.save()
+                    leave.division_head_approval_status = 1
+                    leave.save()
+                    messages.success(request, "Leave Approved by Division Head. Leave counters incremented.")
+                except Exception as e:
+                    messages.error(request, f"Failed to increment leave counters. Error: {str(e)}")
 
         elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in non_gazetted_ranks:
-            # Non-gazetted officers with other leave types also require Section Head and Division Head approval
             if leave.division_head_approval_status == 0:
                 leave.division_head_approval_status = 1
                 leave.save()
@@ -207,10 +248,25 @@ def override_approve_leave_dh(request, leave_id):
                 messages.warning(request, "Leave has not been approved by Section Head")
 
         elif leave.leave_type == 'Casual' and leave.rank in gazetted_ranks:
-            # Gazetted officers with Casual leave require only Division Head approval
+            '''
             leave.division_head_approval_status = 1
             leave.save()
             messages.success(request, "Leave Approved by Division Head")
+            '''
+            if leave.division_head_approval_status == 0:
+                # Increment the leave counters if the leave is approved by division head
+                try:
+                    # Since LeaveReportEmployee does no have emp_id, we will find the employee to increment its leave counter using PID. If the pid_no (defined in Employees model = pid (defined in LeaveReportEmployee model, then we increment the leave counter of that employee. ))
+                    employee = Employees.objects.get(pid_no=leave.pid)
+
+                    if employee.casual_leave_counter < 20:
+                        employee.casual_leave_counter += 1
+                    employee.save()
+                    leave.division_head_approval_status = 1
+                    leave.save()
+                    messages.success(request, "Leave Approved by Division Head. Leave counters incremented.")
+                except Exception as e:
+                    messages.error(request, f"Failed to increment leave counters. Error: {str(e)}")
 
         elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in gazetted_ranks:
             # Gazetted officers with these leaves require  Division Head, IGP and Special DG approval
@@ -300,20 +356,11 @@ def dh_apply_leave_save(request):
         leave_type = request.POST.get("leave_type")
 
         try:
-            # Increase the respective leave counters based on the leave type
             if leave_type == 'Casual':
                 # Check if the limit of 20 has been reached
                 if employee.casual_leave_counter >= 20:
                     messages.error(request, "Casual leave limit reached. Cannot apply for more casual leaves.")
-                    return HttpResponseRedirect(reverse("user_apply_leave"))
-
-                employee.casual_leave_counter += 1  # Increment the counter
-            elif leave_type == 'Earned':
-                employee.earned_leave_counter += 1
-            elif leave_type == 'Paternity/Maternity':
-                employee.paternity_maternity_leave_counter += 1
-            elif leave_type == 'Committed':
-                employee.committed_leave_counter += 1
+                    return HttpResponseRedirect(reverse("dh_apply_leave"))
 
             # Save the changes to the employee model
             employee.save()

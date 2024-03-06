@@ -21,7 +21,7 @@ Add Employees
                 <div class="card-body">
 
 
-                  <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                  <!--  success and error messages. -->
                       <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}
@@ -59,7 +59,8 @@ Add Employees
 
                   <!-- accept="image/*" ensures that user can only select image format files. -->
                   <div class="form-group">
-                    <label>Profile Picture </label>
+                    <label>Profile Picture </label> <br>
+                      <label> <span class="text-danger font-italic"> (Profile picture size should not exceed 500KB.) </span> </label>
                     <input type="file" class="form-control" placeholder="Profile Picture" name="profile_pic" accept="image/*" >
                   </div>
 
@@ -158,7 +159,8 @@ Add Employees
 
 
                     <div class="form-group">
-                        <label>Date Of Joining In CID - Document File Upload</label>
+                        <label>Date Of Joining In CID - Document File Upload</label> <br>
+                        <label> <span class="text-danger font-italic"> (Document file size should not exceed 500KB.) </span> </label>
                         <label> <span class="font-italic text-primary"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
 
                             <input type="file" class="form-control" placeholder="Date Of Joining In CID - Document File Upload" name="document_file" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, application/rtf, text/markdown">
@@ -187,7 +189,7 @@ Add Employees
 
                     <div class="form-group">
                     <label>Aadhar Number <span class="text-danger"> *(required)</span> </label>
-                        <p class="font-italic font-weight-bold text-primary"> (Aadhar Number should be a 12-digit number.) </p>
+                        <p class="font-italic font-weight-bold text-danger"> (Aadhar Number should be a 12-digit number.) </p>
                     <input type="number" class="form-control" placeholder="Aadhar Number" name="aadhar_number" required>
                   </div>
 
@@ -259,9 +261,9 @@ Add Employees
                     </div>
 
                   <div class="form-group">
-                    <label>Section <span class="text-danger"> *(required)</span> </label>
+                    <label>Section </label>
                     <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
-                    <select class="form-control" name="section" required>
+                    <select class="form-control" name="section">
                       <option value="">--Choose an option--</option>
                       <!-- Because sections, division and supervisor is a foreign key in Employees table, write this FOR loop to fetch data from these 2 table in the employee form. -->
                       {% for section in sections %}
@@ -271,8 +273,8 @@ Add Employees
                   </div>
 
                   <div class="form-group">
-                    <label>Division <span class="text-danger"> *(required)</span> </label>
-                    <select class="form-control" name="division" required>
+                    <label>Division </label>
+                    <select class="form-control" name="division">
                       <option value="">--Choose an option--</option>
                       {% for division in divisions %}
                         <option value="{{ division.division_id }}">{{ division.division_name }}</option>

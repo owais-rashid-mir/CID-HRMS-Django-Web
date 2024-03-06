@@ -217,6 +217,9 @@ urlpatterns = [
                   path('view_all_archived_employee/<int:emp_id>/', AdminViews.view_all_archived_employee, name="view_all_archived_employee"),
                   path('delete_archived_employee/<int:emp_id>/', AdminViews.delete_archived_employee, name='delete_archived_employee'),
 
+                  # Export employees to Excel
+                  path('export-employees/', AdminViews.export_employees, name='export_employees'),
+
 
                   # --------------------------- User URL Path --------------------------------
                   path('user_home', UserViews.user_home, name="user_home"),

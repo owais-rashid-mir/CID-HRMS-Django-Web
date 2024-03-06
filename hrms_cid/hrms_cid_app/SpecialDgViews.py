@@ -68,9 +68,62 @@ def approve_leave_sp_dg(request, leave_id):
 
     # Check if the rank is "SSP" (Division Head and DDO), allow approval without Division Head and IGP checks
     if leave.rank == 'SSP':
-        leave.special_dg_approval_status = 1
-        leave.save()
-        messages.success(request, "Leave Approved by Special DG.")
+        if leave.leave_type == 'Casual':
+            # Increment the casual leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.casual_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Casual Leave Approved by Special DG. Casual leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment casual leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Earned':
+            # Increment the earned leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.earned_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Earned Leave Approved by Special DG. Earned leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment earned leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Paternity/Maternity':
+            # Increment the paternity/maternity leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.paternity_maternity_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Paternity/Maternity Leave Approved by Special DG. Paternity/Maternity leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment paternity/maternity leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Committed':
+            # Increment the committed leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.committed_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request,
+                                 "Committed Leave Approved by Special DG. Committed leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment committed leave counter. Error: {str(e)}")
+        else:
+            messages.warning(request, "Leave type not eligible for Special DG approval")
+
         return HttpResponseRedirect(reverse("manage_leaves_sp_dg"))
 
     # 0: Pending,   1: Approved,   and 2: Disapproved.
@@ -86,14 +139,49 @@ def approve_leave_sp_dg(request, leave_id):
 
         if leave.leave_type == 'Casual' and leave.rank in gazetted_ranks:
             messages.warning(request, "Casual leaves do not require Special DG approval/disapproval")
-        elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in gazetted_ranks:
-            leave.special_dg_approval_status = 1
-            leave.save()
-            messages.success(request, "Leave Approved by Special DG.")
+        elif leave.leave_type == 'Earned' and leave.rank in gazetted_ranks:
+            # Increment the earned leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.earned_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Earned Leave Approved by Special DG. Earned leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment earned leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Paternity/Maternity' and leave.rank in gazetted_ranks:
+            # Increment the paternity/maternity leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.paternity_maternity_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Paternity/Maternity Leave Approved by Special DG. Paternity/Maternity leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment paternity/maternity leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Committed' and leave.rank in gazetted_ranks:
+            # Increment the committed leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.committed_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Committed Leave Approved by Special DG. Committed leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment committed leave counter. Error: {str(e)}")
         else:
             messages.warning(request, "Leave type or rank not eligible for Special DG approval")
     else:
-        messages.warning(request, "Leave has not been approved by Division Head or IGP.")
+        messages.warning(request, "Leave has not been approved by Division Head, IGP, or already processed by Special DG.")
 
     return HttpResponseRedirect(reverse("manage_leaves_sp_dg"))
 
@@ -143,15 +231,61 @@ def override_approve_leave_sp_dg(request, leave_id):
         ]
 
         if leave.leave_type == 'Casual' and leave.rank in gazetted_ranks:
-            messages.warning(request, "Casual leaves do not require Special DG approval/disapproval")
-        elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in gazetted_ranks:
-            leave.special_dg_approval_status = 1
-            leave.save()
-            messages.success(request, "Leave Approved by Special DG.")
+            # Increment the casual leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.casual_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Casual Leave Approved by Special DG. Casual leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment casual leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Earned' and leave.rank in gazetted_ranks:
+            # Increment the earned leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.earned_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Earned Leave Approved by Special DG. Earned leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment earned leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Paternity/Maternity' and leave.rank in gazetted_ranks:
+            # Increment the paternity/maternity leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.paternity_maternity_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Paternity/Maternity Leave Approved by Special DG. Paternity/Maternity leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment paternity/maternity leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Committed' and leave.rank in gazetted_ranks:
+            # Increment the committed leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.committed_leave_counter += 1
+                employee.save()
+                leave.special_dg_approval_status = 1
+                leave.save()
+                messages.success(request, "Committed Leave Approved by Special DG. Committed leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment committed leave counter. Error: {str(e)}")
         else:
-            messages.warning(request, "Leave type or rank not eligible for Special DG approval")
+            messages.warning(request, "Leave type not eligible for Special DG approval")
     else:
-        messages.warning(request, "Leave has not been approved by Division Head or IGP.")
+        messages.warning(request, "Leave has not been approved by Division Head, IGP, or already processed by Special DG.")
 
     return HttpResponseRedirect(reverse("manage_leaves_sp_dg"))
 
@@ -178,6 +312,7 @@ def override_disapprove_leave_sp_dg(request, leave_id):
     return HttpResponseRedirect(reverse("manage_leaves_sp_dg"))
 
 
+# NOT BEING USED - SHORTCUTS REMOVED BUT BACKEND CODE IS KEPT - BECAUSE Special DG leaves are applied offline.
 # Apply for Leaves - Special DG
 def sp_dg_apply_leave(request):
     user = request.user
@@ -202,20 +337,11 @@ def sp_dg_apply_leave_save(request):
         leave_type = request.POST.get("leave_type")
 
         try:
-            # Increase the respective leave counters based on the leave type
             if leave_type == 'Casual':
                 # Check if the limit of 20 has been reached
                 if employee.casual_leave_counter >= 20:
                     messages.error(request, "Casual leave limit reached. Cannot apply for more casual leaves.")
-                    return HttpResponseRedirect(reverse("user_apply_leave"))
-
-                employee.casual_leave_counter += 1  # Increment the counter
-            elif leave_type == 'Earned':
-                employee.earned_leave_counter += 1
-            elif leave_type == 'Paternity/Maternity':
-                employee.paternity_maternity_leave_counter += 1
-            elif leave_type == 'Committed':
-                employee.committed_leave_counter += 1
+                    return HttpResponseRedirect(reverse("sp_dg_apply_leave"))
 
             # Save the changes to the employee model
             employee.save()

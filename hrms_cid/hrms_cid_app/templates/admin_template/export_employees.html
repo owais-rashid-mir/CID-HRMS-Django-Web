@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Employees</title>
+</head>
+<body>
+    <h1>Export Employees</h1>
+    <form method="post" style="display: inline;">
+        {% csrf_token %}
+
+        <label for="section_id">Select Section:</label>
+        <select name="section_id">
+            <option value="">All</option>
+            {% for section in sections %}
+            <option value="{{ section.section_id }}">{{ section.section_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="division_id">Select Division:</label>
+        <select name="division_id">
+            <option value="">All</option>
+            {% for division in divisions %}
+            <option value="{{ division.division_id }}">{{ division.division_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="rank_id">Select Rank:</label>
+        <select name="rank_id">
+            <option value="">All</option>
+            {% for rank in ranks %}
+            <option value="{{ rank.rank_id }}">{{ rank.rank_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label for="min_age">Minimum Age:</label>
+        <input type="number" name="min_age" min="0">
+        <br>
+        <label for="max_age">Maximum Age:</label>
+        <input type="number" name="max_age" min="0">
+        <br>
+        <button type="submit" name="export_filtered">Export Employees</button>
+    </form>
+
+
+</body>
+</html>

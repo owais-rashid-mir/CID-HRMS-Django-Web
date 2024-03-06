@@ -16,6 +16,7 @@ from django.contrib.auth.hashers import make_password
 import logging
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import uuid  # uuid module for generating unique identifiers that can be appended with file names.
+import pandas as pd
 
 from hrms_cid_app.models import CustomUser, User, Sections, Supervisor, Employees, FeedBackUser, LeaveReportEmployee, \
     Rank, Divisions, AdminSecurityQuestion, UserSecurityQuestion, SectionHead, DivisionHead, ProfileCorrReq, Admin, Ddo, \
@@ -909,7 +910,8 @@ def add_section_save(request):
         # ... database columns) in models.py same.
         section_name = request.POST.get("section_name")
         description = request.POST.get("description")
-        section_incharge = request.POST.get("section_incharge")
+        # section_incharge - Not being used - fetched from SectionHead table in the HTML file.
+        # section_incharge = request.POST.get("section_incharge")
         division_id = request.POST.get("division")
 
         try:
@@ -917,7 +919,7 @@ def add_section_save(request):
             section_model = Sections(
                 section_name=section_name,
                 description=description,
-                section_incharge=section_incharge,
+                # section_incharge=section_incharge,
                 division_id=division_id,
                 )
 
@@ -953,14 +955,14 @@ def edit_section_save(request):
         section_id = request.POST.get("section_id")
         section_name = request.POST.get("section_name")
         description = request.POST.get("description")
-        section_incharge = request.POST.get("section_incharge")
+        # section_incharge = request.POST.get("section_incharge")
         division_id = request.POST.get("division")
 
         try:
             sections = Sections.objects.get(section_id=section_id)
             sections.section_name = section_name
             sections.description = description
-            sections.section_incharge = section_incharge
+            # sections.section_incharge = section_incharge
             sections.division_id = division_id
 
             sections.save()
@@ -1132,6 +1134,11 @@ def add_employee_save(request):
         # This If Else condition is used to avoid MultiValueDictKeyError which occurs if no picture is selected.
         if 'profile_pic' in request.FILES:
             profile_pic = request.FILES['profile_pic']
+
+            if profile_pic.size > 500 * 1024:  # 500KB limit
+                messages.error(request, "Profile picture size should not exceed 500KB.")
+                return HttpResponseRedirect(reverse("add_employee"))
+
             # Generate a unique identifier using uuid
             unique_id = str(uuid.uuid4())
             # Append the unique identifier to the original filename
@@ -1164,6 +1171,11 @@ def add_employee_save(request):
         # Check if the document file is provided
         if 'document_file' in request.FILES:
             document_file = request.FILES['document_file']
+
+            if document_file.size > 500 * 1024:  # 500KB limit
+                messages.error(request, "Document file size should not exceed 500KB.")
+                return HttpResponseRedirect(reverse("add_employee"))
+
             # Generate a unique identifier using uuid
             unique_id = str(uuid.uuid4())
             # Append the unique identifier to the original filename
@@ -1192,8 +1204,21 @@ def add_employee_save(request):
 
         dialogue = request.POST.get("dialogue")
         adverse_report = request.POST.get("adverse_report")
+
         section_id = request.POST.get("section")
+        # Check if section_id is not empty before retrieving the Sections object
+        if section_id:
+            section = Sections.objects.get(section_id=section_id)
+        else:
+            section = None
+
         division_id = request.POST.get("division")
+        # Check if division_id is not empty before retrieving the Divisions object
+        if division_id:
+            division = Divisions.objects.get(division_id=division_id)
+        else:
+            division = None
+
         # supervisor_id = request.POST.get("supervisor")
         computer_knowledge = request.POST.get("computer_knowledge")
         computer_degree = request.POST.get("computer_degree")
@@ -1252,8 +1277,8 @@ def add_employee_save(request):
 
         # Retrieve the Sections instance using section_id
         rank = Rank.objects.get(rank_id=rank_id)
-        section = Sections.objects.get(section_id=section_id)
-        division = Divisions.objects.get(division_id=division_id)
+        # section = Sections.objects.get(section_id=section_id)
+        # division = Divisions.objects.get(division_id=division_id)
         # supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
 
         # Check if the email, aadhar and PAN numbers are unique- email, aadhar, pan in Employees in models.py is set as unique. So, we need these validation:
@@ -1439,6 +1464,11 @@ def edit_employee_save(request):
         # This If Else condition is used to avoid MultiValueDictKeyError which occurs if no picture is selected.
         if 'profile_pic' in request.FILES:
             profile_pic = request.FILES['profile_pic']
+
+            if profile_pic.size > 500 * 1024:  # 500KB limit
+                messages.error(request, "Profile picture size should not exceed 500KB.")
+                return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
             # Generate a unique identifier using uuid
             unique_id = str(uuid.uuid4())
             # Append the unique identifier to the original filename
@@ -1471,6 +1501,11 @@ def edit_employee_save(request):
         # Check if the document file is provided
         if 'document_file' in request.FILES:
             document_file = request.FILES['document_file']
+
+            if document_file.size > 500 * 1024:  # 500KB limit
+                messages.error(request, "Document file size should not exceed 500KB.")
+                return HttpResponseRedirect(reverse("edit_employee", kwargs={"emp_id": emp_id}))
+
             # Generate a unique identifier using uuid
             unique_id = str(uuid.uuid4())
             # Append the unique identifier to the original filename
@@ -1500,8 +1535,21 @@ def edit_employee_save(request):
 
         dialogue = request.POST.get("dialogue")
         adverse_report = request.POST.get("adverse_report")
+
         section_id = request.POST.get("section")
+        # Check if section_id is not empty before retrieving the Sections object
+        if section_id:
+            section = Sections.objects.get(section_id=section_id)
+        else:
+            section = None
+
         division_id = request.POST.get("division")
+        # Check if division_id is not empty before retrieving the Divisions object
+        if division_id:
+            division = Divisions.objects.get(division_id=division_id)
+        else:
+            division = None
+
         # supervisor_id = request.POST.get("supervisor")
         computer_knowledge = request.POST.get("computer_knowledge")
         computer_degree = request.POST.get("computer_degree")
@@ -1565,8 +1613,8 @@ def edit_employee_save(request):
             change_dob_format = datetime.datetime.strptime(dob, '%Y-%m-%d').date()
 
         # Retrieve the Sections instance using section_id
-        section = Sections.objects.get(section_id=section_id)
-        division = Divisions.objects.get(division_id=division_id)
+        # section = Sections.objects.get(section_id=section_id)
+        # division = Divisions.objects.get(division_id=division_id)
         # supervisor = Supervisor.objects.get(supervisor_id=supervisor_id)
         rank = Rank.objects.get(rank_id=rank_id)
 
@@ -1786,12 +1834,13 @@ def admin_apply_leave_save(request):
         leave_type = request.POST.get("leave_type")
 
         try:
+            '''
             # Increase the respective leave counters based on the leave type
             if leave_type == 'Casual':
                 # Check if the limit of 20 has been reached
                 if employee.casual_leave_counter >= 20:
                     messages.error(request, "Casual leave limit reached. Cannot apply for more casual leaves.")
-                    return HttpResponseRedirect(reverse("user_apply_leave"))
+                    return HttpResponseRedirect(reverse("admin_apply_leave"))
 
                 employee.casual_leave_counter += 1  # Increment the counter
             elif leave_type == 'Earned':
@@ -1800,6 +1849,12 @@ def admin_apply_leave_save(request):
                 employee.paternity_maternity_leave_counter += 1
             elif leave_type == 'Committed':
                 employee.committed_leave_counter += 1
+            '''
+            if leave_type == 'Casual':
+                # Check if the limit of 20 has been reached
+                if employee.casual_leave_counter >= 20:
+                    messages.error(request, "Casual leave limit reached. Cannot apply for more casual leaves.")
+                    return HttpResponseRedirect(reverse("admin_apply_leave"))
 
             # Save the changes to the employee model
             employee.save()
@@ -2022,11 +2077,10 @@ def add_division_save(request):
     else:
         division_name = request.POST.get("division_name")
         division_description = request.POST.get("division_description")
-        division_head = request.POST.get("division_head")
+        # division_head = request.POST.get("division_head")     # Not being used. fetched from DivisionHead table in HTML file.
         try:
             # Divisions - defined in models.py
-            division_model = Divisions(division_name=division_name, division_description=division_description,
-                                       division_head=division_head)
+            division_model = Divisions(division_name=division_name, division_description=division_description)
             division_model.save()
 
             messages.success(request, "Successfully Added Division")
@@ -2070,13 +2124,13 @@ def edit_division_save(request):
         division_id = request.POST.get("division_id")
         division_name = request.POST.get("division_name")
         division_description = request.POST.get("division_description")
-        division_head = request.POST.get("division_head")
+        # division_head = request.POST.get("division_head")
 
         try:
             divisions = Divisions.objects.get(division_id=division_id)
             divisions.division_name = division_name
             divisions.division_description = division_description
-            divisions.division_head = division_head
+            # divisions.division_head = division_head
 
             divisions.save()
             messages.success(request, "Successfully Edited Division")
@@ -2510,3 +2564,185 @@ def delete_archived_employee(request, emp_id):
             messages.error(request, f"Failed to delete employee from the Archive Folder. Error: {str(e)}")
 
         return redirect("manage_archived_employee")  # Redirect to the list of archived employees page
+
+
+# Export employees to Excel - uses xlsxwriter library - pip install xlsxwriter
+def export_employees(request):
+    sections = Sections.objects.all()
+    divisions = Divisions.objects.all()
+    ranks = Rank.objects.all()
+
+    if request.method == 'POST':
+        # Get the selected section, division, and rank from the form
+        section_id = request.POST.get('section_id')
+        division_id = request.POST.get('division_id')
+        rank_id = request.POST.get('rank_id')
+        min_age_str = request.POST.get('min_age')
+        max_age_str = request.POST.get('max_age')
+        min_age = int(min_age_str) if min_age_str else None
+        max_age = int(max_age_str) if max_age_str else None
+
+        # Filter employees based on selected criteria
+        employees = Employees.objects.all().select_related('section_id', 'division_id', 'rank_id')
+        if section_id:
+            employees = employees.filter(section_id=section_id)
+        if division_id:
+            employees = employees.filter(division_id=division_id)
+        if rank_id:
+            employees = employees.filter(rank_id=rank_id)
+
+        # If no specific criteria are selected, export all employees
+        if not (section_id or division_id or rank_id):
+            employees = Employees.objects.all()
+
+        # Filter employees based on age
+        today = datetime.date.today()  # Get current date
+        if min_age is not None:
+            min_birth_date = today - datetime.timedelta(days=min_age * 365)
+        else:
+            min_birth_date = None
+
+        if max_age is not None:
+            max_birth_date = today - datetime.timedelta(days=max_age * 365)
+        else:
+            max_birth_date = None
+
+        # Filter employees based on age
+        if min_age is not None and max_age is not None:
+            # Calculate birthdate for min and max ages
+            min_birth_date = today - datetime.timedelta(days=min_age * 365)
+            max_birth_date = today - datetime.timedelta(
+                days=max_age * 365 + 365)  # Adjust for potential upcoming birthday
+            employees = employees.filter(dob__gte=max_birth_date, dob__lte=min_birth_date)
+        elif min_age is not None:
+            # Calculate birthdate for min age
+            min_birth_date = today - datetime.timedelta(days=min_age * 365)
+            employees = employees.filter(dob__lte=min_birth_date)
+        elif max_age is not None:
+            # Calculate birthdate for max age
+            max_birth_date = today - datetime.timedelta(
+                days=max_age * 365 + 365)  # Adjust for potential upcoming birthday
+            employees = employees.filter(dob__gte=max_birth_date)
+
+        # Convert filtered employees to pandas DataFrame
+        employees_data = []
+        for employee in employees:
+            employee_data = {
+                'emp_id': employee.emp_id,
+                'first_name': employee.first_name,
+                'last_name': employee.last_name,
+                'profile_pic': employee.profile_pic,
+                'gender': employee.gender,
+                'email': employee.email,
+                'phone': employee.phone,
+                'address': employee.address,
+                'tehsil': employee.tehsil,
+                'district': employee.district,
+                'parentage': employee.parentage,
+                'mother_name': employee.mother_name,
+                'belt_no': employee.belt_no,
+                'pid_no': employee.pid_no,
+                'cpis': employee.cpis,
+                'date_joined': employee.date_joined,
+                'document_file': employee.document_file,
+                'date_appointment_police': employee.date_appointment_police,
+                'dob': employee.dob,
+                'aadhar_number': employee.aadhar_number,
+                'pan_number': employee.pan_number,
+                'previous_positions_held_within_cid': employee.previous_positions_held_within_cid,
+                'previous_positions_held_outside_cid': employee.previous_positions_held_outside_cid,
+                'qualifications': employee.qualifications,
+                'dialogue': employee.dialogue,
+                'adverse_report': employee.adverse_report,
+                'section': employee.section_id.section_name if employee.section_id else None,
+                'division': employee.division_id.division_name if employee.division_id else None,
+                'rank': employee.rank_id.rank_name if employee.rank_id else None,
+                'supervisor': employee.supervisor_id,
+                'created_at': employee.created_at,
+                'updated_at': employee.updated_at,
+                'computer_knowledge': employee.computer_knowledge,
+                'computer_degree': employee.computer_degree,
+                'computer_skill': employee.computer_skill,
+                'previous_trainings_done': employee.previous_trainings_done,
+                'other_emp_info': employee.other_emp_info,
+                'casual_leave_counter': employee.casual_leave_counter,
+                'earned_leave_counter': employee.earned_leave_counter,
+                'paternity_maternity_leave_counter': employee.paternity_maternity_leave_counter,
+                'committed_leave_counter': employee.committed_leave_counter,
+            }
+            employees_data.append(employee_data)
+
+        # Create a DataFrame
+        employees_df = pd.DataFrame(employees_data)
+
+        if not employees_df.empty:  # Check if DataFrame is empty
+            # Convert date fields to datetime format if they are currently strings
+            date_fields = ['date_joined', 'date_appointment_police', 'dob', 'created_at', 'updated_at']
+            for field in date_fields:
+                employees_df[field] = pd.to_datetime(employees_df[field])
+
+            # Convert datetime fields to timezone-unaware
+            for field in date_fields:
+                employees_df[field] = employees_df[field].dt.tz_localize(None)
+
+            # Check if 'section_id' column exists in the DataFrame
+            if 'section_id' in employees_df.columns:
+                # Replace section IDs with their names
+                section_names = Sections.objects.values_list('section_name', flat=True)
+                employees_df['section'] = employees_df['section_id'].map(
+                    lambda x: section_names[x - 1] if x - 1 < len(section_names) else '')
+                # Drop the 'section_id' column
+                employees_df.drop(['section_id'], axis=1, inplace=True)
+
+            # Check if 'division_id' column exists in the DataFrame
+            if 'division_id' in employees_df.columns:
+                # Replace division IDs with their names
+                division_names = Divisions.objects.values_list('division_name', flat=True)
+                employees_df['division'] = employees_df['division_id'].map(
+                    lambda x: division_names[x - 1] if x - 1 < len(division_names) else '')
+                # Drop the 'division_id' column
+                employees_df.drop(['division_id'], axis=1, inplace=True)
+
+            # Check if 'rank_id' column exists in the DataFrame
+            if 'rank_id' in employees_df.columns:
+                # Replace rank IDs with their names
+                rank_names = Rank.objects.values_list('rank_name', flat=True)
+                employees_df['rank'] = employees_df['rank_id'].map(
+                    lambda x: rank_names[x - 1] if x - 1 < len(rank_names) else '')
+                # Drop the 'rank_id' column
+                employees_df.drop(['rank_id'], axis=1, inplace=True)
+
+            # Create a Pandas Excel writer using XlsxWriter as the engine
+            with pd.ExcelWriter('exported_employees.xlsx', engine='xlsxwriter') as writer:
+                # Write DataFrame to Excel
+                employees_df.to_excel(writer, sheet_name='Employees', index=False)
+
+                # Access the workbook and worksheet objects
+                workbook = writer.book
+                worksheet = writer.sheets['Employees']
+
+                # Adjust column widths to fit the content
+                #for i, col in enumerate(employees_df.columns):
+                    #column_len = max(employees_df[col].astype(str).map(len).max(), len(col))
+                    #worksheet.set_column(i, i, column_len)
+                # Adjust column widths to fit the content
+                for i, col in enumerate(employees_df.columns):
+                    if col in ['date_joined', 'dob']:  # Check for specific columns
+                        column_width = 25  # Adjust as needed based on date format
+                    else:
+                        max_length = max(employees_df[col].astype(str).map(len).max(), len(col))
+                        column_width = max_length * 1.1  # Add some padding
+                    worksheet.set_column(i, i, column_width)
+
+            # Serve the file for download
+            with open('exported_employees.xlsx', 'rb') as excel_file:
+                response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                response['Content-Disposition'] = 'attachment; filename="exported_employees.xlsx"'
+                return response
+
+        # If the DataFrame is empty, return an error message
+        else:
+            return HttpResponse("No data found for the selected criteria.")
+
+    # If the request method is not POST, render the export page
+    return render(request, 'admin_template/export_employees.html', {'sections': sections, 'divisions': divisions, 'ranks': ranks})

@@ -26,7 +26,7 @@ class Divisions(models.Model):
     division_id = models.AutoField(primary_key=True)
     division_name = models.CharField(max_length=100)
     division_description = models.TextField()
-    division_head = models.CharField(max_length=50)
+    division_head = models.CharField(max_length=50)     # Not being used. fetched from DivisionHead table in HTML file.
     objects = models.Manager()
 
 
@@ -35,7 +35,7 @@ class Sections(models.Model):
     section_id = models.AutoField(primary_key=True)
     section_name = models.CharField(max_length=100)
     description = models.TextField()
-    section_incharge = models.CharField(max_length=50)
+    section_incharge = models.CharField(max_length=50)      # Not being used.
     # Add a ForeignKey to establish the relationship between Sections and Divisions
     division = models.ForeignKey(Divisions, on_delete=models.CASCADE)
     objects = models.Manager()

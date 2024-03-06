@@ -96,6 +96,14 @@
                 </a>
               </li>
 
+              <li class="nav-item">
+                {% url 'export_employees' as export_employees %}
+                <a href="{% url 'export_employees' %}" class="nav-link {% if request.path == export_employees %} active {% endif %}">   <!-- Highlighting the active/opened page in sidebar -->
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Export Employee Data</p>
+                </a>
+              </li>
+
             </ul>
           </li>
 

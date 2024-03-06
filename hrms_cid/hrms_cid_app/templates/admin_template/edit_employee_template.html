@@ -64,7 +64,8 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
 
                   <!-- accept="image/*" ensures that user can only select image format files. -->
                    <div class="form-group">
-                    <label>Profile Picture </label>
+                    <label>Profile Picture </label> <br>
+                       <label> <span class="text-danger font-italic"> (Profile picture size should not exceed 500KB.) </span> </label>
 
                      <!-- value="{{ employee.profile_pic }}" in <input> will NOT work with an image, so use this: -->
                      <div class="text-primary font-weight-bold font-italic">
@@ -161,7 +162,8 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
 
 
                     <div class="form-group">
-                        <label>Date Of Joining In CID - Document File Upload</label>
+                        <label>Date Of Joining In CID - Document File Upload</label> <br>
+                        <label> <span class="text-danger font-italic"> (Document file size should not exceed 500KB.) </span> </label>
                         <label> <span class="text-primary font-italic"> (Supported Document Formats : PDF Documents (.pdf), Microsoft Word Documents(.doc, .docx), Plain Text Files(.txt), Rich Text Format (.rtf), Markdown Documents (.md))</span> </label>
 
                      <div class="text-primary font-italic font-weight-bold">
@@ -199,7 +201,7 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
 
                     <div class="form-group">
                     <label>Aadhar Number <span class="text-danger"> *(required)</span> </label>
-                        <p class="font-italic text-primary font-weight-bold"> (Aadhar Number should be a 12-digit number.) </p>
+                        <p class="font-italic text-danger font-weight-bold"> (Aadhar Number should be a 12-digit number.) </p>
                     <input type="number" class="form-control" placeholder="Aadhar Number" name="aadhar_number" value="{{ employees.aadhar_number }}" required>
                   </div>
 
@@ -293,9 +295,9 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                     </div>
 
                   <div class="form-group">
-                    <label>Section <span class="text-danger"> *(required)</span> </label>
+                    <label>Section </label>
                     <!-- Keep section as Required- this is a foreign key, it shows the section by retrieving it from an id. If no option is selected, there will be an error. -->
-                    <select class="form-control" name="section" required>
+                    <select class="form-control" name="section">
                       <option value="">--Choose an option--</option>
                       <!-- Because sections and supervisor is a foreign key in Employees table, write this FOR loop to fetch data from these 2 table in the employee form. -->
                       {% for section in sections %}
@@ -306,8 +308,8 @@ Edit Employees | Name : {{employees.first_name}} {{employees.last_name}} | #ID :
                   </div>
 
                   <div class="form-group">
-                    <label>Division <span class="text-danger"> *(required)</span> </label>
-                    <select class="form-control" name="division" required>
+                    <label>Division </label>
+                    <select class="form-control" name="division">
                       <option value="">--Choose an option--</option>
                       {% for division in divisions %}
                         <option value="{{ division.division_id }}" {% if division.division_id == employees.division_id_id %} selected {% endif %}> {{ division.division_name }}</option>

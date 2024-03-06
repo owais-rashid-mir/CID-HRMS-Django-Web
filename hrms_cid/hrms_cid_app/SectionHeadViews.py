@@ -132,20 +132,11 @@ def sh_apply_leave_save(request):
         leave_type = request.POST.get("leave_type")
 
         try:
-            # Increase the respective leave counters based on the leave type
             if leave_type == 'Casual':
                 # Check if the limit of 20 has been reached
                 if employee.casual_leave_counter >= 20:
                     messages.error(request, "Casual leave limit reached. Cannot apply for more casual leaves.")
-                    return HttpResponseRedirect(reverse("user_apply_leave"))
-
-                employee.casual_leave_counter += 1  # Increment the counter
-            elif leave_type == 'Earned':
-                employee.earned_leave_counter += 1
-            elif leave_type == 'Paternity/Maternity':
-                employee.paternity_maternity_leave_counter += 1
-            elif leave_type == 'Committed':
-                employee.committed_leave_counter += 1
+                    return HttpResponseRedirect(reverse("sh_apply_leave"))
 
             # Save the changes to the employee model
             employee.save()

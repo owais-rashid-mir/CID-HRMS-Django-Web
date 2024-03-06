@@ -71,10 +71,46 @@ def approve_leave_ddo(request, leave_id):
 
         if leave.leave_type == 'Casual' and leave.rank in non_gazetted_ranks:
             messages.warning(request, "Casual leaves do not require DDO approval/disapproval")
-        elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in non_gazetted_ranks:
-            leave.ddo_approval_status = 1
-            leave.save()
-            messages.success(request, "Leave Approved by DDO")
+        elif leave.leave_type == 'Earned' and leave.rank in non_gazetted_ranks:
+            # Increment the earned leave counter
+            try:
+                # Since LeaveReportEmployee does no have emp_id, we will find the employee to increment its leave counter using PID. If the pid_no (defined in Employees model = pid (defined in LeaveReportEmployee model, then we increment the leave counter of that employee. ))
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.earned_leave_counter += 1
+                employee.save()
+                leave.ddo_approval_status = 1
+                leave.save()
+                messages.success(request, "Earned Leave Approved by DDO. Earned leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment earned leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Paternity/Maternity' and leave.rank in non_gazetted_ranks:
+            # Increment the paternity/maternity leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.paternity_maternity_leave_counter += 1
+                employee.save()
+                leave.ddo_approval_status = 1
+                leave.save()
+                messages.success(request, "Paternity/Maternity Leave Approved by DDO. Paternity/Maternity leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment paternity/maternity leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Committed' and leave.rank in non_gazetted_ranks:
+            # Increment the committed leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.committed_leave_counter += 1
+                employee.save()
+                leave.ddo_approval_status = 1
+                leave.save()
+                messages.success(request, "Committed Leave Approved by DDO. Committed leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment committed leave counter. Error: {str(e)}")
         else:
             messages.warning(request, "Leave type or rank not eligible for DDO approval")
     else:
@@ -109,7 +145,8 @@ def disapprove_leave_ddo(request, leave_id):
     return HttpResponseRedirect(reverse("manage_leaves_ddo"))
 
 
-# Override Approve and Disapprove leaves - Even if Section Head or Division Head have not approved a leave, the DDO can bypass or override the restrictions, and directly approve or disapprove the leave.
+# Override Approve and Disapprove leaves - Even if Section Head or Division Head have not approved a leave,
+# the DDO can bypass or override the restrictions, and directly approve or disapprove the leave.
 def override_approve_leave_ddo(request, leave_id):
     leave = LeaveReportEmployee.objects.get(id=leave_id)
 
@@ -121,10 +158,45 @@ def override_approve_leave_ddo(request, leave_id):
 
         if leave.leave_type == 'Casual' and leave.rank in non_gazetted_ranks:
             messages.warning(request, "Casual leaves do not require DDO approval/disapproval")
-        elif leave.leave_type in ['Earned', 'Paternity/Maternity', 'Committed'] and leave.rank in non_gazetted_ranks:
-            leave.ddo_approval_status = 1
-            leave.save()
-            messages.success(request, "Leave Approved by DDO")
+        elif leave.leave_type == 'Earned' and leave.rank in non_gazetted_ranks:
+            # Increment the earned leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.earned_leave_counter += 1
+                employee.save()
+                leave.ddo_approval_status = 1
+                leave.save()
+                messages.success(request, "Earned Leave Approved by DDO. Earned leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment earned leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Paternity/Maternity' and leave.rank in non_gazetted_ranks:
+            # Increment the paternity/maternity leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.paternity_maternity_leave_counter += 1
+                employee.save()
+                leave.ddo_approval_status = 1
+                leave.save()
+                messages.success(request, "Paternity/Maternity Leave Approved by DDO. Paternity/Maternity leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment paternity/maternity leave counter. Error: {str(e)}")
+        elif leave.leave_type == 'Committed' and leave.rank in non_gazetted_ranks:
+            # Increment the committed leave counter
+            try:
+                employee = Employees.objects.get(pid_no=leave.pid)
+                employee.committed_leave_counter += 1
+                employee.save()
+                leave.ddo_approval_status = 1
+                leave.save()
+                messages.success(request, "Committed Leave Approved by DDO. Committed leave counter incremented.")
+            except Employees.DoesNotExist:
+                messages.error(request, "Employee not found")
+            except Exception as e:
+                messages.error(request, f"Failed to increment committed leave counter. Error: {str(e)}")
         else:
             messages.warning(request, "Leave type or rank not eligible for DDO approval")
     else:
@@ -179,20 +251,11 @@ def ddo_apply_leave_save(request):
         leave_type = request.POST.get("leave_type")
 
         try:
-            # Increase the respective leave counters based on the leave type
             if leave_type == 'Casual':
                 # Check if the limit of 20 has been reached
                 if employee.casual_leave_counter >= 20:
                     messages.error(request, "Casual leave limit reached. Cannot apply for more casual leaves.")
-                    return HttpResponseRedirect(reverse("user_apply_leave"))
-
-                employee.casual_leave_counter += 1  # Increment the counter
-            elif leave_type == 'Earned':
-                employee.earned_leave_counter += 1
-            elif leave_type == 'Paternity/Maternity':
-                employee.paternity_maternity_leave_counter += 1
-            elif leave_type == 'Committed':
-                employee.committed_leave_counter += 1
+                    return HttpResponseRedirect(reverse("ddo_apply_leave"))
 
             # Save the changes to the employee model
             employee.save()

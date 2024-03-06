@@ -81,12 +81,25 @@ Manage Sections
                       <td>{{ section.section_name }}</td>
                       <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
                       <td style="white-space: pre-line;"> {{ section.description }}</td>
-                      <td>{{ section.section_incharge }}</td>
+
+                      <!-- <td>{{ section.section_incharge }}</td> -->
+                      <!-- Fetching Section Head from SectionHead table-->
+                      <td>
+                          {% if section.sectionhead_set.exists %}
+                            {% with section_head=section.sectionhead_set.first.employee %}
+                              {{ section_head.first_name }} {{ section_head.last_name }}
+                            {% endwith %}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                    </td>
+
                       <td style="white-space: pre-line;"> {{ section.division.division_name }}</td>
 
                       <td>
                         <a href="{% url 'view_all_section_details' section.section_id %}" class="btn btn-primary">View</a>
                       </td>
+
 
                     </tr>
                   {% endfor %}

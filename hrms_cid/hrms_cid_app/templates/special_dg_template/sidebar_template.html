@@ -64,6 +64,7 @@
             </a>
             <ul class="nav nav-treeview">
 
+              <!-- Special DG leaves are applied offline
               <li class="nav-item">
                 {% url 'sp_dg_apply_leave' as sp_dg_apply_leave %}
                 <a href="{{ sp_dg_apply_leave }}" class="nav-link {% if request.path == sp_dg_apply_leave %} active {% endif %} ">
@@ -80,6 +81,9 @@
                   <p class="text-center">& History</p>
                 </a>
               </li>
+
+              -->
+
 
               <li class="nav-item">
                 {% url 'manage_leaves_sp_dg' as manage_leaves_sp_dg %}

@@ -79,7 +79,17 @@ Manage Divisions
                       <td>{{ division.division_name }}</td>
                       <!-- white-space: pre-line : for word wrap and breaking the long text, since this is a TextArea. -->
                       <td style="white-space: pre-line;"> {{ division.division_description }}</td>
-                      <td>{{ division.division_head }}</td>
+                      <!-- <td>{{ division.division_head }}</td> -->
+                      <!-- Fetching Division Head from DivisionHead table-->
+                      <td>
+                          {% if division.divisionhead_set.exists %}
+                            {% with division_head=division.divisionhead_set.first.employee %}
+                              {{ division_head.first_name }} {{ division_head.last_name }}
+                            {% endwith %}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                    </td>
 
                       <!--
                       <td>
